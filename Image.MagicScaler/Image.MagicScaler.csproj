@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="App.Core">
-      <HintPath>..\Bins\App.Core.dll</HintPath>
+      <HintPath>..\Bin\App.Core.dll</HintPath>
     </Reference>
     <Reference Include="IndexRange">
       <HintPath>..\Assembly\system\IndexRange.dll</HintPath>
@@ -62,7 +62,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>:: Move to bin
-ROBOCOPY "$(TargetDir) " "$(SolutionDir)\Bins " *.dll *.pdb *.xml /XO
+ROBOCOPY "$(TargetDir) " "$(SolutionDir)\Bin " *.dll *.pdb *.xml /XO
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
