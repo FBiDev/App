@@ -36,21 +36,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="App.Core">
-      <HintPath>..\bin\App.Core.dll</HintPath>
+      <HintPath>..\Bins\App.Core.dll</HintPath>
     </Reference>
     <Reference Include="IndexRange">
-      <HintPath>..\assemblys\system\IndexRange.dll</HintPath>
+      <HintPath>..\Assembly\system\IndexRange.dll</HintPath>
     </Reference>
     <Reference Include="PhotoSauce.MagicScaler">
-      <HintPath>..\assemblys\image\PhotoSauce.MagicScaler.dll</HintPath>
+      <HintPath>..\Assembly\image\PhotoSauce.MagicScaler.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Memory">
-      <HintPath>..\assemblys\system\System.Memory.dll</HintPath>
+      <HintPath>..\Assembly\system\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
-      <HintPath>..\assemblys\system\system.runtime.compilerservices.unsafe.4.0.4.1\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <HintPath>..\Assembly\system\system.runtime.compilerservices.unsafe.4.0.4.1\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,7 +62,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>:: Move to bin
-ROBOCOPY "$(TargetDir) " "$(SolutionDir)\bin " *.dll *.pdb *.xml /XO
+ROBOCOPY "$(TargetDir) " "$(SolutionDir)\Bins " *.dll *.pdb *.xml /XO
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

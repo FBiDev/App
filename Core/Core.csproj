@@ -401,14 +401,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>ROBOCOPY "$(TargetDir) " "$(SolutionDir)\bin " *.dll *.pdb *.xml /XO
+    <PostBuildEvent>ROBOCOPY "$(TargetDir) " "$(SolutionDir)\Bins " *.dll *.pdb *.xml /XO
 if $(ConfigurationName) == Release (
-ROBOCOPY "$(TargetDir) " "$(SolutionDir)\bin " /PURGE /IF *.pdb *.xml )
+ROBOCOPY "$(TargetDir) " "$(SolutionDir)\Bins " /PURGE /IF *.pdb *.xml )
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>:: Clean bin
-ROBOCOPY "$(TargetDir) " "$(SolutionDir)\bin " /PURGE /XF App.Core.* )
+ROBOCOPY "$(TargetDir) " "$(SolutionDir)\Bins " /PURGE /XF App.Core.* )
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25$(ConfigurationName)</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
