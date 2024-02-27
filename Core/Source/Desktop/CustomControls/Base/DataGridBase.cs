@@ -765,7 +765,8 @@ namespace App.Core.Desktop
         #region ImageColumns
         protected void Dg_DataSourceChanged(object sender, EventArgs e)
         {
-            //SetBooleanColumns(GetBooleanColumns());
+            if (AutoGenerateColumns == false)
+                SetBooleanColumns(GetBooleanColumns());
             SortDefaultColumn();
         }
 
