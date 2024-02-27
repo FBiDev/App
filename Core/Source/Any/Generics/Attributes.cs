@@ -31,19 +31,27 @@
         Image
     }
 
+    public enum IsBool
+    {
+        No,
+        Yes
+    }
+
     public class DisplayAttribute : Attribute
     {
         public string Name { get; set; }
         public string Description { get; set; }
         public bool AutoGenerateField { get; set; }
-        public int Order { get; set; }
+        //public int Order { get; set; }
         public string Format { get; set; }
+        public IsBool isBool { get; set; }
 
-        public DisplayAttribute()
+        public DisplayAttribute(string name = null, IsBool isBoolValue = IsBool.No)
         {
-            Name = null;
+            Name = name;
             AutoGenerateField = true;
-            Order = -1;
+            //Order = -1;
+            isBool = isBoolValue;
         }
     }
 
@@ -64,7 +72,7 @@
     {
         public string Name { get; set; }
 
-        public FieldAttribute(string name)
+        public FieldAttribute(string name, IsBool isBool = IsBool.No)
         {
             Name = name;
         }

@@ -381,6 +381,7 @@ namespace App.Core.Desktop
                         AutoSizeMode = DataGridViewAutoSizeColumnMode.None,
                         Resizable = DataGridViewTriState.False
                     };
+                    if (ColumnWidth != 100) { c.Width = ColumnWidth; }
                     c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     break;
@@ -764,7 +765,7 @@ namespace App.Core.Desktop
         #region ImageColumns
         protected void Dg_DataSourceChanged(object sender, EventArgs e)
         {
-            SetBooleanColumns(GetBooleanColumns());
+            //SetBooleanColumns(GetBooleanColumns());
             SortDefaultColumn();
         }
 
@@ -781,10 +782,13 @@ namespace App.Core.Desktop
                     string newColumn = ColumnsBooleanName + boolColumnSufix;
 
                     //Add Image Columns
-                    if (!Columns.Contains(newColumn))
+                    if (Columns.Contains(newColumn))
                     {
-                        AddColumn<Bitmap>(newColumn, ColumnsBooleanName, "", "", DataGridViewContentAlignment.NotSet, Columns[ColumnsBooleanName].Index);
+                        int index = Columns[newColumn].Index;
+                        Columns.RemoveAt(index);
                     }
+
+                    AddColumn<Bitmap>(newColumn, ColumnsBooleanName, "", "", DataGridViewContentAlignment.NotSet, Columns[ColumnsBooleanName].Index, true, 65);
 
                     Columns[ColumnsBooleanName].Visible = false;
                 }

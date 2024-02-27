@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Image.MagicScaler", "Image.MagicScaler\Image.MagicScaler.csproj", "{C554F3C1-AE3E-4D17-B15D-CBF9385492E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.WebView2", "Web.WebView2\Web.WebView2.csproj", "{84935BA3-E5A6-4045-8D19-15A616D6D54E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cohab", "Cohab\Cohab.csproj", "{E22AEE97-C45A-4D09-AFED-EDD1608981CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +23,14 @@ Global
 		{C554F3C1-AE3E-4D17-B15D-CBF9385492E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C554F3C1-AE3E-4D17-B15D-CBF9385492E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C554F3C1-AE3E-4D17-B15D-CBF9385492E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84935BA3-E5A6-4045-8D19-15A616D6D54E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84935BA3-E5A6-4045-8D19-15A616D6D54E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84935BA3-E5A6-4045-8D19-15A616D6D54E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84935BA3-E5A6-4045-8D19-15A616D6D54E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E22AEE97-C45A-4D09-AFED-EDD1608981CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E22AEE97-C45A-4D09-AFED-EDD1608981CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E22AEE97-C45A-4D09-AFED-EDD1608981CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E22AEE97-C45A-4D09-AFED-EDD1608981CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

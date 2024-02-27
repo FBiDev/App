@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -49,15 +50,27 @@ namespace App.Core.Desktop
 
         protected new void Dg_DataSourceChanged(object sender, EventArgs e)
         {
-            base.Dg_DataSourceChanged(null, null);
             RefreshRows();
 
             if (AutoGenerateColumns)
             {
                 //Visible = false;
-                
                 var type = ListBindingHelper.GetListItemType(DataSource);
                 var properties = TypeDescriptor.GetProperties(type);
+
+                var booleanColumns = new List<string> { };
+
+                var ls = new List<string>();
+                foreach (DataGridViewColumn column in Columns)
+                {
+                    if (column.IsDataBound == false)
+                        ls.Add(column.Name);
+                }
+
+                foreach (var cName in ls)
+                {
+                    Columns.Remove(cName);
+                }
 
                 foreach (DataGridViewColumn column in Columns)
                 {
@@ -85,13 +98,19 @@ namespace App.Core.Desktop
 
                         column.Visible = display == null || display.AutoGenerateField;
 
-                        if (display != null && display.Order > Columns.Count - 1) display.Order = Columns.Count - 1;
-                        column.DisplayIndex = display != null && display.Order >= 0 ? display.Order : column.Index;
+                        //if (display != null && display.Order > Columns.Count - 1) display.Order = Columns.Count - 1;
+                        //column.DisplayIndex = display != null && display.Order >= 0 ? display.Order : column.Index;
 
                         column.DefaultCellStyle.Format = display != null && display.Format != null ? display.Format : null;
+
+                        if (display != null && display.isBool == IsBool.Yes)
+                            booleanColumns.Add(p.Name);
                     }
                 }
-                
+
+                SetBooleanColumns(booleanColumns);
+                RefreshRows();
+
                 //Visible = true;
             }
         }
