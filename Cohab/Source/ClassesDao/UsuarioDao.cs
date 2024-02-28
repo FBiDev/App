@@ -55,7 +55,7 @@ namespace App.Cohab
         #endregion
 
         #region " _Select "
-        async Task<List<Usuario>> Search(Usuario obj)
+        public async Task<List<Usuario>> Pesquisar(Usuario obj)
         {
             var sql = Resources.UsuarioListar;
             var parameters = GetFilters(obj);
@@ -63,26 +63,21 @@ namespace App.Cohab
             return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
         }
 
-        public async Task<List<Usuario>> Pesquisar(Usuario obj)
+        public async Task<List<Usuario>> PesquisarAtivos()
         {
-            return (await Search(obj));
+            var obj = new Usuario { Ativo = true };
+            return (await Pesquisar(obj));
         }
 
         public async Task<Usuario> Buscar(Usuario obj)
         {
-            return (await Search(obj)).FirstOrNew();
+            return (await Pesquisar(obj)).FirstOrNew();
         }
 
         public async Task<Usuario> BuscarLogin(string login)
         {
             var obj = new Usuario { Login = login.Trim() };
             return (await Buscar(obj));
-        }
-
-        public async Task<List<Usuario>> PesquisarAtivos()
-        {
-            var obj = new Usuario { Ativo = true };
-            return (await Search(obj));
         }
 
         public async Task<List<Usuario>> ListarCombo()
@@ -159,22 +154,17 @@ namespace App.Cohab
             return (await BancoCOHAB.Executar(sql, DatabaseAction.Update, lParams)).Success;
         }
 
-        public static async Task<List<Usuario>> ListarPorSetor(string setor = null, bool soAtivos = true)
+        public async Task<List<Usuario>> ListarPorSetor(string setor = null, bool ativos = true)
         {
-            string sql = "SELECT U.Usuario_Matricula, U.Usuario_Nome, U.Usuario_Login, U.Usuario_Email, U.Usuario_Notes  " +
-                "FROM [vw_lotacaodp] L WITH (nolock) " +
-                " INNER JOIN Usuario U WITH (nolock)  ON U.Usuario_Login = L.Usuario_Login  WHERE 1 = 1 ";
+            string sql = Resources.UsuarioListarPorSetor;
 
-            if (setor.HasValue()) { sql += " AND (l.setor_sigla = '" + setor.Trim() + "' OR  l.Departamento_Sigla = '" + setor.Trim() + "') "; }
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@setor", setor),
+                new SqlParameter("@ativos", ativos)
+            };
 
-            if (soAtivos) { sql += " AND (U.Usuario_Ativo = 1) "; }
-            else { sql += " AND (U.Usuario_Ativo = 0) "; }
-
-            sql += " ORDER BY u.Usuario_Nome ASC ";
-
-            var lParams = new List<SqlParameter> { };
-
-            return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, lParams));
+            return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
         }
 
         public static async Task<List<Usuario>> ListarPorDepartamento(string depto, bool exclusivo = false, bool soAtivos = false)

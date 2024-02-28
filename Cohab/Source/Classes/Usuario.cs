@@ -47,20 +47,25 @@ namespace App.Cohab
         }
         #endregion
 
-        public async static Task<List<Usuario>> Pesquisar(Usuario obj)
+        public static async Task<List<Usuario>> Pesquisar(Usuario obj)
         {
             if (obj == null) obj = new Usuario { };
             return await DAO.Pesquisar(obj);
         }
 
-        public async static Task<bool> VerificarAcesso(string login, string sistema)
+        public static async Task<bool> VerificarAcesso(string login, string sistema)
         {
             return await DAO.VerificarAcesso(login, sistema);
         }
 
-        public async static Task<bool> ResetarSenha(string login, string sistema)
+        public static async Task<bool> ResetarSenha(string login, string sistema)
         {
             return await DAO.ResetarSenha(login, sistema);
+        }
+
+        public static async Task<List<Usuario>> ListarPorSetor(string setor = null, bool soAtivos = true)
+        {
+            return await DAO.ListarPorSetor(setor, soAtivos);
         }
     }
 }

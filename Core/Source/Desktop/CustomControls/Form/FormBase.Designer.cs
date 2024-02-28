@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pnlFoot = new FlatPanel();
-            this.pnlFootContent = new FlatPanel();
-            this.staStatus = new FlatStatusBar();
-            this.pnlHead = new FlatPanel();
-            this.pnlBody = new FlatPanel();
-            this.pnlContent = new FlatPanel();
-            this.pnlContentInside = new FlatPanel();
+            this.pnlFoot = new App.Core.Desktop.FlatPanel();
+            this.pnlFootContent = new App.Core.Desktop.FlatPanel();
+            this.staStatus = new App.Core.Desktop.FlatStatusBar();
+            this.pnlHead = new App.Core.Desktop.FlatPanel();
+            this.pnlBody = new App.Core.Desktop.FlatPanel();
+            this.pnlContent = new App.Core.Desktop.FlatPanel();
+            this.pnlContentInside = new App.Core.Desktop.FlatPanel();
             this.pnlFoot.SuspendLayout();
             this.pnlFootContent.SuspendLayout();
             this.pnlHead.SuspendLayout();
@@ -44,8 +44,6 @@
             // 
             // pnlFoot
             // 
-            this.pnlFoot.BackColor = System.Drawing.Color.Transparent;
-            this.pnlFoot.BorderRound = false;
             this.pnlFoot.Controls.Add(this.pnlFootContent);
             this.pnlFoot.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlFoot.Location = new System.Drawing.Point(0, 246);
@@ -55,7 +53,6 @@
             // 
             // pnlFootContent
             // 
-            this.pnlFootContent.BackColor = System.Drawing.Color.Transparent;
             this.pnlFootContent.Controls.Add(this.staStatus);
             this.pnlFootContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlFootContent.Location = new System.Drawing.Point(0, 0);
@@ -65,10 +62,11 @@
             // staStatus
             // 
             this.staStatus.BackColor = System.Drawing.Color.Transparent;
+            this.staStatus.BackColorContent = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.staStatus.BorderEnable = false;
             this.staStatus.Dock = System.Windows.Forms.DockStyle.Fill;
             this.staStatus.Location = new System.Drawing.Point(0, 0);
-            this.staStatus.Movimento = Movimento.Nenhum;
+            this.staStatus.Movimento = App.Core.Desktop.Movimento.Nenhum;
             this.staStatus.Name = "staStatus";
             this.staStatus.Registros = null;
             this.staStatus.Size = new System.Drawing.Size(480, 24);
@@ -76,10 +74,7 @@
             // 
             // pnlHead
             // 
-            this.pnlHead.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.pnlHead.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.pnlHead.BorderRound = false;
-            this.pnlHead.BorderSize = 0;
             this.pnlHead.Controls.Add(this.pnlBody);
             this.pnlHead.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlHead.Location = new System.Drawing.Point(0, 0);
@@ -87,12 +82,10 @@
             this.pnlHead.Name = "pnlHead";
             this.pnlHead.Padding = new System.Windows.Forms.Padding(8, 8, 8, 32);
             this.pnlHead.Size = new System.Drawing.Size(480, 270);
+            this.pnlHead.TabIndex = 1;
             // 
             // pnlBody
             // 
-            this.pnlBody.BackColor = System.Drawing.Color.Transparent;
-            this.pnlBody.BorderRound = false;
-            this.pnlBody.BorderSize = 0;
             this.pnlBody.Controls.Add(this.pnlContent);
             this.pnlBody.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlBody.Location = new System.Drawing.Point(8, 8);
@@ -103,8 +96,6 @@
             // pnlContent
             // 
             this.pnlContent.BackColor = System.Drawing.SystemColors.Control;
-            this.pnlContent.BorderRound = false;
-            this.pnlContent.BorderSize = 0;
             this.pnlContent.Controls.Add(this.pnlContentInside);
             this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContent.Location = new System.Drawing.Point(0, 0);
@@ -148,9 +139,9 @@
         protected FlatPanel pnlContentInside;
         private FlatPanel pnlHead;
         private FlatPanel pnlBody;
-        protected FlatPanel pnlContent;
         private FlatPanel pnlFootContent;
-        protected FlatStatusBar staStatus;
+        public FlatStatusBar staStatus;
+        public FlatPanel pnlContent;
 
     }
 }

@@ -24,8 +24,8 @@ namespace App.Core
 
     public enum DatabaseMode
     {
-        Desenvolvimento,
-        Producao
+        Producao,
+        Desenvolvimento
     }
 
     public enum DatabaseAction

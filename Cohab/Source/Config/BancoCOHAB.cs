@@ -16,7 +16,7 @@ namespace App.Cohab
 
         public static void Load(DatabaseMode mode = DatabaseMode.Producao)
         {
-            Session.Options.DatabaseDevMode = ((int)mode).ToBool();
+            Session.Options.DatabaseDevMode = Convert.ToBoolean(mode);
 
             Database = new DatabaseManager { };
             Reload();

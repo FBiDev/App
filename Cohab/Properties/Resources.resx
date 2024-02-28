@@ -130,6 +130,9 @@
   <data name="UsuarioListar" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\source\assets\sql\usuario\usuariolistar.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="UsuarioListarPorSetor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\source\assets\sql\usuario\usuariolistarporsetor.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="UsuarioTrocarSenha" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\source\assets\sql\usuario\usuariotrocarsenha.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

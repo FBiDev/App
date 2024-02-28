@@ -79,6 +79,7 @@
     <Content Include="Source\Assets\Sql\Sistema\SistemaListarPorUsuario.sql" />
     <Content Include="Source\Assets\Sql\Sistema\SistemaListarProprio.sql" />
     <Content Include="Source\Assets\Sql\Usuario\UsuarioListar.sql" />
+    <Content Include="Source\Assets\Sql\Usuario\UsuarioListarPorSetor.sql" />
     <Content Include="Source\Assets\Sql\Usuario\UsuarioTrocarSenha.sql" />
     <Content Include="Source\Assets\Sql\Usuario\UsuarioVerificarAcesso.sql" />
   </ItemGroup>
