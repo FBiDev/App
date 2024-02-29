@@ -1,5 +1,4 @@
-﻿using App.Core.Desktop;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
@@ -45,6 +44,11 @@ namespace App.Cohab
         {
             Login = Nome = Apelido = Ramal = Matricula = string.Empty;
         }
+
+        public override string ToString()
+        {
+            return Nome;
+        }
         #endregion
 
         public static async Task<List<Usuario>> Pesquisar(Usuario obj)
@@ -66,6 +70,16 @@ namespace App.Cohab
         public static async Task<List<Usuario>> ListarPorSetor(string setor = null, bool soAtivos = true)
         {
             return await DAO.ListarPorSetor(setor, soAtivos);
+        }
+
+        public static async Task<List<Usuario>> ListarPorDepartamento(string depto, bool exclusivo = false, bool ativos = false)
+        {
+            return await DAO.ListarPorDepartamento(depto, exclusivo, ativos);
+        }
+
+        public static async Task<List<Usuario>> ListarPorMatricula(string matricula, string login = null)
+        {
+            return await DAO.ListarPorMatricula(matricula, login);
         }
     }
 }

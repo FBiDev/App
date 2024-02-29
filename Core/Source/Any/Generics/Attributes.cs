@@ -72,7 +72,7 @@
     {
         public string Name { get; set; }
 
-        public FieldAttribute(string name, IsBool isBool = IsBool.No)
+        public FieldAttribute(string name)
         {
             Name = name;
         }

@@ -8,7 +8,7 @@ using App.Core.Desktop;
 
 namespace App.Cohab
 {
-    public class BancoCOHAB
+    public static class BancoCOHAB
     {
         static DatabaseManager Database { get; set; }
         public static ListSynced<SqlLog> Log { get { return Database.Log; } }

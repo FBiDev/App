@@ -137,8 +137,12 @@ namespace App.Core.Desktop
 
         public static void Exit()
         {
-            Application.Exit();
-            Environment.Exit(0);
+            if (Application.MessageLoop)
+                // WinForms app
+                Application.Exit();
+            else
+                // Console app
+                Environment.Exit(0);
         }
 
         #region Lock to 1 Execution only

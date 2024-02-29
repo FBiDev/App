@@ -29,10 +29,10 @@ namespace App.Cohab
             var list = new T();
             foreach (DataRow row in table.Rows)
             {
-                list.Add(new Sistema()
+                list.Add(new Sistema
                 {
                     Sigla = row.Value<string>("Sistema_Sigla"),
-                    Nome = row.Value<string>("Sistema_Nome"),
+                    Nome = row.Value<string>("Sistema_Nome")
                 });
             }
             return list;
@@ -80,7 +80,7 @@ namespace App.Cohab
 
             var parameters = new List<SqlParameter>
             {
-                new SqlParameter("@proprio", proprio),
+                new SqlParameter("@proprio", proprio)
             };
 
             return Carregar<List<Sistema>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
@@ -92,7 +92,7 @@ namespace App.Cohab
 
             var parameters = new List<SqlParameter>
             {
-                new SqlParameter("@Login", obj.Login),
+                new SqlParameter("@Login", obj.Login)
             };
 
             return Carregar<List<Sistema>>(await BancoCOHAB.ExecutarSelect(sql, parameters));

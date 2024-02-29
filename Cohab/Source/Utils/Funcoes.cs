@@ -149,7 +149,7 @@ namespace App.Cohab
         /// Limpar containers
         /// </summary>
         /// <param name="aContainer">type do controle</param>
-        private static void TratarFormularioLimparContainer(Control aContainer)
+        static void TratarFormularioLimparContainer(Control aContainer)
         {
             if (aContainer is GroupBox ||
                aContainer is FlowLayoutPanel ||
@@ -185,7 +185,7 @@ namespace App.Cohab
         /// </summary>
         /// <param name="aContainer">controle</param>
         /// <param name="aHabilitar">estado do componente</param>
-        private static void TratarFormularioHabilitarContainer(Control aContainer, bool aHabilitar)
+        static void TratarFormularioHabilitarContainer(Control aContainer, bool aHabilitar)
         {
             if (aContainer is TabControl || aContainer is SplitContainer)
             {
@@ -240,7 +240,7 @@ namespace App.Cohab
         /// </summary>
         /// <param name="aTipoControle">type do controle</param>
         /// <param name="aControle">controle</param>
-        private static void TratarFormularioLimpar(Control aTipoControle, Control aControle)
+        static void TratarFormularioLimpar(Control aTipoControle, Control aControle)
         {
             switch (aTipoControle.GetType().Name)
             {
@@ -278,7 +278,7 @@ namespace App.Cohab
         /// Tornar branco o fundo de controle desabilitados
         /// </summary>
         /// <param name="aControle">controle</param>
-        private static void TratarFormularioBranco(Control aControle)
+        static void TratarFormularioBranco(Control aControle)
         {
             if (!(aControle is CheckBox) &&
                 !(aControle is Label) &&
@@ -297,7 +297,7 @@ namespace App.Cohab
         /// </summary>
         /// <param name="aControle">controle</param>
         /// <param name="aHabilitar">estado do componente</param>
-        private static void TratarFormularioHabilitar(Control aControle, bool aHabilitar)
+        static void TratarFormularioHabilitar(Control aControle, bool aHabilitar)
         {
             if (aControle.GetType().ToString() != "MyComponents.uToolbar" &&
                aControle.GetType().ToString() != "MyComponents.uBlinkLabel" &&

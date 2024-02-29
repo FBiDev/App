@@ -154,6 +154,52 @@ namespace App.Cohab.Properties {
         ///	U.Usuario_Nome, 
         ///	U.Usuario_Login, 
         ///	U.Usuario_Email, 
+        ///	U.Usuario_Notes
+        ///FROM [vw_lotacaodp] L WITH (nolock) 
+        ///	INNER JOIN Usuario U WITH (nolock) ON U.Usuario_Login = L.Usuario_Login 
+        ///WHERE 1 = 1 
+        ///	AND (COALESCE(@depto, &apos;&apos;) = &apos;&apos; OR L.[departamento_sigla] = @depto) 
+        ///	AND (COALESCE(@exclusivo, 0) = 0 OR L.[setor_sigla] IS NULL) 
+        ///	AND (COALESCE(@ativos, 0) = 0 OR U.usuario_ativo = @ativos)
+        ///ORDER BY U.[Usuario_Nome] ASC;
+        ///--.
+        /// </summary>
+        internal static string UsuarioListarPorDepartamento {
+            get {
+                return ResourceManager.GetString("UsuarioListarPorDepartamento", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to --
+        ///SELECT 
+        ///	U.Usuario_Matricula, 
+        ///	U.Usuario_Nome, 
+        ///	U.Usuario_Login, 
+        ///	U.Usuario_Email, 
+        ///	U.Usuario_Notes
+        ///FROM [vw_lotacaodp] L WITH (nolock) 
+        ///	INNER JOIN Usuario U WITH (nolock) ON U.Usuario_Login = L.Usuario_Login 
+        ///WHERE 1 = 1 
+        ///	AND (COALESCE(@depto, &apos;&apos;) = &apos;&apos; OR L.[departamento_sigla] = @depto) 
+        ///	AND (COALESCE(@exclusivo, 0) = 0 OR L.[setor_sigla] IS NULL) 
+        ///	AND (COALESCE(@ativos, 0) = 0 OR U.usuario_ativo = @ativos)
+        ///ORDER BY U.[Usuario_Nome] ASC;
+        ///--.
+        /// </summary>
+        internal static string UsuarioListarPorMatricula {
+            get {
+                return ResourceManager.GetString("UsuarioListarPorMatricula", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to --
+        ///SELECT 
+        ///	U.Usuario_Matricula, 
+        ///	U.Usuario_Nome, 
+        ///	U.Usuario_Login, 
+        ///	U.Usuario_Email, 
         ///	U.Usuario_Notes  
         ///FROM [vw_lotacaodp] L WITH (nolock) 
         ///	INNER JOIN Usuario U WITH (nolock) ON U.Usuario_Login = L.Usuario_Login 

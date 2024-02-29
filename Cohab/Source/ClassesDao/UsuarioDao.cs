@@ -27,7 +27,7 @@ namespace App.Cohab
                     Chefia = row.Value<bool>("Usuario_Chefia"),
                     Ativo = row.Value<bool>("Usuario_Ativo"),
                     Visivel = row.Value<bool>("Usuario_Visivel"),
-                    Notes = row.Value<string>("Usuario_Notes"),
+                    Notes = row.Value<string>("Usuario_Notes")
                 });
             }
             return list;
@@ -35,7 +35,7 @@ namespace App.Cohab
         #endregion
 
         #region " _Consistir "
-        private string Consistir()
+        string Consistir()
         {
             string erro = null;
             return erro;
@@ -93,13 +93,13 @@ namespace App.Cohab
             var parameters = new List<SqlParameter>
             {
                 new SqlParameter("@Login", login),
-                new SqlParameter("@Sistema", sistema),
+                new SqlParameter("@Sistema", sistema)
             };
 
             return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters)).Count >= 1;
         }
 
-        public static async Task<bool> ClonarAcessos(string loginOrigem, string loginDestino, string usuarioLogado)
+        public static async Task<bool> ClonarAcessos(string loginOrigem, string loginDestino)
         {
             string lSQLRemove = " DELETE FROM [DB_COHAB].[dbo].[UsuarioSistema] " +
                                 " WHERE [UsuarioSistema_UsuarioLogin] = '" + loginDestino + "' ";
@@ -140,15 +140,15 @@ namespace App.Cohab
         public async Task<bool> ResetarSenha(string login, string sistema)
         {
             string sql = Resources.UsuarioTrocarSenha;
-            string senhaPadrao = Funcoes.CriptografarSenha("senhasenha");
-            string validade = (await BancoCOHAB.DataServidor()).AddDays(30).ToShortDateString();
+            var senhaPadrao = Funcoes.CriptografarSenha("senhasenha");
+            var validade = (await BancoCOHAB.DataServidor()).AddDays(30).ToShortDateString();
 
             var lParams = new List<SqlParameter>
             {
                 new SqlParameter("@Login", login),
                 new SqlParameter("@Sistema", sistema),
                 new SqlParameter("@Senha", senhaPadrao),
-                new SqlParameter("@Validade", validade),
+                new SqlParameter("@Validade", validade)
             };
 
             return (await BancoCOHAB.Executar(sql, DatabaseAction.Update, lParams)).Success;
@@ -167,41 +167,31 @@ namespace App.Cohab
             return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
         }
 
-        public static async Task<List<Usuario>> ListarPorDepartamento(string depto, bool exclusivo = false, bool soAtivos = false)
+        public async Task<List<Usuario>> ListarPorDepartamento(string depto, bool exclusivo = false, bool ativos = false)
         {
-            string sql = "SELECT U.Usuario_Matricula, U.Usuario_Nome, U.Usuario_Login, U.Usuario_Email, U.Usuario_Notes  " +
-                   "FROM [vw_lotacaodp] L WITH (nolock) " +
-                   " INNER JOIN Usuario U WITH (nolock)  ON U.Usuario_Login = L.Usuario_Login  WHERE 1 = 1  ";
+            string sql = Resources.UsuarioListarPorDepartamento;
 
-            if (depto.HasValue())
+            var parameters = new List<SqlParameter>
             {
-                sql += " AND L.[departamento_sigla] = '" + depto.Trim() + "'";
-                if (exclusivo) { sql += " AND L.[setor_sigla] is null "; }
-            }
+                new SqlParameter("@depto", depto),
+                new SqlParameter("@exclusivo", exclusivo),
+                new SqlParameter("@ativos", ativos)
+            };
 
-            if (soAtivos) { sql += " AND U.usuario_ativo = 1 "; }
-            sql += " ORDER BY U.[Usuario_Nome] ASC ";
-
-            var lParams = new List<SqlParameter> { };
-
-            return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, lParams));
+            return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
         }
 
-        public static async Task<List<Usuario>> ListarPorMatricula(string matricula, string login = null)
+        public async Task<List<Usuario>> ListarPorMatricula(string matricula, string login = null)
         {
-            string sql = "SELECT * " +
-                   " FROM [vw_lotacaodp] L WITH (nolock) " +
-                   " INNER JOIN Usuario U WITH (nolock)  ON U.Usuario_Login = L.Usuario_Login  WHERE 1 = 1  ";
+            string sql = Resources.UsuarioListarPorMatricula;
 
-            if (matricula != null) { sql += " AND L.[matricula] = '" + matricula.Trim() + "'"; }
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@matricula", matricula),
+                new SqlParameter("@login", login)
+            };
 
-            if (login != null) { sql += " AND U.[usuario_login] = '" + login.Trim() + "'"; }
-
-            sql += " ORDER BY U.[Usuario_Nome] ASC ";
-
-            var lParams = new List<SqlParameter> { };
-
-            return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, lParams));
+            return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
         }
     }
 }

@@ -78,6 +78,8 @@
     <Content Include="Source\Assets\Sql\Sistema\SistemaListar.sql" />
     <Content Include="Source\Assets\Sql\Sistema\SistemaListarPorUsuario.sql" />
     <Content Include="Source\Assets\Sql\Sistema\SistemaListarProprio.sql" />
+    <Content Include="Source\Assets\Sql\Usuario\UsuarioListarPorMatricula.sql" />
+    <Content Include="Source\Assets\Sql\Usuario\UsuarioListarPorDepartamento.sql" />
     <Content Include="Source\Assets\Sql\Usuario\UsuarioListar.sql" />
     <Content Include="Source\Assets\Sql\Usuario\UsuarioListarPorSetor.sql" />
     <Content Include="Source\Assets\Sql\Usuario\UsuarioTrocarSenha.sql" />
