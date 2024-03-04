@@ -63,25 +63,25 @@ namespace App.Cohab.Properties {
         /// <summary>
         ///   Looks up a localized string similar to --
         ///SELECT 
-        ///	Sistema_Nome,
-        ///	Sistema_Sigla
+        ///	  Sistema_Sigla 
+        ///	, Sistema_Nome 
         ///	FROM 
         ///		Sistema AS si
         ///	ORDER BY 
         ///		Sistema_Sigla ASC;
         ///--.
         /// </summary>
-        internal static string SistemaListar {
+        internal static string sql_SistemaListar {
             get {
-                return ResourceManager.GetString("SistemaListar", resourceCulture);
+                return ResourceManager.GetString("sql_SistemaListar", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to --
         ///SELECT 
-        ///	Sistema_Nome,
-        ///	Sistema_Sigla
+        ///	  Sistema_Sigla 
+        ///	, Sistema_Nome 
         ///	FROM 
         ///		Sistema AS si
         ///		LEFT JOIN UsuarioSistema AS us 
@@ -92,17 +92,17 @@ namespace App.Cohab.Properties {
         ///		Sistema_Sigla ASC;
         ///--.
         /// </summary>
-        internal static string SistemaListarPorUsuario {
+        internal static string sql_SistemaListarPorUsuario {
             get {
-                return ResourceManager.GetString("SistemaListarPorUsuario", resourceCulture);
+                return ResourceManager.GetString("sql_SistemaListarPorUsuario", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to --
         ///SELECT 
-        ///	Sistema_Nome,
-        ///	Sistema_Sigla
+        ///	  Sistema_Sigla 
+        ///	, Sistema_Nome 
         ///	FROM 
         ///		Sistema AS si
         ///	WHERE 
@@ -111,24 +111,50 @@ namespace App.Cohab.Properties {
         ///		Sistema_Sigla ASC;
         ///--.
         /// </summary>
-        internal static string SistemaListarProprio {
+        internal static string sql_SistemaListarProprio {
             get {
-                return ResourceManager.GetString("SistemaListarProprio", resourceCulture);
+                return ResourceManager.GetString("sql_SistemaListarProprio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to --
+        ///DELETE FROM [DB_COHAB].[dbo].[UsuarioSistema] 
+        ///WHERE 1 = 1 
+        ///	AND [UsuarioSistema_UsuarioLogin] = @loginDestino;
+        ///
+        ///INSERT INTO [DB_COHAB].[dbo].[UsuarioSistema] 
+        ///    ( 
+        ///	 [UsuarioSistema_Senha] 
+        ///    ,[UsuarioSistema_Ativo] 
+        ///    ,[UsuarioSistema_Validade] 
+        ///    ,[UsuarioSistema_Free] 
+        ///    ,[UsuarioSistema_UsuarioLogin] 
+        ///    ,[UsuarioSistema_GrupoId] 
+        ///    ,[UsuarioSistema_SistemaSigla] 
+        ///    ,[UsuarioSistema_Micro] 
+        ///    ,[UsuarioSistema_UsuarioRede] 
+        ///    ,[UsuarioSistema_Data] 
+        ///    ,[UsuarioSi [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string sql_UsuarioClonarAcessos {
+            get {
+                return ResourceManager.GetString("sql_UsuarioClonarAcessos", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to --
         ///SELECT 
-        ///	Usuario_Login,
-        ///	Usuario_Nome,
-        ///	Usuario_Matricula,
-        ///	Usuario_Ramal,
-        ///	Usuario_Email,
-        ///	Usuario_Chefia,
-        ///	Usuario_Ativo,
-        ///	Usuario_Visivel,
-        ///	Usuario_Notes
+        ///	  Usuario_Login 
+        ///	, Usuario_Nome 
+        ///	, Usuario_Matricula 
+        ///	, Usuario_Ramal 
+        ///	, Usuario_Email 
+        ///	, Usuario_Chefia 
+        ///	, Usuario_Ativo 
+        ///	, Usuario_Visivel 
+        ///	, Usuario_Notes 
         ///FROM Usuario AS us WITH (NOLOCK) 
         ///WHERE 1 = 1 
         ///	AND (Usuario_Ativo = @Ativo 
@@ -141,20 +167,20 @@ namespace App.Cohab.Properties {
         ///	Usuario_Nome ASC;
         ///--.
         /// </summary>
-        internal static string UsuarioListar {
+        internal static string sql_UsuarioListar {
             get {
-                return ResourceManager.GetString("UsuarioListar", resourceCulture);
+                return ResourceManager.GetString("sql_UsuarioListar", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to --
         ///SELECT 
-        ///	U.Usuario_Matricula, 
-        ///	U.Usuario_Nome, 
-        ///	U.Usuario_Login, 
-        ///	U.Usuario_Email, 
-        ///	U.Usuario_Notes
+        ///	  U.Usuario_Matricula 
+        ///	, U.Usuario_Nome 
+        ///	, U.Usuario_Login 
+        ///	, U.Usuario_Email 
+        ///	, U.Usuario_Notes 
         ///FROM [vw_lotacaodp] L WITH (nolock) 
         ///	INNER JOIN Usuario U WITH (nolock) ON U.Usuario_Login = L.Usuario_Login 
         ///WHERE 1 = 1 
@@ -164,43 +190,46 @@ namespace App.Cohab.Properties {
         ///ORDER BY U.[Usuario_Nome] ASC;
         ///--.
         /// </summary>
-        internal static string UsuarioListarPorDepartamento {
+        internal static string sql_UsuarioListarPorDepartamento {
             get {
-                return ResourceManager.GetString("UsuarioListarPorDepartamento", resourceCulture);
+                return ResourceManager.GetString("sql_UsuarioListarPorDepartamento", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to --
         ///SELECT 
-        ///	U.Usuario_Matricula, 
-        ///	U.Usuario_Nome, 
-        ///	U.Usuario_Login, 
-        ///	U.Usuario_Email, 
-        ///	U.Usuario_Notes
+        ///	  U.Usuario_Login 
+        ///	, U.Usuario_Nome 
+        ///	, U.Usuario_Matricula 
+        ///	, U.Usuario_Ramal 
+        ///	, U.Usuario_Email 
+        ///	, U.Usuario_Chefia 
+        ///	, U.Usuario_Ativo 
+        ///	, U.Usuario_Visivel 
+        ///	, U.Usuario_Notes 
         ///FROM [vw_lotacaodp] L WITH (nolock) 
         ///	INNER JOIN Usuario U WITH (nolock) ON U.Usuario_Login = L.Usuario_Login 
         ///WHERE 1 = 1 
-        ///	AND (COALESCE(@depto, &apos;&apos;) = &apos;&apos; OR L.[departamento_sigla] = @depto) 
-        ///	AND (COALESCE(@exclusivo, 0) = 0 OR L.[setor_sigla] IS NULL) 
-        ///	AND (COALESCE(@ativos, 0) = 0 OR U.usuario_ativo = @ativos)
+        ///	AND (COALESCE(@matricula, &apos;&apos;) = &apos;&apos; OR L.[matricula] = @matricula) 
+        ///	AND (COALESCE(@login, &apos;&apos;) = &apos;&apos; OR U.[usuario_login] = @login) 
         ///ORDER BY U.[Usuario_Nome] ASC;
         ///--.
         /// </summary>
-        internal static string UsuarioListarPorMatricula {
+        internal static string sql_UsuarioListarPorMatricula {
             get {
-                return ResourceManager.GetString("UsuarioListarPorMatricula", resourceCulture);
+                return ResourceManager.GetString("sql_UsuarioListarPorMatricula", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to --
         ///SELECT 
-        ///	U.Usuario_Matricula, 
-        ///	U.Usuario_Nome, 
-        ///	U.Usuario_Login, 
-        ///	U.Usuario_Email, 
-        ///	U.Usuario_Notes  
+        ///	  U.Usuario_Matricula 
+        ///	, U.Usuario_Nome 
+        ///	, U.Usuario_Login 
+        ///	, U.Usuario_Email 
+        ///	, U.Usuario_Notes 
         ///FROM [vw_lotacaodp] L WITH (nolock) 
         ///	INNER JOIN Usuario U WITH (nolock) ON U.Usuario_Login = L.Usuario_Login 
         ///WHERE 1 = 1 
@@ -209,9 +238,9 @@ namespace App.Cohab.Properties {
         ///ORDER BY u.Usuario_Nome ASC;
         ///--.
         /// </summary>
-        internal static string UsuarioListarPorSetor {
+        internal static string sql_UsuarioListarPorSetor {
             get {
-                return ResourceManager.GetString("UsuarioListarPorSetor", resourceCulture);
+                return ResourceManager.GetString("sql_UsuarioListarPorSetor", resourceCulture);
             }
         }
         
@@ -220,16 +249,16 @@ namespace App.Cohab.Properties {
         ///UPDATE 
         ///	UsuarioSistema 
         ///	SET 
-        ///		UsuarioSistema_Senha = @Senha,
-        ///		UsuarioSistema_Validade = @Validade
+        ///		  UsuarioSistema_Senha = @Senha 
+        ///		, UsuarioSistema_Validade = @Validade 
         ///	WHERE 
-        ///		UsuarioSistema_UsuarioLogin = @Login
+        ///		UsuarioSistema_UsuarioLogin = @Login 
         ///		AND UsuarioSistema_SistemaSigla = @Sistema;
         ///--.
         /// </summary>
-        internal static string UsuarioTrocarSenha {
+        internal static string sql_UsuarioTrocarSenha {
             get {
-                return ResourceManager.GetString("UsuarioTrocarSenha", resourceCulture);
+                return ResourceManager.GetString("sql_UsuarioTrocarSenha", resourceCulture);
             }
         }
         
@@ -248,9 +277,9 @@ namespace App.Cohab.Properties {
         ///		Usuario_Login ASC;
         ///--.
         /// </summary>
-        internal static string UsuarioVerificarAcesso {
+        internal static string sql_UsuarioVerificarAcesso {
             get {
-                return ResourceManager.GetString("UsuarioVerificarAcesso", resourceCulture);
+                return ResourceManager.GetString("sql_UsuarioVerificarAcesso", resourceCulture);
             }
         }
     }

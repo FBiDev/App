@@ -118,31 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="SistemaListar" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\source\assets\sql\sistema\sistemalistar.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="sql_SistemaListar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\source\assets\sql\sistema\sql_sistemalistar.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="SistemaListarPorUsuario" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\source\assets\sql\sistema\sistemalistarporusuario.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="sql_SistemaListarPorUsuario" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\source\assets\sql\sistema\sql_sistemalistarporusuario.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="SistemaListarProprio" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\source\assets\sql\sistema\sistemalistarproprio.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="sql_SistemaListarProprio" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\source\assets\sql\sistema\sql_sistemalistarproprio.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="UsuarioListar" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\source\assets\sql\usuario\usuariolistar.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="sql_UsuarioClonarAcessos" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\source\assets\sql\usuario\sql_usuarioclonaracessos.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="UsuarioListarPorDepartamento" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\source\assets\sql\usuario\usuariolistarpordepartamento.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="sql_UsuarioListar" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\source\assets\sql\usuario\sql_usuariolistar.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="UsuarioListarPorMatricula" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\source\assets\sql\usuario\usuariolistarpormatricula.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="sql_UsuarioListarPorDepartamento" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\source\assets\sql\usuario\sql_usuariolistarpordepartamento.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="UsuarioListarPorSetor" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\source\assets\sql\usuario\usuariolistarporsetor.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="sql_UsuarioListarPorMatricula" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\source\assets\sql\usuario\sql_usuariolistarpormatricula.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="UsuarioTrocarSenha" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\source\assets\sql\usuario\usuariotrocarsenha.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="sql_UsuarioListarPorSetor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\source\assets\sql\usuario\sql_usuariolistarporsetor.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="UsuarioVerificarAcesso" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\source\assets\sql\usuario\usuarioverificaracesso.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="sql_UsuarioTrocarSenha" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\source\assets\sql\usuario\sql_usuariotrocarsenha.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="sql_UsuarioVerificarAcesso" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\source\assets\sql\usuario\sql_usuarioverificaracesso.sql;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

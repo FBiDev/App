@@ -1,14 +1,14 @@
 ﻿--
 SELECT 
-	Usuario_Login,
-	Usuario_Nome,
-	Usuario_Matricula,
-	Usuario_Ramal,
-	Usuario_Email,
-	Usuario_Chefia,
-	Usuario_Ativo,
-	Usuario_Visivel,
-	Usuario_Notes
+	  Usuario_Login 
+	, Usuario_Nome 
+	, Usuario_Matricula 
+	, Usuario_Ramal 
+	, Usuario_Email 
+	, Usuario_Chefia 
+	, Usuario_Ativo 
+	, Usuario_Visivel 
+	, Usuario_Notes 
 FROM Usuario AS us WITH (NOLOCK) 
 WHERE 1 = 1 
 	AND (Usuario_Ativo = @Ativo 

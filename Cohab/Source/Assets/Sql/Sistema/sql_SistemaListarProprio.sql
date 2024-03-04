@@ -1,7 +1,7 @@
 ﻿--
 SELECT 
-	Sistema_Nome,
-	Sistema_Sigla
+	  Sistema_Sigla 
+	, Sistema_Nome 
 	FROM 
 		Sistema AS si
 	WHERE 

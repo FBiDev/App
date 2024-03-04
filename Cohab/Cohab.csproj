@@ -58,6 +58,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Source\ClassesDao\SistemaDao.cs" />
     <Compile Include="Source\ClassesDao\UsuarioDao.cs" />
     <Compile Include="Source\Classes\Sistema.cs" />
     <Compile Include="Source\Classes\Usuario.cs" />
@@ -75,15 +76,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Source\Assets\Sql\Sistema\SistemaListar.sql" />
-    <Content Include="Source\Assets\Sql\Sistema\SistemaListarPorUsuario.sql" />
-    <Content Include="Source\Assets\Sql\Sistema\SistemaListarProprio.sql" />
-    <Content Include="Source\Assets\Sql\Usuario\UsuarioListarPorMatricula.sql" />
-    <Content Include="Source\Assets\Sql\Usuario\UsuarioListarPorDepartamento.sql" />
-    <Content Include="Source\Assets\Sql\Usuario\UsuarioListar.sql" />
-    <Content Include="Source\Assets\Sql\Usuario\UsuarioListarPorSetor.sql" />
-    <Content Include="Source\Assets\Sql\Usuario\UsuarioTrocarSenha.sql" />
-    <Content Include="Source\Assets\Sql\Usuario\UsuarioVerificarAcesso.sql" />
+    <Content Include="Source\Assets\Sql\Sistema\sql_SistemaListar.sql" />
+    <Content Include="Source\Assets\Sql\Sistema\sql_SistemaListarPorUsuario.sql" />
+    <Content Include="Source\Assets\Sql\Sistema\sql_SistemaListarProprio.sql" />
+    <Content Include="Source\Assets\Sql\Usuario\sql_UsuarioClonarAcessos.sql" />
+    <Content Include="Source\Assets\Sql\Usuario\sql_UsuarioListarPorMatricula.sql" />
+    <Content Include="Source\Assets\Sql\Usuario\sql_UsuarioListarPorDepartamento.sql" />
+    <Content Include="Source\Assets\Sql\Usuario\sql_UsuarioListar.sql" />
+    <Content Include="Source\Assets\Sql\Usuario\sql_UsuarioListarPorSetor.sql" />
+    <Content Include="Source\Assets\Sql\Usuario\sql_UsuarioTrocarSenha.sql" />
+    <Content Include="Source\Assets\Sql\Usuario\sql_UsuarioVerificarAcesso.sql" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Plugins\" />

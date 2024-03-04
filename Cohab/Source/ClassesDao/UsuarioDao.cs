@@ -57,7 +57,7 @@ namespace App.Cohab
         #region " _Select "
         public async Task<List<Usuario>> Pesquisar(Usuario obj)
         {
-            var sql = Resources.UsuarioListar;
+            var sql = Resources.sql_UsuarioListar;
             var parameters = GetFilters(obj);
 
             return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
@@ -88,7 +88,7 @@ namespace App.Cohab
 
         public async Task<bool> VerificarAcesso(string login, string sistema)
         {
-            string sql = Resources.UsuarioVerificarAcesso;
+            string sql = Resources.sql_UsuarioVerificarAcesso;
 
             var parameters = new List<SqlParameter>
             {
@@ -99,51 +99,28 @@ namespace App.Cohab
             return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters)).Count >= 1;
         }
 
-        public static async Task<bool> ClonarAcessos(string loginOrigem, string loginDestino)
+        public async Task<bool> ClonarAcessos(string loginOrigem, string loginDestino)
         {
-            string lSQLRemove = " DELETE FROM [DB_COHAB].[dbo].[UsuarioSistema] " +
-                                " WHERE [UsuarioSistema_UsuarioLogin] = '" + loginDestino + "' ";
+            string sql = Resources.sql_UsuarioClonarAcessos;
+            var senhaPadrao = Funcoes.CriptografarSenha("senhasenha");
 
-            var lParams = new List<SqlParameter> { };
-            await BancoCOHAB.Executar(lSQLRemove, DatabaseAction.Delete, lParams);
+            var parameters = new List<SqlParameter>
+            {
+                new SqlParameter("@loginDestino", loginDestino),
+                new SqlParameter("@senhaPadrao", senhaPadrao),
+                new SqlParameter("@loginOrigem", loginOrigem)
+            };
 
-            string sql = " INSERT INTO [DB_COHAB].[dbo].[UsuarioSistema] " +
-             "  ([UsuarioSistema_Senha] " +
-               " ,[UsuarioSistema_Ativo] " +
-               " ,[UsuarioSistema_Validade] " +
-               " ,[UsuarioSistema_Free] " +
-               " ,[UsuarioSistema_UsuarioLogin] " +
-               " ,[UsuarioSistema_GrupoId] " +
-               " ,[UsuarioSistema_SistemaSigla] " +
-               " ,[UsuarioSistema_Micro] " +
-               " ,[UsuarioSistema_UsuarioRede] " +
-               " ,[UsuarioSistema_Data] " +
-               " ,[UsuarioSistema_Hora]) " +
-               " Select " +
-               "         '³Ã9zi³Ã9zi' " +
-               "      ,1 " +
-               " ,DATEADD(MONTH, 3, GETDATE()) " +
-               " ,5 " +
-               " ,'" + loginDestino + "' " +
-               " ,[UsuarioSistema_GrupoId] " +
-               " ,[UsuarioSistema_SistemaSigla] " +
-               " ,[UsuarioSistema_Micro] " +
-               " ,[UsuarioSistema_UsuarioRede] " +
-               " ,[UsuarioSistema_Data] " +
-               " ,[UsuarioSistema_Hora] " +
-           " FROM [DB_COHAB].[dbo].[UsuarioSistema] " +
-           " where [UsuarioSistema_UsuarioLogin] = '" + loginOrigem + "' ";
-
-            return (await BancoCOHAB.Executar(sql, DatabaseAction.Insert, lParams)).Success;
+            return (await BancoCOHAB.Executar(sql, DatabaseAction.Insert, parameters)).Success;
         }
 
         public async Task<bool> ResetarSenha(string login, string sistema)
         {
-            string sql = Resources.UsuarioTrocarSenha;
+            string sql = Resources.sql_UsuarioTrocarSenha;
             var senhaPadrao = Funcoes.CriptografarSenha("senhasenha");
             var validade = (await BancoCOHAB.DataServidor()).AddDays(30).ToShortDateString();
 
-            var lParams = new List<SqlParameter>
+            var parameters = new List<SqlParameter>
             {
                 new SqlParameter("@Login", login),
                 new SqlParameter("@Sistema", sistema),
@@ -151,12 +128,12 @@ namespace App.Cohab
                 new SqlParameter("@Validade", validade)
             };
 
-            return (await BancoCOHAB.Executar(sql, DatabaseAction.Update, lParams)).Success;
+            return (await BancoCOHAB.Executar(sql, DatabaseAction.Update, parameters)).Success;
         }
 
         public async Task<List<Usuario>> ListarPorSetor(string setor = null, bool ativos = true)
         {
-            string sql = Resources.UsuarioListarPorSetor;
+            string sql = Resources.sql_UsuarioListarPorSetor;
 
             var parameters = new List<SqlParameter>
             {
@@ -169,7 +146,7 @@ namespace App.Cohab
 
         public async Task<List<Usuario>> ListarPorDepartamento(string depto, bool exclusivo = false, bool ativos = false)
         {
-            string sql = Resources.UsuarioListarPorDepartamento;
+            string sql = Resources.sql_UsuarioListarPorDepartamento;
 
             var parameters = new List<SqlParameter>
             {
@@ -183,7 +160,7 @@ namespace App.Cohab
 
         public async Task<List<Usuario>> ListarPorMatricula(string matricula, string login = null)
         {
-            string sql = Resources.UsuarioListarPorMatricula;
+            string sql = Resources.sql_UsuarioListarPorMatricula;
 
             var parameters = new List<SqlParameter>
             {

@@ -5,7 +5,6 @@ namespace App.Core
 {
     public class SqlLog
     {
-        public int Line { get; set; }
         public DateTime Date { get; set; }
         public string Method { get; set; }
         public string Method2 { get; set; }
@@ -13,10 +12,11 @@ namespace App.Core
 
         public string CommandParameters { get; set; }
         public string Command { get; set; }
+        public int CommandIndex { get; set; }
 
         public SqlLog(int index, IDbCommand cmd, DatabaseAction act = DatabaseAction.Null, string method = "", string method2 = "")
         {
-            Line = index + 1;
+            CommandIndex = index + 1;
             Date = DateTime.Now;
             Method = method;
             Method2 = method2;
@@ -36,6 +36,11 @@ namespace App.Core
             //query = query.RemoveWhiteSpaces();
 
             Command = query;
+        }
+
+        public override string ToString()
+        {
+            return Command;
         }
     }
 }

@@ -62,6 +62,11 @@ namespace App.Cohab
             return await DAO.VerificarAcesso(login, sistema);
         }
 
+        public static async Task<bool> ClonarAcessos(string loginOrigem, string loginDestino)
+        {
+            return await DAO.ClonarAcessos(loginOrigem, loginDestino);
+        }
+
         public static async Task<bool> ResetarSenha(string login, string sistema)
         {
             return await DAO.ResetarSenha(login, sistema);
