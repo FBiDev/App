@@ -812,21 +812,21 @@ namespace App.Core.Desktop
 
         public void LoadBooleanImages()
         {
-            var BooleanColumns = GetBooleanColumns();
+            var booleanColumns = GetBooleanColumns();
 
-            if (BooleanColumns == null) { return; }
+            if (booleanColumns == null) { return; }
 
             var imgtruePerformatic = imgtrue.Clone32bpp();
             var imgfalsePerformatic = imgfalse.Clone32bpp();
 
             foreach (DataGridViewRow row in Rows)
             {
-                foreach (string BooleanColumn in BooleanColumns)
+                foreach (string boolColumn in booleanColumns)
                 {
-                    if (Columns.Contains(BooleanColumn) && Columns.Contains(BooleanColumn + boolColumnSufix))
+                    if (Columns.Contains(boolColumn) && Columns.Contains(boolColumn + boolColumnSufix))
                     {
-                        string cellValue = row.Cells[BooleanColumn].Value != null ? row.Cells[BooleanColumn].Value.ToString() : string.Empty;
-                        row.Cells[BooleanColumn + boolColumnSufix].Value = (cellValue == "True") ? imgtruePerformatic : imgfalsePerformatic;
+                        string cellValue = row.Cells[boolColumn].Value != null ? row.Cells[boolColumn].Value.ToString() : string.Empty;
+                        row.Cells[boolColumn + boolColumnSufix].Value = (cellValue == "True") ? imgtruePerformatic : imgfalsePerformatic;
                     }
                 }
             }
