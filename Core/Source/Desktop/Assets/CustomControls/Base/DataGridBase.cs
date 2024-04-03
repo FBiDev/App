@@ -140,7 +140,7 @@ namespace App.Core.Desktop
 
         string DefaultColumn = string.Empty;
         ListSortDirection DefaultColumnDirection;
-        List<string> ColumnsBooleanNames = new List<string>();
+        List<string> BooleanColumns = new List<string>();
 
         string LastSortedColumn;
 
@@ -310,12 +310,12 @@ namespace App.Core.Desktop
         //    SortDefaultColumn();
         //}
 
-        public void AddColumnInvisible<T>(string ColumnName, string ColumnHeaderText = "", string ColumnDataPropertyName = "")
+        public void AddColumnInvisible<T>(string name, string headerText = "", string propertyName = "")
         {
-            AddColumn<T>(ColumnName, ColumnHeaderText, ColumnDataPropertyName, "", DataGridViewContentAlignment.NotSet, null, false);
+            AddColumn<T>(name, headerText, propertyName, "", ColumnAlign.NotSet, null, false);
         }
 
-        public void AddColumn<T>(string ColumnName, string ColumnHeaderText = "", string ColumnDataPropertyName = "", string ColumnFormat = "", DataGridViewContentAlignment ColumnAlignment = 0, int? index = null, bool visible = true, int ColumnWidth = 100)
+        public void AddColumn<T>(string name, string headerText = "", string propertyName = "", string format = "", ColumnAlign align = 0, int? index = null, bool visible = true, int width = 100)
         {
             var c = new DataGridViewColumn();
 
@@ -326,26 +326,26 @@ namespace App.Core.Desktop
                 case "String":
                     c = new DataGridViewTextBoxColumn { CellTemplate = new DataGridViewTextBoxCell() };
                     //c.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
-                    if (ColumnWidth != 0) { c.Width = ColumnWidth; }
+                    if (width != 0) { c.Width = width; }
                     //c.AutoSizeMode = ColumnAutoSizeMode;
                     c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
-                    c.DefaultCellStyle.Alignment = ColumnAlignment == 0 ? DataGridViewContentAlignment.MiddleLeft : ColumnAlignment;
-                    c.DefaultCellStyle.Format = string.IsNullOrEmpty(ColumnFormat) ? "" : ColumnFormat;
+                    c.DefaultCellStyle.Alignment = align == 0 ? DataGridViewContentAlignment.MiddleLeft : (DataGridViewContentAlignment)align;
+                    c.DefaultCellStyle.Format = string.IsNullOrEmpty(format) ? "" : format;
                     break;
                 case "Int32":
                     c = new DataGridViewTextBoxColumn { CellTemplate = new DataGridViewTextBoxCell() };
                     //c.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
-                    if (ColumnWidth != 0) { c.Width = ColumnWidth; }
+                    if (width != 0) { c.Width = width; }
                     c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                    c.DefaultCellStyle.Alignment = ColumnAlignment == 0 ? DataGridViewContentAlignment.MiddleRight : ColumnAlignment;
-                    c.DefaultCellStyle.Format = string.IsNullOrEmpty(ColumnFormat) ? "" : ColumnFormat;
+                    c.DefaultCellStyle.Alignment = align == 0 ? DataGridViewContentAlignment.MiddleRight : (DataGridViewContentAlignment)align;
+                    c.DefaultCellStyle.Format = string.IsNullOrEmpty(format) ? "" : format;
                     c.DefaultCellStyle.NullValue = null;
                     break;
                 case "Single":
                     c = new DataGridViewTextBoxColumn { CellTemplate = new DataGridViewTextBoxCell() };
                     c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                    c.DefaultCellStyle.Format = string.IsNullOrEmpty(ColumnFormat) ? "N0" : ColumnFormat;
+                    c.DefaultCellStyle.Format = string.IsNullOrEmpty(format) ? "N0" : format;
                     c.DefaultCellStyle.NullValue = null;
                     break;
                 case "TimeSpan":
@@ -356,6 +356,7 @@ namespace App.Core.Desktop
                     c.DefaultCellStyle.NullValue = null;
                     break;
                 case "Boolean":
+                    AddBooleanColumn(name);
                     c = new DataGridViewCheckBoxColumn
                     {
                         CellTemplate = new DataGridViewCheckBoxCell(),
@@ -368,7 +369,7 @@ namespace App.Core.Desktop
                 case "DateTime":
                     c = new DataGridViewTextBoxColumn { CellTemplate = new DataGridViewTextBoxCell() };
                     //c.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
-                    if (ColumnWidth != 100) { c.Width = ColumnWidth; } else { c.Width = 110; }
+                    if (width != 100) { c.Width = width; } else { c.Width = 110; }
                     c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.Format = "d";
@@ -381,16 +382,16 @@ namespace App.Core.Desktop
                         AutoSizeMode = DataGridViewAutoSizeColumnMode.None,
                         Resizable = DataGridViewTriState.False
                     };
-                    if (ColumnWidth != 100) { c.Width = ColumnWidth; }
+                    if (width != 100) { c.Width = width; }
                     c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     break;
             }
 
             //c.ValueType = _Type;
-            c.Name = ColumnName;
-            c.HeaderText = string.IsNullOrEmpty(ColumnHeaderText) ? ColumnName : ColumnHeaderText;
-            c.DataPropertyName = string.IsNullOrEmpty(ColumnDataPropertyName) ? ColumnName : ColumnDataPropertyName;
+            c.Name = name;
+            c.HeaderText = string.IsNullOrEmpty(headerText) ? name : headerText;
+            c.DataPropertyName = string.IsNullOrEmpty(propertyName) ? name : propertyName;
 
             //AutoSizeMode All Cells in Bitmap have poor performance
             //c.AutoSizeMode = ColumnAutoSizeMode;
@@ -771,34 +772,39 @@ namespace App.Core.Desktop
         }
 
         readonly string boolColumnSufix = "Bol";
-        public void SetBooleanColumns(List<string> ColumnsBoolean)
+        public void SetBooleanColumns(List<string> boolColumns)
         {
-            ColumnsBooleanNames = ColumnsBoolean;
+            BooleanColumns = boolColumns;
 
-            foreach (string ColumnsBooleanName in ColumnsBooleanNames)
+            foreach (string columnName in BooleanColumns)
             {
                 //Disable old Column
-                if (Columns.Contains(ColumnsBooleanName))
+                if (Columns.Contains(columnName))
                 {
-                    string newColumn = ColumnsBooleanName + boolColumnSufix;
+                    string newColumnName = columnName + boolColumnSufix;
 
                     //Add Image Columns
-                    if (Columns.Contains(newColumn))
+                    if (Columns.Contains(newColumnName))
                     {
-                        int index = Columns[newColumn].Index;
+                        int index = Columns[newColumnName].Index;
                         Columns.RemoveAt(index);
                     }
 
-                    AddColumn<Bitmap>(newColumn, ColumnsBooleanName, "", "", DataGridViewContentAlignment.NotSet, Columns[ColumnsBooleanName].Index, true, 65);
+                    AddColumn<Bitmap>(newColumnName, columnName, "", "", ColumnAlign.NotSet, Columns[columnName].Index, true, 65);
 
-                    Columns[ColumnsBooleanName].Visible = false;
+                    Columns[columnName].Visible = false;
                 }
             }
         }
 
+        public void AddBooleanColumn(string columnName)
+        {
+            BooleanColumns.Add(columnName);
+        }
+
         public List<string> GetBooleanColumns()
         {
-            return ColumnsBooleanNames;
+            return BooleanColumns;
         }
 
         readonly Bitmap imgtrue = Resources.img_true_ico;

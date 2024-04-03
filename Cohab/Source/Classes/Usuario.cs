@@ -15,22 +15,22 @@ namespace App.Cohab
         [Display(AutoGenerateField = false)]
         public string Apelido { get; set; }
 
+        [Style(Align = ColumnAlign.Center)]
         public string Matricula { get; set; }
+
+        [Style(Align = ColumnAlign.Center)]
         public string Ramal { get; set; }
 
         [Display(AutoGenerateField = false)]
         public string Email { get; set; }
 
-        [Display(isBool = IsBool.Yes)]
         public bool Ativo { get; set; }
 
         [Display(AutoGenerateField = false)]
         public int TipoColaborador { get; set; }
 
-        [Display(isBool = IsBool.Yes)]
         public bool Chefia { get; set; }
 
-        [Display(isBool = IsBool.Yes)]
         public bool Visivel { get; set; }
 
         [Display(AutoGenerateField = false)]

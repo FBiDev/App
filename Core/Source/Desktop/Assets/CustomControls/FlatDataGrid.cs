@@ -103,7 +103,7 @@ namespace App.Core.Desktop
 
                         column.DefaultCellStyle.Format = display != null && display.Format != null ? display.Format : null;
 
-                        if (display != null && display.isBool == IsBool.Yes)
+                        if (p.PropertyType == typeof(bool) && (display == null || display != null && display.isBool != IsBool.No))
                             booleanColumns.Add(p.Name);
                     }
                 }

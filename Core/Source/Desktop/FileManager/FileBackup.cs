@@ -321,7 +321,7 @@ namespace App.Core.Desktop
             DestinationFile = Path.GetFileName(DestinationPath);
         }
 
-        public void LoadComboTypes(FlatComboBox cbo)
+        public void LoadTypes(FlatComboBox cbo)
         {
             var types = new ListBind<ListItem>
             {
@@ -353,7 +353,7 @@ namespace App.Core.Desktop
             }
         }
 
-        public void LoadComboTimer(FlatComboBox cbo)
+        public void LoadTimer(FlatComboBox cbo)
         {
             var timerItems = new List<ListItem> {
                 new ListItem(0,    "None"),

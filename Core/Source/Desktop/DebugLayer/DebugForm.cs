@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows.Forms;
 using App.Core.Properties;
 
@@ -47,19 +48,19 @@ namespace App.Core.Desktop
             Left = 0;
 
             dgvSQLSistema.AutoGenerateColumns = false;
-            dgvSQLSistema.AddColumn<int>("Line", "Linha", "", "", DataGridViewContentAlignment.MiddleCenter, null, true, 64);
-            dgvSQLSistema.AddColumn<DateTime>("Date", "Data", "", "", DataGridViewContentAlignment.MiddleCenter, null, true, 85);
+            dgvSQLSistema.AddColumn<int>("Line", "Linha", align: ColumnAlign.Center, width: 64);
+            dgvSQLSistema.AddColumn<DateTime>("Date", "Data", align: ColumnAlign.Center, width: 85);
             dgvSQLSistema.AddColumn<string>("Method", "Função");
-            dgvSQLSistema.AddColumn<string>("Action", "Ação", "", "", 0, null, true, 60);
+            dgvSQLSistema.AddColumn<string>("Action", "Ação", width: 60);
             dgvSQLSistema.AddColumn<string>("Command", "Comando");
             dgvSQLSistema.Columns["Command"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvSQLSistema.DataSource = DebugManager.LogSQLSistema;
 
             dgvSQLBase.AutoGenerateColumns = false;
-            dgvSQLBase.AddColumn<int>("Line", "Linha", "", "", DataGridViewContentAlignment.MiddleCenter, null, true, 64);
-            dgvSQLBase.AddColumn<DateTime>("Date", "Data", "", "", DataGridViewContentAlignment.MiddleCenter, null, true, 85);
+            dgvSQLBase.AddColumn<int>("Line", "Linha", align: ColumnAlign.Center, width: 64);
+            dgvSQLBase.AddColumn<DateTime>("Date", "Data", align: ColumnAlign.Center, width: 85);
             dgvSQLBase.AddColumn<string>("Method", "Função");
-            dgvSQLBase.AddColumn<string>("Action", "Ação", "", "", 0, null, true, 60);
+            dgvSQLBase.AddColumn<string>("Action", "Ação", width: 60);
             dgvSQLBase.AddColumn<string>("Command", "Comando");
             dgvSQLBase.Columns["Command"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvSQLBase.DataSource = DebugManager.LogSQLBase;

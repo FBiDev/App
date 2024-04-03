@@ -33,6 +33,7 @@
 
     public enum IsBool
     {
+        NotSet,
         No,
         Yes
     }
@@ -46,7 +47,7 @@
         public string Format { get; set; }
         public IsBool isBool { get; set; }
 
-        public DisplayAttribute(string name = null, IsBool isBoolValue = IsBool.No)
+        public DisplayAttribute(string name = null, IsBool isBoolValue = IsBool.NotSet)
         {
             Name = name;
             AutoGenerateField = true;

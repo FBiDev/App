@@ -85,6 +85,9 @@ namespace App.Core.Desktop
         [DefaultValue(false)]
         public bool Multiline { get { return TextBox.Multiline; } set { TextBox.Multiline = value; } }
 
+        [DefaultValue(32767)]
+        public int MaxLength { get { return TextBox.MaxLength; } set { TextBox.MaxLength = value; } }
+
         [DefaultValue(typeof(ScrollBars), "None")]
         public ScrollBars ScrollBars { get { return TextBox.ScrollBars; } set { TextBox.ScrollBars = value; } }
 
