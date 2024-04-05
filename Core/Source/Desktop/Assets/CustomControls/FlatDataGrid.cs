@@ -89,6 +89,9 @@ namespace App.Core.Desktop
 
                         column.DefaultCellStyle.Alignment = style != null && style.Align != ColumnAlign.NotSet ? (DataGridViewContentAlignment)style.Align : column.DefaultCellStyle.Alignment;
 
+                        if (style != null && !string.IsNullOrWhiteSpace(style.FontName))
+                            column.DefaultCellStyle.Font = new Font(style.FontName, 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+
                         //Display
                         column.ToolTipText = p.Description;
 

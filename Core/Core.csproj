@@ -54,6 +54,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Source\Any\Config\AppEnums.cs" />
+    <Compile Include="Source\Desktop\Assets\CustomControls\Base\FlatMaskedTextBoxBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Source\Desktop\Config\DB.cs" />
     <Compile Include="Source\Any\Config\ExceptionManager.cs" />
     <Compile Include="Source\Any\Config\ExceptionSQLite.cs" />

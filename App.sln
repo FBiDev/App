@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.WebView2", "Web.WebView
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cohab", "Cohab\Cohab.csproj", "{E22AEE97-C45A-4D09-AFED-EDD1608981CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.SQLite", "Data.SQLite\Data.SQLite.csproj", "{AB7F42A1-EC8D-4DBB-8675-F83D4EE830A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{E22AEE97-C45A-4D09-AFED-EDD1608981CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E22AEE97-C45A-4D09-AFED-EDD1608981CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E22AEE97-C45A-4D09-AFED-EDD1608981CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB7F42A1-EC8D-4DBB-8675-F83D4EE830A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB7F42A1-EC8D-4DBB-8675-F83D4EE830A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB7F42A1-EC8D-4DBB-8675-F83D4EE830A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB7F42A1-EC8D-4DBB-8675-F83D4EE830A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

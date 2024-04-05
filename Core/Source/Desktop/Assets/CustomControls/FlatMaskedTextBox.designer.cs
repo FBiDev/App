@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtMain = new System.Windows.Forms.MaskedTextBox();
+            this.txtMain = new FlatMaskedTextBoxBase();
             this.lblPlaceholder = new System.Windows.Forms.Label();
             this.pnlText = new System.Windows.Forms.Panel();
             this.btnAction = new App.Core.Desktop.FlatButton();
@@ -115,7 +115,7 @@
 
         #endregion
 
-        protected System.Windows.Forms.MaskedTextBox txtMain;
+        protected FlatMaskedTextBoxBase txtMain;
         protected System.Windows.Forms.Label lblPlaceholder;
         private System.Windows.Forms.Panel pnlText;
         private FlatButton btnAction;

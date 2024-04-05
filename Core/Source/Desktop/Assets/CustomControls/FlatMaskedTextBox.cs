@@ -45,7 +45,7 @@ namespace App.Core.Desktop
         public Color TextColorFocus { get { return _TextColorFocus; } set { _TextColorFocus = value; } }
 
         [Category("_Colors"), DefaultValue(typeof(string), "")]
-        public string DefaultText { get { return TextBox.Text; } set { TextBox.Text = value; } }
+        public string DefaultText { get { return txtMain.Text; } set { txtMain.Text = value; } }
 
         [Category("_Colors"), DefaultValue(typeof(string), "")]
         public string PlaceholderText { get { return lblPlaceholder.Text; } set { lblPlaceholder.Text = value; } }
@@ -55,21 +55,31 @@ namespace App.Core.Desktop
         public Color PlaceholderColor { get { return _PlaceholderColor; } set { _PlaceholderColor = value; } }
 
         [DefaultValue(false)]
-        public bool ReadOnly { get { return TextBox.ReadOnly; } set { TextBox.ReadOnly = value; } }
+        public bool ReadOnly { get { return txtMain.ReadOnly; } set { txtMain.ReadOnly = value; } }
 
         public new bool Enabled
         {
-            get { return TextBox.Enabled; }
+            get { return txtMain.Enabled; }
             set
             {
-                TextBox.Enabled = value;
+                txtMain.Enabled = value;
                 btnAction.Enabled = value;
                 TabStop = value;
                 ChangeCursor();
             }
         }
 
-        int MaxLength;
+        [DefaultValue(50)]
+        public int MaxLength
+        {
+            get { return txtMain.MxLength; }
+            set
+            {
+                txtMain.MxLength = value;
+                txtMain.SetMaxLength(value);
+            }
+        }
+
         TextMask _Mask_;
 
         public bool MaskCompleted { get { return txtMain.MaskCompleted; } }
@@ -86,11 +96,9 @@ namespace App.Core.Desktop
             {
                 _Mask_ = value;
 
-                TextBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+                txtMain.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
                 txtMain.Mask = "";
                 txtMain.PromptChar = '_';
-
-                MaxLength = 50;
 
                 switch (_Mask_)
                 {
@@ -135,21 +143,21 @@ namespace App.Core.Desktop
         }
         #endregion
 
-        MaskedTextBox TextBox { get { return txtMain; } }
-        public new string Text { get { return TextBox.Text; } set { TextBox.Text = value; } }
+        //MaskedTextBox TextBox { get { return txtMain; } }
+        public new string Text { get { return txtMain.Text; } set { txtMain.Text = value; } }
 
         [DefaultValue(0)]
         public int SelectionStart
         {
-            get { return TextBox.SelectionStart; }
-            set { TextBox.SelectionStart = value; }
+            get { return txtMain.SelectionStart; }
+            set { txtMain.SelectionStart = value; }
         }
 
         [DefaultValue(0)]
         public int SelectionLength
         {
-            get { return TextBox.SelectionLength; }
-            set { TextBox.SelectionLength = value; }
+            get { return txtMain.SelectionLength; }
+            set { txtMain.SelectionLength = value; }
         }
 
         public enum TextAlignTypes { Left, Right, Center }
@@ -187,7 +195,7 @@ namespace App.Core.Desktop
         {
             InitializeComponent();
 
-            TextBox.Culture = System.Globalization.CultureInfo.InvariantCulture;
+            txtMain.Culture = System.Globalization.CultureInfo.InvariantCulture;
 
             lblPlaceholder.MouseEnter += LblPlaceholder_MouseEnter;
 
@@ -195,12 +203,12 @@ namespace App.Core.Desktop
             lblSubtitle.Click += LblSubtitle_Click;
             lblPlaceholder.Click += LblPlaceholder_Click;
 
-            TextBox.KeyPress += TextBox_KeyPress;
-            TextBox.KeyDown += TextBox_KeyDown;
+            txtMain.KeyPress += TextBox_KeyPress;
+            txtMain.KeyDown += TextBox_KeyDown;
 
-            TextBox.GotFocus += TextBox_GotFocus;
-            TextBox.LostFocus += TextBox_LostFocus;
-            TextBox.TextChanged += TextBox_TextChanged;
+            txtMain.GotFocus += TextBox_GotFocus;
+            txtMain.LostFocus += TextBox_LostFocus;
+            txtMain.TextChanged += TextBox_TextChanged;
 
             btnAction.Click += btnAction_Click;
             btnAction.MouseEnter += btnAction_MouseEnter;
@@ -224,6 +232,7 @@ namespace App.Core.Desktop
             MaximumSize = new Size(1500, 34);
             MinimumSize = new Size(64, 34);
 
+            MaxLength = 50;
             DecimalPlaces = 2;
         }
 
@@ -246,8 +255,8 @@ namespace App.Core.Desktop
             lblSubtitle.BackColor = BackgroundColor;
             lblSubtitle.ForeColor = LabelTextColor;
 
-            TextBox.BackColor = BackgroundColor;
-            TextBox.ForeColor = TextColor;
+            txtMain.BackColor = BackgroundColor;
+            txtMain.ForeColor = TextColor;
 
             lblPlaceholder.BackColor = BackgroundColor;
             lblPlaceholder.ForeColor = PlaceholderColor;
@@ -328,16 +337,16 @@ namespace App.Core.Desktop
 
         protected void PnlBg_Click(object sender, EventArgs e)
         {
-            TextBox.Focus();
+            txtMain.Focus();
         }
 
         protected void LblSubtitle_Click(object sender, EventArgs e)
         {
-            TextBox.Focus();
+            txtMain.Focus();
         }
         protected void LblPlaceholder_Click(object sender, EventArgs e)
         {
-            TextBox.Focus();
+            txtMain.Focus();
         }
 
         void TextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -356,8 +365,8 @@ namespace App.Core.Desktop
             pnlContent.BackColor = BackgroundColorFocus;
             lblSubtitle.BackColor = BackgroundColorFocus;
 
-            TextBox.BackColor = BackgroundColorFocus;
-            TextBox.ForeColor = TextColorFocus;
+            txtMain.BackColor = BackgroundColorFocus;
+            txtMain.ForeColor = TextColorFocus;
 
             btnAction.ForeColor = BackgroundColorFocus;
 
@@ -371,8 +380,8 @@ namespace App.Core.Desktop
             pnlContent.BackColor = BackgroundColor;
             lblSubtitle.BackColor = BackgroundColor;
 
-            TextBox.BackColor = BackgroundColor;
-            TextBox.ForeColor = TextColor;
+            txtMain.BackColor = BackgroundColor;
+            txtMain.ForeColor = TextColor;
 
             btnAction.ForeColor = BackgroundColor;
 
@@ -382,7 +391,7 @@ namespace App.Core.Desktop
             {
                 lblPlaceholder.BackColor = Color.Transparent;
 
-                var isEmpty = !TextBox.Focused && (TextBox.Text.Length == 0);
+                var isEmpty = !txtMain.Focused && (txtMain.Text.Length == 0);
                 if (isEmpty)
                 {
                     lblPlaceholder.Text = LanguageManager.CurrencySymbol + " 000" + LanguageManager.CurrencyDecimalSeparator + "00";
@@ -442,7 +451,7 @@ namespace App.Core.Desktop
                 txtMain.SelectionStart = SelStart;
             }
 
-            var isEmpty = !TextBox.Focused && (TextBox.Text.Length == 0 || txt.Length == 0);
+            var isEmpty = !txtMain.Focused && (txtMain.Text.Length == 0 || txt.Length == 0);
             lblPlaceholder.Visible = isEmpty;
 
             if (Mask == TextMask.DINHEIRO)
@@ -464,6 +473,7 @@ namespace App.Core.Desktop
             }
 
             if (TextChanged.IsNull()) { return; }
+            if (Mask == TextMask.None && txtMain.TxtChanged == false) { return; }
             TextChanged(sender, e);
         }
     }

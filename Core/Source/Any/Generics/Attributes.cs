@@ -61,6 +61,7 @@
         public ColumnAutoSizeMode AutoSizeMode { get; set; }
         public ColumnAlign Align { get; set; }
         public ColumnFormat Format { get; set; }
+        public string FontName { get; set; }
         public int Width { get; set; }
 
         public StyleAttribute()
