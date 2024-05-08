@@ -81,6 +81,11 @@ namespace App.Core.Desktop
                 ColorSet.FlatCheckBox(control as FlatCheckBox);
                 ((FlatCheckBox)control).ResetColors();
             }
+            else if (control is FlatCheckedList)
+            {
+                ColorSet.FlatCheckedList(control as FlatCheckedList);
+                ((FlatCheckedList)control).ResetColors();
+            }
             else if (control is FlatTextBox)
             {
                 ColorSet.FlatTextBox(control as FlatTextBox);

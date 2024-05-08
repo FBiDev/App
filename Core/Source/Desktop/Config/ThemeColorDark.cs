@@ -55,6 +55,13 @@ namespace App.Core.Desktop
             c.BackgroundColor = Colors.RGB(30, 30, 30);
         }
 
+        public override void FlatCheckedList(FlatCheckedList c)
+        {
+            c.BorderColor = Colors.RGB(86, 86, 86);
+            c.BackgroundColor = Colors.RGB(30, 30, 30);
+            c.TextColor = Colors.RGB(210, 210, 210);
+        }
+
         public override void FlatTextBox(FlatTextBox c)
         {
             c.BackgroundColor = Colors.RGB(30, 30, 30);

@@ -57,6 +57,12 @@
     <Compile Include="Source\Desktop\Assets\CustomControls\Base\FlatMaskedTextBoxBase.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Source\Desktop\Assets\CustomControls\FlatCheckedList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Source\Desktop\Assets\CustomControls\FlatCheckedList.Designer.cs">
+      <DependentUpon>FlatCheckedList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Source\Desktop\Config\DB.cs" />
     <Compile Include="Source\Any\Config\ExceptionManager.cs" />
     <Compile Include="Source\Any\Config\ExceptionSQLite.cs" />
@@ -329,6 +335,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Source\Desktop\Assets\CustomControls\FlatCheckBox.resx">
       <DependentUpon>FlatCheckBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Source\Desktop\Assets\CustomControls\FlatCheckedList.resx">
+      <DependentUpon>FlatCheckedList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Source\Desktop\Assets\CustomControls\FlatComboBox.resx">
       <DependentUpon>FlatComboBox.cs</DependentUpon>

@@ -13,6 +13,7 @@ namespace App.Core.Desktop
         public virtual void FlatLabel(FlatLabel c) { }
         public virtual void FlatButton(FlatButton c) { }
         public virtual void FlatCheckBox(FlatCheckBox c) { }
+        public virtual void FlatCheckedList(FlatCheckedList c) { }
         public virtual void FlatTextBox(FlatTextBox c) { }
         public virtual void FlatMaskedTextBox(FlatMaskedTextBox c) { }
         public virtual void FlatComboBox(FlatComboBox c) { }

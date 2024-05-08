@@ -75,7 +75,7 @@
             this.picDrop.BackgroundImage = global::App.Core.Properties.Resources.img_drop_arrow;
             this.picDrop.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.picDrop.InitialImage = null;
-            this.picDrop.Location = new System.Drawing.Point(171, 1);
+            this.picDrop.Location = new System.Drawing.Point(172, 1);
             this.picDrop.Name = "picDrop";
             this.picDrop.Size = new System.Drawing.Size(32, 32);
             this.picDrop.TabIndex = 5;
