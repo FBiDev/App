@@ -23,7 +23,7 @@ namespace App.Core.Desktop
             set { base.AutoSizeMode = value; }
         }
 
-        [DefaultValue(typeof(Font), "Segoe UI, 9pt")]
+        [DefaultValue(typeof(Font), "Segoe UI, 9")]
         public new Font Font
         {
             get { return base.Font; }
@@ -141,6 +141,8 @@ namespace App.Core.Desktop
         {
             InitializeComponent();
             chkList.ItemCheck += chkList_ItemCheck;
+
+            Font = new Font("Segoe UI", 9);
         }
 
         void chkList_ItemCheck(object sender, ItemCheckEventArgs e)

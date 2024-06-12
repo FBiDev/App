@@ -21,13 +21,6 @@ namespace App.Core.Desktop
             get { return base.MinimumSize; }
             set { base.MinimumSize = value; }
         }
-
-        [DefaultValue(typeof(AnchorStyles), "Top, Left, Right")]
-        public new AnchorStyles Anchor
-        {
-            get { return base.Anchor; }
-            set { base.Anchor = value; }
-        }
         #endregion
 
         #region Properties

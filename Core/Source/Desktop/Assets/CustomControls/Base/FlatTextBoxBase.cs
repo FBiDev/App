@@ -8,15 +8,39 @@ namespace App.Core.Desktop
     public partial class FlatTextBoxBase : UserControl
     {
         #region Defaults
+        [DefaultValue(typeof(AnchorStyles), "Top, Left")]
+        public new AnchorStyles Anchor
+        {
+            get { return base.Anchor; }
+            set { base.Anchor = value; }
+        }
+
+        [DefaultValue(typeof(Font), "Segoe UI, 9")]
+        public new Font Font
+        {
+            get { return base.Font; }
+            set { base.Font = value; }
+        }
+
         [DefaultValue(typeof(Padding), "2, 2, 2, 2")]
         public new Padding Margin
         {
             get { return base.Margin; }
             set { base.Margin = value; }
         }
+
+        [DefaultValue(typeof(Padding), "1, 1, 1, 1")]
+        public new Padding Padding
+        {
+            get { return base.Padding; }
+            set { base.Padding = value; }
+        }
         #endregion
 
         #region Properties
+        [Category("_Colors"), DefaultValue(typeof(Color), "213, 223, 229")]
+        public override Color BackColor { get { return base.BackColor; } set { base.BackColor = value; } }
+
         protected Color _BorderColor = Color.FromArgb(213, 223, 229);
         [Category("_Colors"), DefaultValue(typeof(Color), "213, 223, 229")]
         public Color BorderColor { get { return _BorderColor; } set { _BorderColor = value; } }
@@ -44,6 +68,7 @@ namespace App.Core.Desktop
             pnlContent.MouseEnter += PnlBg_MouseEnter;
             lblSubtitle.MouseEnter += LblSubtitle_MouseEnter;
 
+            Font = new Font("Segoe UI", 9);
             Margin = new Padding(2);
         }
 
