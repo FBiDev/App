@@ -15,7 +15,7 @@ namespace App.Core.Desktop
             set { base.MaximumSize = value; }
         }
 
-        [DefaultValue(typeof(Size), "64, 34")]
+        [DefaultValue(typeof(Size), "58, 34")]
         public new Size MinimumSize
         {
             get { return base.MinimumSize; }
@@ -223,7 +223,7 @@ namespace App.Core.Desktop
             Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right);
             Size = new Size(206, 34);
             MaximumSize = new Size(1500, 34);
-            MinimumSize = new Size(64, 34);
+            MinimumSize = new Size(58, 34);
 
             MaxLength = 50;
             DecimalPlaces = 2;
