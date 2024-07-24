@@ -1,8 +1,9 @@
 ﻿using System;
+using App.Core.Desktop;
 
-namespace App.Core.Desktop
+namespace App.Json
 {
-    static class Json
+    public static class Json
     {
         public static T DeserializeObject<T>(string value) where T : class, new()
         {
