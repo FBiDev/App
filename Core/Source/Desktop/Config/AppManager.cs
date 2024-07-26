@@ -135,6 +135,14 @@ namespace App.Core.Desktop
             return Environment.MachineName;
         }
 
+        public static string GetGuid()
+        {
+            var assembly = Assembly.GetEntryAssembly();
+            var attribute = (GuidAttribute)assembly.GetCustomAttributes(typeof(GuidAttribute), true)[0];
+            var id = attribute.Value;
+            return id;
+        }
+
         public static void Exit()
         {
             if (Application.MessageLoop)
@@ -146,14 +154,15 @@ namespace App.Core.Desktop
         }
 
         #region Lock to 1 Execution only
-        public static void SingleProcess(bool locked, Mutex singleton, string systemName)
+        public static Mutex SingleProcess(bool locked, string systemName)
         {
-            if (!singleton.WaitOne(TimeSpan.Zero, true) && locked)
+            var mutex = new Mutex(false, "Global\\" + systemName + "-" + GetGuid());
+            if (!mutex.WaitOne(0, true) && locked)
             {
-                //there is already another instance running!
                 MessageBox.Show("O programa " + systemName + " já esta sendo executado", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 Exit();
             }
+            return mutex;
         }
         #endregion
 

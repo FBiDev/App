@@ -2,7 +2,7 @@
 
 namespace App.Json
 {
-    public static class JsonSettings
+    static class JsonSettings
     {
         public static JsonSerializerSettings Get()
         {

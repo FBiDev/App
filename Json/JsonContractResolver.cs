@@ -7,7 +7,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace App.Json
 {
-    public class JsonContractResolver : DefaultContractResolver
+    class JsonContractResolver : DefaultContractResolver
     {
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
