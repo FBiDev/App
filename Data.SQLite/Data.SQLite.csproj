@@ -53,7 +53,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SQLite.cs" />
+    <Compile Include="Source\SQLite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -62,12 +62,12 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Asset\Script\Postbuild.bat" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>:: Move to bin
-ROBOCOPY "$(TargetDir) " "$(SolutionDir)\Bin " *.dll *.pdb *.xml /XO
-ROBOCOPY "$(SolutionDir)Assembly\data " "$(SolutionDir)\Bin " SQLite.Interop.dll /XO
-if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
+    <PostBuildEvent>call "$(ProjectDir)Source\Asset\Script\Postbuild.bat"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

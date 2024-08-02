@@ -1,6 +1,6 @@
 ﻿using System;
 using App.Core;
-using Newtonsoft.Json;
+using App.Json;
 
 namespace App.Cohab
 {
@@ -26,7 +26,7 @@ namespace App.Cohab
         [JsonIgnore]
         public string Database_COHAB = "DB_COHAB";
 
-        [JsonConverter(typeof(BoolConverter))]
+        [JsonConverter(JsonType.Boolean)]
         public bool DatabaseDevMode
         {
             get { return Convert.ToBoolean(DatabaseMode); }

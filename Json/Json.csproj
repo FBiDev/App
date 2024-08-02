@@ -25,13 +25,14 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="App.Core">
@@ -49,20 +50,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoolConverter.cs" />
-    <Compile Include="Json.cs" />
-    <Compile Include="JsonAny.cs" />
-    <Compile Include="JsonContractResolver.cs" />
-    <Compile Include="JsonConverterAttribute.cs" />
-    <Compile Include="JsonIgnoreAttribute.cs" />
-    <Compile Include="JsonSettings.cs" />
+    <Compile Include="Source\BoolConverter.cs" />
+    <Compile Include="Source\Json.cs" />
+    <Compile Include="Source\JsonAny.cs" />
+    <Compile Include="Source\JsonContractResolver.cs" />
+    <Compile Include="Source\JsonConverterAttribute.cs" />
+    <Compile Include="Source\JsonIgnoreAttribute.cs" />
+    <Compile Include="Source\JsonSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Asset\Script\Postbuild.bat" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>:: Move to bin
-ROBOCOPY "$(TargetDir) " "$(SolutionDir)\Bin " *.dll *.pdb *.xml /XO
-if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
+    <PostBuildEvent>call "$(ProjectDir)Source\Asset\Script\Postbuild.bat"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
