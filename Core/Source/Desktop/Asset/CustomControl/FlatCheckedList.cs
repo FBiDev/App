@@ -30,7 +30,7 @@ namespace App.Core.Desktop
             set { base.Font = value; }
         }
 
-        [DefaultValue(typeof(Size), "64, 34")]
+        [DefaultValue(typeof(Size), "58, 34")]
         public new Size MinimumSize
         {
             get { return base.MinimumSize; }
@@ -143,6 +143,7 @@ namespace App.Core.Desktop
             chkList.ItemCheck += chkList_ItemCheck;
 
             Font = new Font("Segoe UI", 9);
+            MinimumSize = new Size(58, 34);
         }
 
         void chkList_ItemCheck(object sender, ItemCheckEventArgs e)
