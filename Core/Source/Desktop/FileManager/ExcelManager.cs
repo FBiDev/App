@@ -8,8 +8,14 @@ namespace App.Core.Desktop
 {
     public static class ExcelManager
     {
+        public enum Version
+        {
+            Jet_x86,
+            ACE_x86_x64
+        }
+
         [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-        public static DataTable Import(string ExcelTab, int IgnoreRowsCount = 0)
+        public static DataTable Import(string ExcelTab, int IgnoreRowsCount = 0, Version ver = Version.ACE_x86_x64)
         {
             var data = new DataTable();
 
@@ -18,15 +24,20 @@ namespace App.Core.Desktop
                 //{ Filter = "Excel WorkBook 97-2003|*.xls|Excel WorkBook|*.xlsx", ValidateNames = true }
                 using (OpenFileDialog ofd = new OpenFileDialog
                 {
-                    Filter = "Excel|*.xls;*.xlsx",
+                    Filter = ver == Version.Jet_x86 ? "Excel|*.xls" : "Excel|*.xls;*.xlsx",
                     ValidateNames = true
                 })
                 {
                     if (ofd.ShowDialog() == DialogResult.OK)
                     {
-                        string constr = "Provider=Microsoft.ACE.OLEDB.12.0;" +
-                                        "Data Source=" + ofd.FileName + ";" +
-                                        "Extended Properties='Excel 12.0 XML;HDR=YES;';";
+                        string constr = ver == Version.Jet_x86 ?
+                            "Provider=Microsoft.Jet.OLEDB.4.0;" +
+                            "Data Source=" + ofd.FileName + ";" +
+                            "Extended Properties='Excel 8.0;HDR=YES;';"
+                            :
+                            "Provider=Microsoft.ACE.OLEDB.12.0;" +
+                            "Data Source=" + ofd.FileName + ";" +
+                            "Extended Properties='Excel 12.0 XML;HDR=YES;';";
 
                         var con = new OleDbConnection(constr);
 
