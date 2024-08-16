@@ -100,6 +100,11 @@ namespace App.Core
             return false;
         }
 
+        public static bool IsIn(this string source, params string[] values)
+        {
+            return values.Any(x => x.Equals(source, StringComparison.OrdinalIgnoreCase));
+        }
+
         public static bool ContainsExtend(this string source, string value)
         {
             string[] IgnoreSymbols = { ", The:", ",", ":", "'", "-", ".", "+", "/", " " };

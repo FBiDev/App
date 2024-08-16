@@ -40,5 +40,14 @@ namespace App.Core
         {
             return ToNumber(Cast.ToDecimal(value.ToString()), 2, customLanguage);
         }
+
+        public static bool Contains(this int source, params int[] values)
+        {
+            foreach (var item in values)
+            {
+                if (source == item) return true;
+            }
+            return false;
+        }
     }
 }

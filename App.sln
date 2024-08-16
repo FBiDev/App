@@ -29,6 +29,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Json", "Json\Json.csproj", 
 		{9FEA3EBE-E414-4263-AAC4-452A32B2A75C} = {9FEA3EBE-E414-4263-AAC4-452A32B2A75C}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data.Report", "Data.Report\Data.Report.csproj", "{C9F5DAB0-987B-4722-BA3F-C05301D46280}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9FEA3EBE-E414-4263-AAC4-452A32B2A75C} = {9FEA3EBE-E414-4263-AAC4-452A32B2A75C}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "File.Excel", "File.Excel\File.Excel.csproj", "{D5B1A6AC-D1F5-4BCA-8F1C-497694168397}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9FEA3EBE-E414-4263-AAC4-452A32B2A75C} = {9FEA3EBE-E414-4263-AAC4-452A32B2A75C}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +69,14 @@ Global
 		{E44598BE-0969-4825-A9A1-A0B766A87547}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E44598BE-0969-4825-A9A1-A0B766A87547}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E44598BE-0969-4825-A9A1-A0B766A87547}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9F5DAB0-987B-4722-BA3F-C05301D46280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9F5DAB0-987B-4722-BA3F-C05301D46280}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9F5DAB0-987B-4722-BA3F-C05301D46280}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9F5DAB0-987B-4722-BA3F-C05301D46280}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5B1A6AC-D1F5-4BCA-8F1C-497694168397}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5B1A6AC-D1F5-4BCA-8F1C-497694168397}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5B1A6AC-D1F5-4BCA-8F1C-497694168397}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5B1A6AC-D1F5-4BCA-8F1C-497694168397}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

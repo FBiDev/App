@@ -50,13 +50,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\BoolConverter.cs" />
-    <Compile Include="Source\Json.cs" />
-    <Compile Include="Source\JsonAny.cs" />
-    <Compile Include="Source\JsonContractResolver.cs" />
-    <Compile Include="Source\JsonConverterAttribute.cs" />
-    <Compile Include="Source\JsonIgnoreAttribute.cs" />
-    <Compile Include="Source\JsonSettings.cs" />
+    <Compile Include="Source\Model\BoolConverter.cs" />
+    <Compile Include="Source\Model\Json.cs" />
+    <Compile Include="Source\Model\JsonAny.cs" />
+    <Compile Include="Source\Model\JsonContractResolver.cs" />
+    <Compile Include="Source\Model\JsonConverterAttribute.cs" />
+    <Compile Include="Source\Model\JsonIgnoreAttribute.cs" />
+    <Compile Include="Source\Model\JsonSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
