@@ -291,7 +291,6 @@
     <Compile Include="Source\Desktop\Extension\TaskExtension.cs" />
     <Compile Include="Source\Desktop\FileManager\Archive.cs" />
     <Compile Include="Source\Desktop\FileManager\CMD.cs" />
-    <Compile Include="Source\Desktop\FileManager\ExcelManager.cs" />
     <Compile Include="Source\Desktop\FileManager\FileBackup.cs" />
     <Compile Include="Source\Desktop\FileManager\FolderPicker.cs" />
     <Compile Include="Source\Desktop\FileManager\Picture.cs" />

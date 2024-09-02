@@ -1,0 +1,927 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ExcelToEnumerable</name>
+    </assembly>
+    <members>
+        <member name="T:ExcelToEnumerable.Attributes.AggregateExceptionsAttribute">
+            <summary>
+            Tells the mapper to read the entire spreadsheet before raising any validation exceptions as an <c>AggregateException</c>
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.AllColumnsMustBeMappedToPropertiesAttribute">
+            <summary>
+            Throws a <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableInvalidHeaderException"/> if a column exists on the spreadsheet that does not have a corresponding property in the mapped class.
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.AllColumnsMustBeMappedToPropertiesAttribute.#ctor(System.Boolean)">
+            <summary>
+            Pass <c>true</c> (default) to throw an exception or false to ignore unmapped columns.
+            </summary>
+            <param name="b"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.AllPropertiesMustBeMappedToColumnsAttribute">
+            <summary>
+            Throws a <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableInvalidHeaderException"/> if a property exists on the mapped class that does not have a corresponding column in the spreadsheet.
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.AllPropertiesMustBeMappedToColumnsAttribute.#ctor(System.Boolean)">
+            <summary>
+            Pass <c>true</c> to throw an exception or <c>false</c> to ignore unmapped properties.
+            </summary>
+            <param name="b"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.BlankRowBehaviourAttribute">
+            <summary>
+            Defines how the mapper should behave when encountering a blank row
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.BlankRowBehaviourAttribute.#ctor(ExcelToEnumerable.BlankRowBehaviour)">
+            <summary>
+            The mapper will behave in the way specified by the specified <see cref="T:ExcelToEnumerable.BlankRowBehaviour"/>
+            </summary>
+            <param name="blankRowBehaviour"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.EndingWithRowAttribute">
+            <summary>
+            Tells the mapper to stop reading data at the specified 1-based row number. If negative, the mapper will read until the
+            specified number of rows from the bottom of the spreadsheet.
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.EndingWithRowAttribute.#ctor(System.Int32)">
+            <summary>
+            Tells the mapper to stop reading data at the specified 1-based row number
+            </summary>
+            <param name="i"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.HeaderOnRowAttribute">
+            <summary>
+            Tells the mapper to reader the header names at the specified 1-based row
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.HeaderOnRowAttribute.#ctor(System.Int32)">
+            <summary>
+            Tells the mapper to reader the header names at the specified 1-based row
+            </summary>
+            <param name="i"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.IgnoreColumnAttribute">
+            <summary>
+            Prevents the mapper form mapping this property, even if a corresponding column is present in the worksheet
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.MapFromColumnsAttribute">
+            <summary>
+            Use with <c>IEnumerable</c> properties. Maps enumerable property to specific columns.
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.MapFromColumnsAttribute.#ctor(System.String[])">
+            <summary>
+            Maps the <c>IEnumerable</c> to the given columns
+            </summary>
+            <param name="columns"></param>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.MapsToColumnLetterAttribute">
+            <summary>
+            Maps from a column at the specific letter index, (i.e. "A", "C", "AA", etc)
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.MapsToColumnLetterAttribute.#ctor(System.String)">
+            <summary>
+            Pass the 1-based column number you want to map from.
+            </summary>
+            <param name="i"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.MapsToColumnNamedAttribute">
+            <summary>
+            Maps from the column with the specified header name
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.MapsToColumnNamedAttribute.#ctor(System.String)">
+            <summary>
+            Maps from the column with the specified header name
+            </summary>
+            <param name="columnName"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.MapsToColumnNumberAttribute">
+            <summary>
+            Maps from a column at the specified numeric index.
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.MapsToColumnNumberAttribute.#ctor(System.Int32)">
+            <summary>
+            Pass the 1-based column number you want to map from.
+            </summary>
+            <param name="i"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.MapsToRowNumberAttribute">
+            <summary>
+            Tells the mapper to map this property to the number of the current row, rather than a column.
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.NotNullAttribute">
+            <summary>
+            Throws a validation exception if the cell value is null.
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.OptionalColumnAttribute">
+            <summary>
+            Marks the property as optional. Use when <see cref="T:ExcelToEnumerable.Attributes.AllPropertiesMustBeMappedToColumnsAttribute"/> has been applied to
+            this property's class.
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.RequiredColumnAttribute">
+            <summary>
+            Will throw an <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableInvalidHeaderException"/> if the property does not have a corresponding column in the spreadsheet
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.ShouldBeLessThanAttribute">
+            <summary>
+            Throws an <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableCellException"/> if the cell value is equal to or greater than the specified value
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.ShouldBeLessThanAttribute.#ctor(System.Double)">
+            <summary>
+            Throws an <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableCellException"/> if the cell value is equal to or greater than the specified value
+            </summary>
+            <param name="i"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.ShouldBeGreaterThanAttribute">
+            <summary>
+            Throws an <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableCellException"/> if the cell value is equal to or less than the specified value
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.ShouldBeGreaterThanAttribute.#ctor(System.Double)">
+            <summary>
+            Throws an <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableCellException"/> if the cell value is equal to or less than the specified value
+            </summary>
+            <param name="i"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.ShouldBeOneOfAttribute">
+            <summary>
+            Throws an exception if the mapped value is not one of the specified values.
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.ShouldBeOneOfAttribute.#ctor(System.Object[])">
+            <summary>
+            Throws an exception if the mapped value is not one of the specified values.
+            </summary>
+            <param name="strings"></param>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.StartingFromRowAttribute">
+            <summary>
+            Tells the mapper to starting reading data from the specified 1-based row number
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.StartingFromRowAttribute.#ctor(System.Int32)">
+            <summary>
+            Tells the mapper to starting reading data from the specified 1-based row number
+            </summary>
+            <param name="i"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.UniqueAttribute">
+            <summary>
+            Will throw an <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableSheetException"/> if the property is duplicated within the spreadsheet
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.UsingHeaderNamesAttribute">
+            <summary>
+            Maps properties by header name if true. Maps by column number if false
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.UsingHeaderNamesAttribute.#ctor(System.Boolean)">
+            <summary>
+            Pass <c>true</c> (default) to throw map by header name or false to map by column number.
+            </summary>
+            <param name="b"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.RelaxedNumberMatchingAttribute">
+            <summary>
+            Using this attribute causes cells that are strings, but that contain numeric values, to map to numeric properties. For example,
+            a string containing the "1,512kg" would map to an integer property with a value of 1512.
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.RelaxedNumberMatchingAttribute.#ctor(System.Boolean)">
+            <summary>
+            Pass <c>true</c> (default) to enable relaxed number matching or false to disable.
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Attributes.UsingSheetAttribute">
+            <summary>
+            Maps the class to a spreadsheet in the workbook with the specific name.
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.UsingSheetAttribute.#ctor(System.String)">
+            <summary>
+            Maps the class to the spreadsheet with the given name
+            </summary>
+            <param name="column"></param>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:ExcelToEnumerable.Attributes.UsingSheetAttribute.#ctor(System.Int32)">
+            <summary>
+            Maps the class to the spreadsheet at the given zero-based index
+            </summary>
+            <param name="column"></param>
+        </member>
+        <member name="T:ExcelToEnumerable.BlankRowBehaviour">
+            <summary>
+                Enum. Defines what ExcelToEnumerable should do when it encounters a blank row in the spreadsheet. Defaults to <c>ExcelToEnumerable.ThrowException</c>
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = spreadsheetStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+              .BlankRowBehaviour(BlankRowBehaviour.ThrowException)
+            );
+            </code>
+            </example>
+        </member>
+        <member name="F:ExcelToEnumerable.BlankRowBehaviour.Ignore">
+            <summary>
+                Ignores the blank row but continues reading the spreadsheet
+            </summary>
+        </member>
+        <member name="F:ExcelToEnumerable.BlankRowBehaviour.ThrowException">
+            <summary>
+                Stops reading the spreadsheet and throws an <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableRowException"/>
+            </summary>
+        </member>
+        <member name="F:ExcelToEnumerable.BlankRowBehaviour.StopReading">
+            <summary>
+                Stops reading the spreadsheet, ignoring any rows after the blank row
+            </summary>
+        </member>
+        <member name="F:ExcelToEnumerable.BlankRowBehaviour.CreateEntity">
+            <summary>
+                Creates an instance of the mapped type with the default constructor and continues reading the spreadsheet
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.ExceptionHandlingBehaviour">
+            <summary>
+            Enum. Determines how the mapper should respond to validation exceptions when reading the spreadsheet. Defaults to <c>ThrowOnFirstException</c>
+            Not set directly, but via the fluent configuration-builder argument in one of the ExcelToEnumerable <see cref="T:ExcelToEnumerable.ExtensionMethods"/>
+            </summary>
+        </member>
+        <member name="F:ExcelToEnumerable.ExceptionHandlingBehaviour.ThrowOnFirstException">
+            <summary>
+            Will throw an exception and stop reading the spreadsheet as soon as the first exception is encountered.
+            </summary>
+        </member>
+        <member name="F:ExcelToEnumerable.ExceptionHandlingBehaviour.AggregateExceptions">
+            <summary>
+            Will read the entire spreadsheet then throw an AggregateException if any exceptions are encountered.
+            </summary>
+        </member>
+        <member name="F:ExcelToEnumerable.ExceptionHandlingBehaviour.LogExceptions">
+            <summary>
+            Will add exceptions to the IExcelToEnumerableOption ExceptionList property.
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableCellException">
+            <summary>
+            Thrown when the mapper fails to map a cell value to a property.
+            </summary>
+        </member>
+        <member name="P:ExcelToEnumerable.Exceptions.ExcelToEnumerableCellException.Column">
+            <summary>
+            The column letter of the cell that caused the exception.
+            </summary>
+        </member>
+        <member name="P:ExcelToEnumerable.Exceptions.ExcelToEnumerableCellException.PropertyName">
+            <summary>
+            The name of the property the mapper attempted to map to.
+            </summary>
+        </member>
+        <member name="P:ExcelToEnumerable.Exceptions.ExcelToEnumerableCellException.CellValue">
+            <summary>
+            The value of the cell that was being mapped
+            </summary>
+        </member>
+        <member name="P:ExcelToEnumerable.Exceptions.ExcelToEnumerableCellException.ExcelToEnumerableValidationCode">
+            <summary>
+            An optional <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableValidationCode"/> enum identifying the validation rule that failed.
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableConfigException">
+            <summary>
+            Thrown when an invalid configuration is encountered by the mapper.
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableException">
+            <summary>
+            Abstract base class from which all ExcelToEnumerable exceptions derive.
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableInvalidHeaderException">
+            <summary>
+            Thrown when the properties are not correctly mapped to headers. By default, ExcelToEnumerable expects all
+            properties to have one or more corresponding headers. To ignore a property, use:
+            <c>
+            optionsBuilder.Property(y => y.IgnoreThisProperty).IgnoreColumn()
+            </c>
+            To ignore columns without matching properties use:
+            <c>
+            optionsBuilder.AllColumnsMustBeMappedToProperties()
+            </c>
+            </summary>
+        </member>
+        <member name="P:ExcelToEnumerable.Exceptions.ExcelToEnumerableInvalidHeaderException.MissingHeaders">
+            <summary>
+            Column headers that were expected to be present in the worksheet, but were not.
+            </summary>
+        </member>
+        <member name="P:ExcelToEnumerable.Exceptions.ExcelToEnumerableInvalidHeaderException.MissingProperties">
+            <summary>
+            Properties that were expected to exist on the mapped class, but were not
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableRowException">
+            <summary>
+            Thrown when the mapper encounters an issue with an entire row of a spreadsheet. Exceptions relating to a specific cell
+            throw an <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableCellException"/>, which inherits from this exception.
+            </summary>
+        </member>
+        <member name="P:ExcelToEnumerable.Exceptions.ExcelToEnumerableRowException.Row">
+            <summary>
+            The number of the spreadsheet row relating to the exception
+            </summary>
+        </member>
+        <member name="P:ExcelToEnumerable.Exceptions.ExcelToEnumerableRowException.RowValues">
+            <summary>
+            A column letter -> column value dictionary representing the values in spreadsheet row
+            </summary>
+        </member>
+        <member name="P:ExcelToEnumerable.Exceptions.ExcelToEnumerableRowException.MappedObject">
+            <summary>
+            The object that the mapper is attempting to map values to.
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableSheetException">
+            <summary>
+            Thrown went data relating to an entire sheet is invalid, for example if duplicate values appear for a unique property.
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableValidationCode">
+            <summary>
+            Enum. Enumerates reasons why a cell my fail validation. This is not a exhaustive list since a property can have custom validations.
+            </summary>
+        </member>
+        <member name="F:ExcelToEnumerable.Exceptions.ExcelToEnumerableValidationCode.Required">
+            <summary>
+            The property value cannot be null.
+            </summary>
+        </member>
+        <member name="F:ExcelToEnumerable.Exceptions.ExcelToEnumerableValidationCode.OneOf">
+            <summary>
+            The property value needs to be one of a discrete list of values.
+            </summary>
+        </member>
+        <member name="F:ExcelToEnumerable.Exceptions.ExcelToEnumerableValidationCode.LessThan">
+            <summary>
+            The property value must be less than a specified number.
+            </summary>
+        </member>
+        <member name="F:ExcelToEnumerable.Exceptions.ExcelToEnumerableValidationCode.GreaterThan">
+            <summary>
+            The property value must be greater than a specified number.
+            </summary>
+        </member>
+        <member name="T:ExcelToEnumerable.ExtensionMethods">
+            <summary>
+            Extension methods to map an Excel worksheet to an enumerable of type T
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.ExtensionMethods.ExcelToEnumerable``1(System.String,System.Action{ExcelToEnumerable.IExcelToEnumerableOptionsBuilder{``0}})">
+            <summary>
+            Maps the spreadsheet at the given filepath to an enumerable of type T, using an optional fluent options expression
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = "C://path/to/spreadsheet".ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .UsingSheet("My Spreadsheet")
+            );
+            </code>
+            </example>
+            <param name="excelFilePath">Path to an Excel spreadsheet</param>
+            <param name="options">a fluent <see cref="T:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1"/> expression</param>
+            <typeparam name="T"></typeparam>
+            <returns>An <c>IEnumerable</c> of type <c>T</c></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.ExtensionMethods.ExcelToEnumerable``1(System.String,ExcelToEnumerable.IExcelToEnumerableOptionsBuilder{``0})">
+            <summary>
+            Maps the spreadsheet at the given path to an enumerable of type T using an options builder
+            </summary>
+            <example>
+            <code>
+            var optionsBuilder = new ExcelToEnumerableOptionsBuilder&lt;TestClass&gt;();
+            optionsBuilder.AggregateExceptions();
+            IEnumerable&lt;MyClass&gt; results = "C://path/to/spreadsheet".ExcelToEnumerable&lt;MyClass&gt;(optionsBuilder);
+            </code>
+            </example>
+            <param name="excelFilePath"></param>
+            <param name="options"></param>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.ExtensionMethods.ExcelToEnumerable``1(System.IO.Stream,System.Action{ExcelToEnumerable.IExcelToEnumerableOptionsBuilder{``0}})">
+            <summary>
+            Maps the worksheet Stream to an enumerable of type T, using an optional fluent options expression
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .UsingSheet("My Spreadsheet")
+            );
+            </code>
+            </example>
+            <param name="excelStream"></param>
+            <param name="options"></param>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.ExtensionMethods.ExcelToEnumerable``1(System.IO.Stream,ExcelToEnumerable.IExcelToEnumerableOptionsBuilder{``0})">
+            <summary>
+            Maps the worksheet Stream to an enumerable of type T using options in the options builder
+            </summary>
+            <example>
+            <code>
+            var optionsBuilder = new ExcelToEnumerableOptionsBuilder&lt;TestClass&gt;();
+            optionsBuilder.AggregateExceptions();
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(optionsBuilder);
+            </code>
+            </example>
+            <param name="excelStream"></param>
+            <param name="options"></param>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:ExcelToEnumerable.IExcelPropertyConfiguration`2">
+            <summary>
+            Configures how the mapper should map a specific property.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TProperty"></typeparam>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.ShouldBeGreaterThan(System.Double)">
+            <summary>
+            Will throw an exception if the cell value equal to or less than the supplied value.
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).ShouldBeGreaterThan(0)
+            );
+            </code>
+            </example>
+            <param name="minValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.ShouldBeLessThan(System.Double)">
+            <summary>
+            Will throw an exception if the cell value is equal to or more than the supplied value.
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).ShouldBeLessThan(10)
+            );
+            </code>
+            </example>
+            <param name="maxValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.ShouldBeUnique">
+            <summary>
+            Will throw an exception if more than one instance of the value appears in the mapped column.
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).ShouldBeUnique()
+            );
+            </code>
+            </example>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.NotNull">
+            <summary>
+            Throws an exception if the cell value is null.
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).NotNull()
+            );
+            </code>
+            </example>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.ShouldBeOneOf(System.Collections.Generic.IEnumerable{`1})">
+            <summary>
+            Throws an exception if the cell value is not contained in the given list.
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).ShouldBeOneOf(new []{"A", "B", "C"})
+            );
+            </code>
+            </example>
+            <param name="minValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.ShouldBeOneOf(`1[])">
+            <summary>
+            Throws an exception if the cell value is not contained in the given list.
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).ShouldBeOneOf("A", "B", "C", "D")
+            );
+            </code>
+            </example>
+            <param name="permissableValues"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.MapFromColumns(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Maps an IEnumerable property to a set of one or more columns.
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyList).MapFromColumns(new []{"Column1", "Column2", "Column3"})
+            );
+            </code>
+            </example>
+            <param name="columnNames"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.MapFromColumns(System.String[])">
+            <summary>
+            Maps an IEnumerable property to a set of one or more columns.
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyList).MapFromColumns("Column1", "Column2", "Column3")
+            );
+            </code>
+            </example>
+            <param name="columnNames"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.UsesCustomMapping(System.Func{System.Object,System.Object})">
+            <summary>
+            Maps the cell value using a the custom mapping function. The mapping function accepts an object as an argument
+            and returns an object which should be castable to the mapped property.
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyBoolean).UsesCustomMapping(m => m?.ToString() == "yes" ? true : false)
+            );
+            </code>
+            </example>
+            <param name="mapping"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.MapsToColumnNamed(System.String)">
+            <summary>
+            Maps from a column with the specified name.
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).MapsToColumnNamed("My Property");
+            );
+            </code>
+            </example>
+            <param name="columnName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.IgnoreColumn">
+            <summary>
+            Does not attempt to map property.
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).IgnoreColumn();
+            );
+            </code>
+            </example>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.MapsToRowNumber">
+            <summary>
+            Rather than mapping from a column of the spreadsheet, this property will map to the row number of the spreadsheet.
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.RowNumberProperty).MapsToRowNumber()
+            );
+            </code>
+            </example>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.MapsToColumnNumber(System.Int32)">
+            <summary>
+            Maps from a column at the specified index
+            </summary>
+            <param name="i"></param>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).MapsToColumnNumber(5)
+            );
+            </code>
+            </example>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.MapsToColumnLetter(System.String)">
+            <summary>
+            Maps from a column with the specified letter, e.g. A, M, AB, ZZA, etc.
+            </summary>
+            <param name="columnLetter">
+                e.g. A, M, AB, ZZA, etc.
+            </param>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).MapsToColumnLetter("E")
+            );
+            </code>
+            </example>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.OptionalColumn(System.Boolean)">
+            <summary>
+            The property will be mapped if the column exists, otherwise it will be initialised with its default value.
+            </summary>
+            <param name="isOptional"></param>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).OptionalColumn()
+                .Property(y => y.MySecondProperty).OptionalColumn(true)
+                .Property(y => y.MyThirdProperty).OptionalColumn(false)
+            );
+            </code>
+            </example>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.UsesCustomValidator(System.Func{System.Object,System.Boolean},System.String)">
+            <summary>
+            Maps using the default mapper but first validates using the ExcelCellValidator argument
+            </summary>
+            <example>
+            <code>
+            var result = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).UsesCustomValidator(o => o != null &amp;&amp; (o.ToString() == "Y" || o.ToString() == "N"))
+            );
+            </code>
+            </example>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelPropertyConfiguration`2.RequiredColumn(System.Boolean)">
+            <summary>
+            Will throw an <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableInvalidHeaderException"/> if the property does not have a corresponding column in the spreadsheet.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1">
+            <summary>
+            Fluently creates an ExcelToEnumerableOptions object. This interface is normally accessed via the ExcelToEnumerable <see cref="T:ExcelToEnumerable.ExtensionMethods"/>
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.StartingFromRow(System.Int32)">
+            <summary>
+            Specifies the 1-based row to start reading data from. Defaults to 1.
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .StartRow(5)
+            );
+            </code>
+            </example>
+            <param name="startRow"></param>
+            <returns>
+            The builder
+            </returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.UsingHeaderNames(System.Boolean)">
+            <summary>
+            Defines whether ExcelToEnumerable maps using column header names (true) or column numbers (false). Defaults to true.
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .UsingHeaderNames(false)
+            );
+            </code>
+            </example>
+            <param name="usingHeaderNames"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.BlankRowBehaviour(ExcelToEnumerable.BlankRowBehaviour)">
+            <summary>
+            Tells the mapper what to do if it encounters a blank spreadsheet row.
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .BlankRowBehaviour(BlankRowBehaviour.StopReading)
+            );
+            </code>
+            </example>
+            <param name="blankRowBehaviour"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.AggregateExceptions">
+            <summary>
+            Tells the mapper to aggregate validation exceptions and throw an AggregateException after the whole spreadsheet
+            has been read.
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .AggregateExceptions()
+            );
+            </code>
+            </example>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.OutputExceptionsTo(System.Collections.Generic.IList{System.Exception})">
+            <summary>
+            Instead of throwing validation exceptions, the mapper adds them to the passed IList.
+            </summary>
+            <example>
+            <code>
+            var myExceptionList = new List&lt;Exception>();
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .OutputExceptionsTo(myExceptionList)
+            );
+            </code>
+            </example>
+            <param name="list"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.UsingSheet(System.Int32)">
+            <summary>
+            The zero-indexed spreadsheet number to read from.
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .UsingSheet(3)
+            );
+            </code>
+            </example>
+            <param name="i"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.UsingSheet(System.String)">
+            <summary>
+            The name of the spreadsheet to read from.
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .UsingSheet("My Spreadsheet")
+            );
+            </code>
+            </example>
+            <param name="sheetName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.Property``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Specifies a mapping option for a specific property. See <see cref="T:ExcelToEnumerable.IExcelPropertyConfiguration`2"/> for options.
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .Property(y => y.MyProperty).ShouldBeUnique()
+                .Property(y => y.AnotherProperty).MapsToColumnNamed("Column Name")
+            );
+            </code>
+            </example>
+            <param name="propertyExpression"></param>
+            <typeparam name="TProperty"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.EndingWithRow(System.Int32)">
+            <summary>
+            The highest row number to read up to. 1-based. If negative, the mapper will read the until specified number of rows from the bottom.
+            If not set then the mapper will read to the end of the sheet.
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .EndingWithRow(200)
+            );
+            </code>
+            </example>
+            <param name="maxRow"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.HeaderOnRow(System.Int32)">
+            <summary>
+            Sets the row number to read the header from.
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .HeaderOnRow(3)
+            );
+            </code>
+            </example>
+            <param name="rowNumber"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.OnReadingHeaderRow(System.Action{System.Collections.Generic.IDictionary{System.Int32,System.String}})">
+            <summary>
+            A hook that fires after the header row has been read. 
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .OnReadingHeaderRow((headerDictionary) => {
+                    foreach (headerEntry in headerDictionary) {
+                        Console.WriteLine($"Column Number: {item.Key}");
+                        Console.WriteLine($"Column Header Name: {item.Value}");
+                    }
+                }
+            );
+            </code>
+            </example>
+            <param name="action">
+            An action that accepts an columnNumber => columnName dictionary as an argument.
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.AllColumnsMustBeMappedToProperties(System.Boolean)">
+            <summary>
+            Columns without a corresponding property will be ignored instead of throwing an exception.
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .AllColumnsMustBeMappedToProperties()
+            );
+            </code>
+            </example>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.AllPropertiesMustBeMappedToColumns(System.Boolean)">
+            <summary>
+            Throws an <see cref="T:ExcelToEnumerable.Exceptions.ExcelToEnumerableInvalidHeaderException"/> if there are properties that are not
+            mapped to a header on the spreadsheet. To override for a specific property use
+            <c>Property(x => x.MyProperty).OptionalColumn()</c>
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .AllPropertiesMustBeMappedToColumns()
+            );
+            </code>
+            </example>
+            <returns></returns>
+        </member>
+        <member name="M:ExcelToEnumerable.IExcelToEnumerableOptionsBuilder`1.RelaxedNumberMatching(System.Boolean)">
+            <summary>
+            Setting this to true causes cells that are strings, but that contain numeric values, to map to numeric properties. For example,
+            a string containing the "1,512kg" would map to an integer property with a value of 1512.
+            </summary>
+            <example>
+            <code>
+            IEnumerable&lt;MyClass&gt; results = excelStream.ExcelToEnumerable&lt;MyClass&gt;(x => x
+                .RelaxedNumberMatching()
+            );
+            </code>
+            </example>
+            <param name="b"></param>
+            <returns></returns>
+        </member>
+        <member name="P:ExcelToEnumerable.PropertySetter.Getter">
+            <summary>
+                This will only be populated if we need to get value from the collection,
+                e.g. we need to check for uniqueness
+            </summary>
+        </member>
+        <member name="M:ExcelToEnumerable.RowAndColumnExtensionMethods.ToColumnName(System.Int32)">
+            <summary>
+            </summary>
+            <param name="i">
+                This is 1-based not 0-based
+            </param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
