@@ -2,9 +2,9 @@ using System;
 using System.Windows.Forms;
 using CrystalDecisions.CrystalReports.Engine;
 
-namespace App.File.Desktop.CrystalReport
+namespace App.File.CrystalReport.Desktop
 {
-    public partial class ReportForm : Form
+    internal partial class ReportForm : Form
     {
         public ReportForm()
         {
@@ -30,7 +30,7 @@ namespace App.File.Desktop.CrystalReport
         {
             if (crvRelatorio.ReportSource != null)
             {
-                ((ReportClass)crvRelatorio.ReportSource).Dispose();
+                ((ReportDocument)crvRelatorio.ReportSource).Dispose();
 
                 if (crvRelatorio.Controls.Count > 0)
                 {

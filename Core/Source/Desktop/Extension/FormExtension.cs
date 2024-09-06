@@ -27,5 +27,18 @@ namespace App.Core.Desktop
             else
                 action();
         }
+
+        public static Form GetOpenedForm(this Form source, string title)
+        {
+            foreach (Form f in Application.OpenForms)
+            {
+                if (f.Text == title)
+                {
+                    return f;
+                }
+            }
+
+            return null;
+        }
     }
 }

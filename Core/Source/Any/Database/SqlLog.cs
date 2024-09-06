@@ -10,9 +10,9 @@ namespace App.Core
         public string Method2 { get; set; }
         public string Action { get; set; }
 
+        public int CommandIndex { get; set; }
         public string CommandParameters { get; set; }
         public string Command { get; set; }
-        public int CommandIndex { get; set; }
 
         public SqlLog(int index, IDbCommand cmd, DatabaseAction act = DatabaseAction.Null, string method = "", string method2 = "")
         {

@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "File.Json", "File.Json\File
 		{9FEA3EBE-E414-4263-AAC4-452A32B2A75C} = {9FEA3EBE-E414-4263-AAC4-452A32B2A75C}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "File.Report", "File.Report\File.Report.csproj", "{C9F5DAB0-987B-4722-BA3F-C05301D46280}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "File.CrystalReport", "File.CrystalReport\File.CrystalReport.csproj", "{C9F5DAB0-987B-4722-BA3F-C05301D46280}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9FEA3EBE-E414-4263-AAC4-452A32B2A75C} = {9FEA3EBE-E414-4263-AAC4-452A32B2A75C}
 	EndProjectSection

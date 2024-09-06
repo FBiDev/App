@@ -48,7 +48,7 @@ namespace App.Core.Desktop
             Left = 0;
 
             dgvSQLSistema.AutoGenerateColumns = false;
-            dgvSQLSistema.AddColumn<int>("Line", "Linha", align: ColumnAlign.Center, width: 64);
+            dgvSQLSistema.AddColumn<int>("CommandIndex", "Linha", align: ColumnAlign.Center, width: 64);
             dgvSQLSistema.AddColumn<DateTime>("Date", "Data", align: ColumnAlign.Center, width: 85);
             dgvSQLSistema.AddColumn<string>("Method", "Função");
             dgvSQLSistema.AddColumn<string>("Action", "Ação", width: 60);
@@ -57,7 +57,7 @@ namespace App.Core.Desktop
             dgvSQLSistema.DataSource = DebugManager.LogSQLSistema;
 
             dgvSQLBase.AutoGenerateColumns = false;
-            dgvSQLBase.AddColumn<int>("Line", "Linha", align: ColumnAlign.Center, width: 64);
+            dgvSQLBase.AddColumn<int>("CommandIndex", "Linha", align: ColumnAlign.Center, width: 64);
             dgvSQLBase.AddColumn<DateTime>("Date", "Data", align: ColumnAlign.Center, width: 85);
             dgvSQLBase.AddColumn<string>("Method", "Função");
             dgvSQLBase.AddColumn<string>("Action", "Ação", width: 60);
