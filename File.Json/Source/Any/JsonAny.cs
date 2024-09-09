@@ -49,13 +49,20 @@ namespace App.File
             return result;
         }
 
-        public static bool Load<T>(ref T obj, string path) where T : class
+        public static bool Load<T>(T obj, string path) where T : class
         {
+            T result = null;
+
             if (System.IO.File.Exists(path))
             {
                 var jsonData = System.IO.File.ReadAllText(path);
-                obj = DeserializeObject<T>(jsonData);
-                return true;
+                result = DeserializeObject<T>(jsonData);
+
+                if (result != null)
+                {
+                    obj.CloneProperties(result);
+                    return true;
+                }
             }
 
             return false;
@@ -74,6 +81,7 @@ namespace App.File
             var created = dir != string.Empty ? Directory.CreateDirectory(dir) : null;
 
             System.IO.File.WriteAllText(path, jsonData, Encoding.UTF8);
+
             return true;
         }
 

@@ -53,7 +53,7 @@ namespace App.Core
             return true;
         }
 
-        public static void Clone(this object origin, object from)
+        public static void CloneProperties(this object origin, object from)
         {
             if (from.IsNull()) return;
 

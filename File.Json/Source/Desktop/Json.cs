@@ -19,11 +19,11 @@ namespace App.File.Desktop
             return new T();
         }
 
-        public static bool Load<T>(ref T obj, string path) where T : class
+        public static bool Load<T>(T obj, string path) where T : class
         {
             try
             {
-                return JsonAny.Load(ref obj, path);
+                return JsonAny.Load(obj, path);
             }
             catch (Exception ex)
             {
