@@ -91,7 +91,7 @@ namespace App.Core.Desktop
 
         public void OnResize(object sender, EventArgs e)
         {
-            var tableLayouts = Controls.OfType<FlatTableLayoutPanel>();
+            var tableLayouts = Controls.OfType<FlatTable>();
             foreach (var tbl in tableLayouts)
             {
                 if (tbl.FillOnFormResize == false) continue;

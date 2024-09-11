@@ -77,12 +77,12 @@ namespace App.File.CrystalReport.Desktop
 
             SetParameters(Parameters);
 
-            form.crvRelatorio.AllowedExportFormats = (int)(ViewerExportFormats.PdfFormat | ViewerExportFormats.ExcelFormat | ViewerExportFormats.WordFormat);
-            form.crvRelatorio.ReportSource = Document;
+            form.ReportViewer.AllowedExportFormats = (int)(ViewerExportFormats.PdfFormat | ViewerExportFormats.ExcelFormat | ViewerExportFormats.WordFormat);
+            form.ReportViewer.ReportSource = Document;
 
             SetTabText(Name);
 
-            form.picLoader.Visible = false;
+            form.LoaderPicture.Visible = false;
         }
 
         private void ProcessFields(Action<ReportField> fieldsAction)
@@ -118,7 +118,7 @@ namespace App.File.CrystalReport.Desktop
 
         private void SetTabText(string value)
         {
-            var oControl = form.crvRelatorio.Controls[0];
+            var oControl = form.ReportViewer.Controls[0];
             var oTabControl = (TabControl)oControl.Controls[0];
 
             oTabControl.TabPages[0].Text = value;

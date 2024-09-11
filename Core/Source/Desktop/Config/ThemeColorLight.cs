@@ -151,7 +151,7 @@ namespace App.Core.Desktop
             c.ColorColumnHeaderReorderDiv = SystemColors.Highlight;
         }
 
-        public override void ButtonExe(ButtonExe c)
+        public override void ButtonExe(ExeButton c)
         {
             c.BackColor = Colors.RGB(230, 230, 230);
             c.BorderColor = Colors.RGB(213, 223, 229);

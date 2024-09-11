@@ -2,7 +2,7 @@
 
 namespace App.Core.Desktop
 {
-    public class ButtonExeInner : Button
+    public class ExeInnerButton : Button
     {
         protected override bool ShowFocusCues
         {

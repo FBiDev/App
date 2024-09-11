@@ -85,7 +85,7 @@ namespace App.Core.Desktop
                         column.AutoSizeMode = style != null ? (DataGridViewAutoSizeColumnMode)style.AutoSizeMode : column.AutoSizeMode;
 
                         if (style != null && style.Format != ColumnFormat.NotSet)
-                            Columns.Format(style.Format, column.Index);
+                            Columns.Format(style.Format, CultureID.None, column.Index);
 
                         column.DefaultCellStyle.Alignment = style != null && style.Align != ColumnAlign.NotSet ? (DataGridViewContentAlignment)style.Align : column.DefaultCellStyle.Alignment;
 

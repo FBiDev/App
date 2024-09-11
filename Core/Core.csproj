@@ -125,13 +125,13 @@
     <Compile Include="Source\Desktop\Asset\CustomControl\Base\FlatTextBoxBase.designer.cs">
       <DependentUpon>FlatTextBoxBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\ButtonExe.cs">
+    <Compile Include="Source\Desktop\Asset\CustomControl\ExeButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\ButtonExe.Designer.cs">
-      <DependentUpon>ButtonExe.cs</DependentUpon>
+    <Compile Include="Source\Desktop\Asset\CustomControl\ExeButton.Designer.cs">
+      <DependentUpon>ExeButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\ButtonExeInner.cs">
+    <Compile Include="Source\Desktop\Asset\CustomControl\ExeInnerButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Source\Desktop\Asset\CustomControl\FlatButton.cs">
@@ -213,7 +213,7 @@
     <Compile Include="Source\Desktop\Asset\CustomControl\FlatTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatTableLayoutPanel.cs">
+    <Compile Include="Source\Desktop\Asset\CustomControl\FlatTable.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Source\Desktop\Asset\CustomControl\FlatTextBox.cs">
@@ -328,8 +328,8 @@
     <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Base\FlatTextBoxBase.resx">
       <DependentUpon>FlatTextBoxBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\ButtonExe.resx">
-      <DependentUpon>ButtonExe.cs</DependentUpon>
+    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\ExeButton.resx">
+      <DependentUpon>ExeButton.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\FlatCheckBox.resx">
       <DependentUpon>FlatCheckBox.cs</DependentUpon>

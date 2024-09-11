@@ -23,7 +23,7 @@ namespace App.Core.Desktop
         public virtual void FlatGroupBox(FlatGroupBox c) { }
         public virtual void FlatListView(FlatListView c) { }
         public virtual void FlatDataGrid(FlatDataGrid c) { }
-        public virtual void ButtonExe(ButtonExe c) { }
+        public virtual void ButtonExe(ExeButton c) { }
         public virtual void RichTextBox(RichTextBox c) { }
     }
 }

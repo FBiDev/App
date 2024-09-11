@@ -113,8 +113,8 @@ namespace App.Core.Desktop
                 ColorSet.FlatListView(control as FlatListView);
             else if (control is FlatDataGrid)
                 ColorSet.FlatDataGrid(control as FlatDataGrid);
-            else if (control is ButtonExe)
-                ColorSet.ButtonExe(control as ButtonExe);
+            else if (control is ExeButton)
+                ColorSet.ButtonExe(control as ExeButton);
             else if (control is RichTextBox)
                 ColorSet.RichTextBox(control as RichTextBox);
         }

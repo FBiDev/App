@@ -28,17 +28,17 @@ namespace App.File.CrystalReport.Desktop
 
         private void ReportViewerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (crvRelatorio.ReportSource != null)
+            if (ReportViewer.ReportSource != null)
             {
-                ((ReportDocument)crvRelatorio.ReportSource).Dispose();
+                ((ReportDocument)ReportViewer.ReportSource).Dispose();
 
-                if (crvRelatorio.Controls.Count > 0)
+                if (ReportViewer.Controls.Count > 0)
                 {
-                    crvRelatorio.Controls[0].Controls[0].Dispose();
+                    ReportViewer.Controls[0].Controls[0].Dispose();
                 }
             }
 
-            crvRelatorio.Dispose();
+            ReportViewer.Dispose();
             Dispose();
         }
     }

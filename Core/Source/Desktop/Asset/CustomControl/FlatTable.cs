@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace App.Core.Desktop
 {
-    public class FlatTableLayoutPanel : TableLayoutPanel
+    public class FlatTable : TableLayoutPanel
     {
         #region Defaults
         [DefaultValue(true)]
@@ -50,7 +50,7 @@ namespace App.Core.Desktop
         [Browsable(false)]
         public Size SizeOriginal { get; set; }
 
-        public FlatTableLayoutPanel()
+        public FlatTable()
         {
             AutoSize = true;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;

@@ -25,7 +25,7 @@ namespace App.Core.Desktop
                     (controls[i] as FlatDataGrid).Rows.Clear();
                     (controls[i] as FlatDataGrid).RefreshRows();
                 }
-                else if (controls[i] is FlatTableLayoutPanel) ResetFormTable(controls[i] as FlatTableLayoutPanel);
+                else if (controls[i] is FlatTable) ResetFormTable(controls[i] as FlatTable);
                 else if (controls[i] is object) controls[i] = null;
             }
         }
@@ -54,7 +54,7 @@ namespace App.Core.Desktop
                 ResetControls(item);
         }
 
-        public static void ResetFormTable(FlatTableLayoutPanel table)
+        public static void ResetFormTable(FlatTable table)
         {
             var txtBoxes = table.GetControls<FlatTextBox>();
             var maskBoxes = table.GetControls<FlatMaskedTextBox>();
@@ -67,7 +67,7 @@ namespace App.Core.Desktop
             foreach (var item in dataGrids) ResetControls(item);
         }
 
-        public static void EnableFormControls(bool enable, FlatTableLayoutPanel table)
+        public static void EnableFormControls(bool enable, FlatTable table)
         {
             var txtBoxes = table.GetControls<FlatTextBox>();
             var maskBoxes = table.GetControls<FlatMaskedTextBox>();

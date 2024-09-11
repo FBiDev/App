@@ -30,53 +30,52 @@ namespace App.File.CrystalReport.Desktop
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReportForm));
-            this.crvRelatorio = new CrystalDecisions.Windows.Forms.CrystalReportViewer();
-            this.picLoader = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.picLoader)).BeginInit();
+            this.ReportViewer = new CrystalDecisions.Windows.Forms.CrystalReportViewer();
+            this.LoaderPicture = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.LoaderPicture)).BeginInit();
             this.SuspendLayout();
             // 
-            // crvRelatorio
+            // ReportViewer
             // 
-            this.crvRelatorio.ActiveViewIndex = -1;
-            this.crvRelatorio.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.crvRelatorio.Cursor = System.Windows.Forms.Cursors.Default;
-            this.crvRelatorio.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.crvRelatorio.Location = new System.Drawing.Point(0, 0);
-            this.crvRelatorio.Name = "crvRelatorio";
-            this.crvRelatorio.ReuseParameterValuesOnRefresh = true;
-            this.crvRelatorio.ShowCloseButton = false;
-            this.crvRelatorio.ShowGroupTreeButton = false;
-            this.crvRelatorio.ShowLogo = false;
-            this.crvRelatorio.ShowParameterPanelButton = false;
-            this.crvRelatorio.ShowRefreshButton = false;
-            this.crvRelatorio.Size = new System.Drawing.Size(1024, 502);
-            this.crvRelatorio.TabIndex = 0;
-            this.crvRelatorio.ToolPanelWidth = 150;
+            this.ReportViewer.ActiveViewIndex = -1;
+            this.ReportViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ReportViewer.Cursor = System.Windows.Forms.Cursors.Default;
+            this.ReportViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ReportViewer.Location = new System.Drawing.Point(0, 0);
+            this.ReportViewer.Name = "ReportViewer";
+            this.ReportViewer.ReuseParameterValuesOnRefresh = true;
+            this.ReportViewer.ShowGroupTreeButton = false;
+            this.ReportViewer.ShowLogo = false;
+            this.ReportViewer.ShowParameterPanelButton = false;
+            this.ReportViewer.ShowRefreshButton = false;
+            this.ReportViewer.Size = new System.Drawing.Size(1024, 502);
+            this.ReportViewer.TabIndex = 0;
+            this.ReportViewer.ToolPanelWidth = 150;
             // 
-            // picLoader
+            // LoaderPicture
             // 
-            this.picLoader.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.picLoader.Image = ((System.Drawing.Image)(resources.GetObject("picLoader.Image")));
-            this.picLoader.Location = new System.Drawing.Point(490, 190);
-            this.picLoader.Name = "picLoader";
-            this.picLoader.Size = new System.Drawing.Size(48, 48);
-            this.picLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.picLoader.TabIndex = 1;
-            this.picLoader.TabStop = false;
+            this.LoaderPicture.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.LoaderPicture.Image = ((System.Drawing.Image)(resources.GetObject("LoaderPicture.Image")));
+            this.LoaderPicture.Location = new System.Drawing.Point(490, 190);
+            this.LoaderPicture.Name = "LoaderPicture";
+            this.LoaderPicture.Size = new System.Drawing.Size(48, 48);
+            this.LoaderPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.LoaderPicture.TabIndex = 1;
+            this.LoaderPicture.TabStop = false;
             // 
-            // ReportViewerForm
+            // ReportForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1024, 502);
-            this.Controls.Add(this.picLoader);
-            this.Controls.Add(this.crvRelatorio);
+            this.Controls.Add(this.LoaderPicture);
+            this.Controls.Add(this.ReportViewer);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Name = "ReportViewerForm";
+            this.Name = "ReportForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Visualizar Relatório";
-            ((System.ComponentModel.ISupportInitialize)(this.picLoader)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LoaderPicture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -84,7 +83,7 @@ namespace App.File.CrystalReport.Desktop
 
         #endregion
 
-        internal CrystalDecisions.Windows.Forms.CrystalReportViewer crvRelatorio;
-        internal System.Windows.Forms.PictureBox picLoader;
+        internal CrystalDecisions.Windows.Forms.CrystalReportViewer ReportViewer;
+        internal System.Windows.Forms.PictureBox LoaderPicture;
     }
 }

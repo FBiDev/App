@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace App.Core.Desktop
 {
-    public partial class ButtonExe : UserControl
+    public partial class ExeButton : UserControl
     {
         [DefaultValue(typeof(Size), "76, 69")]
         public new Size Size { get { return base.Size; } set { base.Size = value; } }
@@ -30,12 +30,12 @@ namespace App.Core.Desktop
         [DefaultValue(typeof(Color), "Transparent")]
         public new Color BackColor { get { return pnlBack.BackColor; } set { pnlBack.BackColor = value; } }
 
-        public Button Btn { get { return btnExe; } }
+        public Button Btn { get { return InnerButton; } }
 
         [DefaultValue(typeof(Size), "48, 48")]
-        public Size SizeButton { get { return btnExe.Size; } set { btnExe.Size = value; } }
-        public new Image BackgroundImage { get { return btnExe.BackgroundImage; } set { btnExe.BackgroundImage = value; } }
-        public new ImageLayout BackgroundImageLayout { get { return btnExe.BackgroundImageLayout; } set { btnExe.BackgroundImageLayout = value; } }
+        public Size SizeButton { get { return InnerButton.Size; } set { InnerButton.Size = value; } }
+        public new Image BackgroundImage { get { return InnerButton.BackgroundImage; } set { InnerButton.BackgroundImage = value; } }
+        public new ImageLayout BackgroundImageLayout { get { return InnerButton.BackgroundImageLayout; } set { InnerButton.BackgroundImageLayout = value; } }
 
         public new Font Font { get { return lblExe.Font; } set { lblExe.Font = value; } }
         public string TextLabel { get { return lblExe.Text; } set { lblExe.Text = value; } }
@@ -49,9 +49,9 @@ namespace App.Core.Desktop
         }
 
         public new event EventHandler Click;
-        public new bool Focused { get { return btnExe.Focused; } }
+        public new bool Focused { get { return InnerButton.Focused; } }
 
-        public ButtonExe()
+        public ExeButton()
         {
             InitializeComponent();
 
@@ -68,14 +68,14 @@ namespace App.Core.Desktop
 
         public new bool Focus()
         {
-            btnExe.Focus();
-            return btnExe.Focused;
+            InnerButton.Focus();
+            return InnerButton.Focused;
         }
 
         void AlignControl()
         {
-            var newLocation = new Point((pnlBack.Width - btnExe.Width) / 2, btnExe.Location.Y);
-            btnExe.Location = newLocation;
+            var newLocation = new Point((pnlBack.Width - InnerButton.Width) / 2, InnerButton.Location.Y);
+            InnerButton.Location = newLocation;
         }
         void OnSizeChanged(object sender, EventArgs e)
         {

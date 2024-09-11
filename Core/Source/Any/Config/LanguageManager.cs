@@ -8,38 +8,22 @@ namespace App.Core
     public static class LanguageManager
     {
         #region Language
-        public static CultureInfo CultureBrazil = CultureInfo.CreateSpecificCulture("pt-BR");
-        public static CultureInfo CultureUSA = CultureInfo.CreateSpecificCulture("en-US");
+        public static CultureInfo CultureBrazil = SetCultureDateNames(CultureID.Brazil_Portuguese);
+        public static CultureInfo CultureUSA = SetCultureDateNames(CultureID.UnitedStates_English);
 
-        static CultureInfo Language = new CultureInfo(Convert.ToInt32(CultureID.UnitedStates_English));
+        static CultureInfo Language = SetCultureDateNames(CultureID.UnitedStates_English);
         static RegionInfo Country;
 
         public static CultureInfo LanguageNumbers;
 
-        public static bool LanguageIsUSA()
-        {
-            return Language.LCID == (int)CultureID.UnitedStates_English;
-        }
-
-        public static void SetLanguageNumbers(CultureID name)
-        {
-            LanguageNumbers = new CultureInfo(Convert.ToInt32(name));
-        }
-
         public static CultureInfo GetLanguage() { return Language; }
 
-        public static void SetLanguage(CultureID name)
+        public static void SetLanguage(CultureID cultureID)
         {
-            var CultureName = Convert.ToInt32(name);
+            var CultureName = Convert.ToInt32(cultureID);
             Language = new CultureInfo(CultureName);
 
-            //Change Culture Info Month names.
-            Language.DateTimeFormat.MonthNames = Language.DateTimeFormat.MonthNames.Select(m => Language.TextInfo.ToTitleCase(m)).ToArray();
-            Language.DateTimeFormat.MonthGenitiveNames = Language.DateTimeFormat.MonthGenitiveNames.Select(m => Language.TextInfo.ToTitleCase(m)).ToArray();
-            Language.DateTimeFormat.AbbreviatedMonthNames = Language.DateTimeFormat.AbbreviatedMonthNames.Select(m => Language.TextInfo.ToTitleCase(m)).ToArray();
-
-            Language.DateTimeFormat.DayNames = Language.DateTimeFormat.DayNames.Select(d => Language.TextInfo.ToTitleCase(d)).ToArray();
-            Language.DateTimeFormat.DayNames = Language.DateTimeFormat.DayNames.Select(d => d.Replace("-Feira", "")).ToArray();
+            SetCultureDateNames(Language);
 
             //Culture for any thread
             CultureInfo.DefaultThreadCurrentCulture = Language;
@@ -48,6 +32,35 @@ namespace App.Core
             CultureInfo.DefaultThreadCurrentUICulture = Language;
 
             Country = new RegionInfo(Thread.CurrentThread.CurrentUICulture.LCID);
+        }
+
+        public static void SetLanguageNumbers(CultureID name)
+        {
+            LanguageNumbers = new CultureInfo(Convert.ToInt32(name));
+        }
+
+        public static CultureInfo SetCultureDateNames(CultureID cultureID)
+        {
+            var cultureName = Convert.ToInt32(cultureID);
+            var language = new CultureInfo(cultureName);
+            SetCultureDateNames(language);
+
+            return language;
+        }
+
+        public static void SetCultureDateNames(CultureInfo culture)
+        {
+            //Change Culture Info Month names.
+            culture.DateTimeFormat.MonthNames = culture.DateTimeFormat.MonthNames.Select(m => culture.TextInfo.ToTitleCase(m)).ToArray();
+            culture.DateTimeFormat.MonthGenitiveNames = culture.DateTimeFormat.MonthGenitiveNames.Select(m => culture.TextInfo.ToTitleCase(m)).ToArray();
+            culture.DateTimeFormat.AbbreviatedMonthNames = culture.DateTimeFormat.AbbreviatedMonthNames.Select(m => culture.TextInfo.ToTitleCase(m)).ToArray();
+
+            culture.DateTimeFormat.DayNames = culture.DateTimeFormat.DayNames.Select(d => culture.TextInfo.ToTitleCase(d)).ToArray();
+
+            if (culture.LCID == (int)CultureID.Brazil_Portuguese)
+            {
+                culture.DateTimeFormat.DayNames = culture.DateTimeFormat.DayNames.Select(d => d.Replace("-Feira", "")).ToArray();
+            }
         }
 
         public static string CurrencySymbol

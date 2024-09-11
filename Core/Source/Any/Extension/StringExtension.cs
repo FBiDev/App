@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -105,6 +105,23 @@ namespace App.Core
             return values.Any(x => x.Equals(source, StringComparison.OrdinalIgnoreCase));
         }
 
+        public static string[] ToArray(this string s, int chunkSize, bool distinct = false, bool removeEmpty = false)
+        {
+            string input = s;
+            chunkSize = chunkSize <= 0 ? 1 : chunkSize;
+
+            string[] result = Enumerable.Range(0, input.Length / chunkSize).Select(i => input.Substring(i * chunkSize, chunkSize)).ToArray();
+            result = distinct ? result.Distinct().ToArray() : result;
+            result = result.Where(x => x.Trim() != string.Empty).ToArray();
+
+            return result;
+        }
+
+        public static string Value(this string[] s)
+        {
+            return string.Join(string.Empty, s);
+        }
+
         public static bool ContainsExtend(this string source, string value)
         {
             string[] IgnoreSymbols = { ", The:", ",", ":", "'", "-", ".", "+", "/", " " };
@@ -163,5 +180,126 @@ namespace App.Core
             var list = matchList.Cast<Match>().Select(match => match.Groups[inclusive ? 0 : 1].Value).ToList();
             return list;
         }
+
+        public static string ReplaceSpecialCharacters(this string s)
+        {
+            string text = string.Empty;
+
+            foreach (char c in s)
+            {
+                int len = text.Length;
+
+                foreach (var entry in SpecialCharacters)
+                {
+                    if (entry.Key.IndexOf(c) != -1)
+                    {
+                        text += entry.Value;
+                        break;
+                    }
+                }
+
+                if (len == text.Length)
+                {
+                    text += c;
+                }
+            }
+
+            return text;
+        }
+
+        #region SpecialCharacters
+        public static readonly Dictionary<string, string> SpecialCharacters = new Dictionary<string, string>
+        {
+            { "äæǽ", "ae" },
+            { "öœ", "oe" },
+            { "ü", "ue" },
+            { "Ä", "Ae" },
+            { "Ü", "Ue" },
+            { "Ö", "Oe" },
+            { "ÀÁÂÃÄÅǺĀĂĄǍΑΆẢẠẦẪẨẬẰẮẴẲẶА", "A" },
+            { "àáâãåǻāăąǎªαάảạầấẫẩậằắẵẳặа", "a" },
+            { "Б", "B" },
+            { "б", "b" },
+            { "ÇĆĈĊČ", "C" },
+            { "çćĉċč", "c" },
+            { "Д", "D" },
+            { "д", "d" },
+            { "ÐĎĐΔ", "Dj" },
+            { "ðďđδ", "dj" },
+            { "ÈÉÊËĒĔĖĘĚΕΈẼẺẸỀẾỄỂỆЕЭ", "E" },
+            { "èéêëēĕėęěέεẽẻẹềếễểệеэ", "e" },
+            { "Ф", "F" },
+            { "ф", "f" },
+            { "ĜĞĠĢΓГҐ", "G" },
+            { "ĝğġģγгґ", "g" },
+            { "ĤĦ", "H" },
+            { "ĥħ", "h" },
+            { "ÌÍÎÏĨĪĬǏĮİΗΉΊΙΪỈỊИЫ", "I" },
+            { "ìíîïĩīĭǐįıηήίιϊỉịиыї", "i" },
+            { "Ĵ", "J" },
+            { "ĵ", "j" },
+            { "ĶΚК", "K" },
+            { "ķκк", "k" },
+            { "ĹĻĽĿŁΛЛ", "L" },
+            { "ĺļľŀłλл", "l" },
+            { "М", "M" },
+            { "м", "m" },
+            { "ÑŃŅŇΝН", "N" },
+            { "ñńņňŉνн", "n" },
+            { "ÒÓÔÕŌŎǑŐƠØǾΟΌΩΏỎỌỒỐỖỔỘỜỚỠỞỢО", "O" },
+            { "òóôõōŏǒőơøǿºοόωώỏọồốỗổộờớỡởợо", "o" },
+            { "П", "P" },
+            { "п", "p" },
+            { "ŔŖŘΡР", "R" },
+            { "ŕŗřρр", "r" },
+            { "ŚŜŞȘŠΣС", "S" },
+            { "śŝşșšſσςс", "s" },
+            { "ȚŢŤŦτТ", "T" },
+            { "țţťŧт", "t" },
+            { "ÙÚÛŨŪŬŮŰŲƯǓǕǗǙǛŨỦỤỪỨỮỬỰУ", "U" },
+            { "ùúûũūŭůűųưǔǖǘǚǜυύϋủụừứữửựу", "u" },
+            { "ÝŸŶΥΎΫỲỸỶỴЙ", "Y" },
+            { "ýÿŷỳỹỷỵй", "y" },
+            { "В", "V" },
+            { "в", "v" },
+            { "Ŵ", "W" },
+            { "ŵ", "w" },
+            { "ŹŻŽΖЗ", "Z" },
+            { "źżžζз", "z" },
+            { "ÆǼ", "AE" },
+            { "ß", "ss" },
+            { "Ĳ", "IJ" },
+            { "ĳ", "ij" },
+            { "Œ", "OE" },
+            { "ƒ", "f" },
+            { "ξ", "ks" },
+            { "π", "p" },
+            { "β", "v" },
+            { "μ", "m" },
+            { "ψ", "ps" },
+            { "Ё", "Yo" },
+            { "ё", "yo" },
+            { "Є", "Ye" },
+            { "є", "ye" },
+            { "Ї", "Yi" },
+            { "Ж", "Zh" },
+            { "ж", "zh" },
+            { "Х", "Kh" },
+            { "х", "kh" },
+            { "Ц", "Ts" },
+            { "ц", "ts" },
+            { "Ч", "Ch" },
+            { "ч", "ch" },
+            { "Ш", "Sh" },
+            { "ш", "sh" },
+            { "Щ", "Shch" },
+            { "щ", "shch" },
+            { "ЪъЬь", string.Empty },
+            { "Ю", "Yu" },
+            { "ю", "yu" },
+            { "Я", "Ya" },
+            { "я", "ya" },
+        };
+        #endregion
     }
 }

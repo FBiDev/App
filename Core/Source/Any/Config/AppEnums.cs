@@ -3,6 +3,7 @@ namespace App.Core
 {
     public enum CultureID
     {
+        None,
         UnitedStates_English = 1033,
         Brazil_Portuguese = 1046,
         Czech_CzechRepublic = 1029
