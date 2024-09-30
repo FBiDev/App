@@ -1,24 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using ExcelToEnumerable;
 
-namespace App.File.Desktop
+namespace App.File.ExcelToEnumerable
 {
-    public class ExcelOptions<T>
+    internal class ExcelOptions<T>
     {
         public ExcelOptions()
         {
-            DefaultValues = new Dictionary<string, object> { };
-
             OptionsBuilder = new ExcelToEnumerableOptionsBuilder<T>();
             OptionsBuilder.Build();
         }
 
         public ExcelOptions(Action<ExcelOptions<T>> options = null)
         {
-            DefaultValues = new Dictionary<string, object> { };
-
             OptionsBuilder = new ExcelToEnumerableOptionsBuilder<T>();
             OptionsBuilder.Build();
 
@@ -26,10 +21,6 @@ namespace App.File.Desktop
         }
 
         internal ExcelToEnumerableOptionsBuilder<T> OptionsBuilder { get; private set; }
-
-        internal Dictionary<string, object> DefaultValues { get; private set; }
-
-        internal bool EmptyStrings { get; private set; }
 
         public ExcelProperty<T, TProperty> Property<TProperty>(Expression<Func<T, TProperty>> propertyExpression)
         {
@@ -45,12 +36,6 @@ namespace App.File.Desktop
         public ExcelOptions<T> UsingSheet(int i)
         {
             OptionsBuilder.UsingSheet(i);
-            return this;
-        }
-
-        public ExcelOptions<T> UsesEmptyStrings(bool emptyStrings = true)
-        {
-            EmptyStrings = emptyStrings;
             return this;
         }
     }

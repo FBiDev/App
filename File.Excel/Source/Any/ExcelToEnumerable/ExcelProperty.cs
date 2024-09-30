@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using App.Core;
 using ExcelToEnumerable;
+using App.Core;
 
-namespace App.File.Desktop
+namespace App.File.ExcelToEnumerable
 {
-    public class ExcelProperty<T, TProperty>
+    internal class ExcelProperty<T, TProperty>
     {
         public ExcelProperty(Expression<Func<T, TProperty>> propertyExpression, ExcelOptions<T> options)
         {
             OptionsBuilder = options;
-            PropertyName = propertyExpression.GetName();
-            Property = options.OptionsBuilder.Property<TProperty>(propertyExpression);
-        }
+            PropertyName = propertyExpression.PropertyName();
 
-        private ExcelOptions<T> OptionsBuilder { get; set; }
+            Property = options.OptionsBuilder.Property(propertyExpression);
+        }
 
         private IExcelPropertyConfiguration<T, TProperty> Property { get; set; }
 
         private string PropertyName { get; set; }
+
+        private ExcelOptions<T> OptionsBuilder { get; set; }
 
         public ExcelOptions<T> IgnoreColumn()
         {
@@ -30,13 +31,6 @@ namespace App.File.Desktop
         public ExcelOptions<T> RequiredColumn()
         {
             Property.RequiredColumn();
-            return OptionsBuilder;
-        }
-
-        public ExcelOptions<T> DefaultValue(object value)
-        {
-            OptionsBuilder.DefaultValues.Remove(PropertyName);
-            OptionsBuilder.DefaultValues.Add(PropertyName, value);
             return OptionsBuilder;
         }
 

@@ -80,7 +80,7 @@ namespace App.Core
             return clone;
         }
 
-        public static string GetName<T, TProperty>(this Expression<Func<T, TProperty>> expression)
+        public static string PropertyName<T, TProperty>(this Expression<Func<T, TProperty>> expression)
         {
             var memberExpression = expression.Body as MemberExpression;
             if (memberExpression != null)
