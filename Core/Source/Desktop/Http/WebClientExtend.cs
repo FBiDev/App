@@ -1,82 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
-using System.ComponentModel;
+using System.Linq;
 using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace App.Core.Desktop
 {
     public class WebClientExtend : WebClient
     {
-        public bool HeaderExist(string headerName)
-        {
-            return ResponseHeaders != null && ResponseHeaders.AllKeys.Any(h => h.ToLower() == headerName.ToLower());
-        }
+        private const string GZipExtension = ".gz";
 
-        public string HeaderValue(string headerName)
-        {
-            return HeaderExist(headerName) ? ResponseHeaders.AllKeys.Single(h => h.ToLower() == headerName.ToLower()) : string.Empty;
-        }
+        private bool _gZipEnable;
 
-        bool IsBrotliContent
-        {
-            get { return HeaderExist("Content-Encoding") && ResponseHeaders[HttpResponseHeader.ContentEncoding] == "br"; }
-        }
-
-        bool IsGZipContent
-        {
-            get { return HeaderExist("Content-Encoding") && ResponseHeaders[HttpResponseHeader.ContentEncoding] == "gzip"; }
-        }
-
-        bool _GZipEnable { get; set; }
-        public bool GZipEnable
-        {
-            get { return _GZipEnable; }
-            set
-            {
-                _GZipEnable = value;
-                if (_GZipEnable)
-                {
-                    Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate, br";
-                }
-                else
-                {
-                    Headers[HttpRequestHeader.AcceptEncoding] = "";
-                }
-            }
-        }
-        const string GZipExtension = ".gz";
-        long GZipSize { get; set; }
-        long GZipSizeUncompressed { get; set; }
-        public DownloadFile FileDownloaded;
-
-        public static Dictionary<string, string> CustomErrorMessages = new Dictionary<string, string> { };
-
-        bool _Error;
-        public bool Error { get { return _Error; } }
-        string _ErrorMessage { get; set; }
-        public string ErrorMessage
-        {
-            get
-            {
-                return _ErrorMessage;
-            }
-            set
-            {
-                var link = CustomErrorMessages.SingleOrDefault(x => value.Contains(x.Key));
-                if (link.Value != null)
-                    _ErrorMessage += link.Value;
-                else
-                    _ErrorMessage = value;
-            }
-        }
-
-        public CookieContainer CookieContainer { get; private set; }
+        private string _errorMessage;
 
         public WebClientExtend()
         {
@@ -85,7 +26,84 @@ namespace App.Core.Desktop
             Encoding = Encoding.UTF8;
             Proxy = Browser.Proxy;
 
+            CustomErrorMessages = new Dictionary<string, string>();
             CookieContainer = new CookieContainer();
+        }
+
+        public static Dictionary<string, string> CustomErrorMessages { get; set; }
+
+        public bool GZipEnable
+        {
+            get
+            {
+                return _gZipEnable;
+            }
+
+            set
+            {
+                _gZipEnable = value;
+
+                if (_gZipEnable)
+                {
+                    Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate, br";
+                }
+                else
+                {
+                    Headers[HttpRequestHeader.AcceptEncoding] = string.Empty;
+                }
+            }
+        }
+
+        public bool Error { get; private set; }
+
+        public string ErrorMessage
+        {
+            get
+            {
+                return _errorMessage;
+            }
+
+            set
+            {
+                var link = CustomErrorMessages.SingleOrDefault(x => value.Contains(x.Key));
+
+                if (link.Value != null)
+                {
+                    _errorMessage += link.Value;
+                }
+                else
+                {
+                    _errorMessage = value;
+                }
+            }
+        }
+
+        public CookieContainer CookieContainer { get; private set; }
+
+        private bool IsGZipContent
+        {
+            get { return HeaderExist("Content-Encoding") && ResponseHeaders[HttpResponseHeader.ContentEncoding] == "gzip"; }
+        }
+
+        private bool IsBrotliContent
+        {
+            get { return HeaderExist("Content-Encoding") && ResponseHeaders[HttpResponseHeader.ContentEncoding] == "br"; }
+        }
+
+        private long GZipSize { get; set; }
+
+        private long GZipSizeUncompressed { get; set; }
+
+        private DownloadFile FileDownloaded { get; set; }
+
+        public bool HeaderExist(string headerName)
+        {
+            return ResponseHeaders != null && ResponseHeaders.AllKeys.Any(h => h.ToLower() == headerName.ToLower());
+        }
+
+        public string HeaderValue(string headerName)
+        {
+            return HeaderExist(headerName) ? ResponseHeaders.AllKeys.Single(h => h.ToLower() == headerName.ToLower()) : string.Empty;
         }
 
         public new Task DownloadFileTaskAsync(string address, string fileName)
@@ -97,7 +115,10 @@ namespace App.Core.Desktop
         {
             FileDownloaded = new DownloadFile(address.ToString(), fileName);
 
-            if (string.IsNullOrWhiteSpace(FileDownloaded.Name)) { return null; }
+            if (string.IsNullOrWhiteSpace(FileDownloaded.Name))
+            {
+                return null;
+            }
 
             fileName = SetTempFile(fileName);
             FileDownloaded = new DownloadFile(address.ToString(), fileName);
@@ -126,9 +147,10 @@ namespace App.Core.Desktop
             }
             catch (WebException we)
             {
-                _Error = true;
+                Error = true;
                 ErrorMessage = we.Message;
             }
+
             return responseString;
         }
 
@@ -137,18 +159,24 @@ namespace App.Core.Desktop
             string msg = string.Empty;
             byte[] data = await DownloadData(address);
 
-            if (_Error) { return msg; }
+            if (Error)
+            {
+                return msg;
+            }
 
             if (IsBrotliContent)
             {
                 data = Brotli.Decompress(data);
             }
 
-            if (ResponseHeaders == null) { return msg; }
+            if (ResponseHeaders == null)
+            {
+                return msg;
+            }
 
-            string ContentType = ResponseHeaders[HttpResponseHeader.ContentType];
+            string contentType = ResponseHeaders[HttpResponseHeader.ContentType];
 
-            if (ContentType.IndexOf("ISO-8859-1", 0, StringComparison.OrdinalIgnoreCase) >= 0)
+            if (contentType.IndexOf("ISO-8859-1", 0, StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 var iso = Encoding.GetEncoding("ISO-8859-1");
                 Encoding utf8 = Encoding.UTF8;
@@ -157,9 +185,9 @@ namespace App.Core.Desktop
                 var utfBytes = Encoding.Convert(iso, utf8, isoBytes);
                 msg = utf8.GetString(utfBytes);
             }
-            else if (ContentType.IndexOf("image/", 0, StringComparison.OrdinalIgnoreCase) >= 0)
+            else if (contentType.IndexOf("image/", 0, StringComparison.OrdinalIgnoreCase) >= 0)
             {
-                msg = "data:" + ContentType + ";base64," + Convert.ToBase64String(data);
+                msg = "data:" + contentType + ";base64," + Convert.ToBase64String(data);
             }
             else
             {
@@ -175,14 +203,18 @@ namespace App.Core.Desktop
 
             try
             {
-                _Error = false;
+                Error = false;
                 data = await DownloadDataTaskAsync(new Uri(address));
             }
             catch (WebException we)
             {
-                if (_Error) { return data; }
+                if (Error)
+                {
+                    return data;
+                }
 
-                _Error = true;
+                Error = true;
+
                 if (we.Response == null)
                 {
                     ErrorMessage = "Download Error: \r\n\r\n" + "Status: " + we.Status + "\r\n\r\n" + we.Message + "\r\n\r\n" + we.InnerException.Message;
@@ -199,6 +231,7 @@ namespace App.Core.Desktop
                 GetGZipSize(data);
                 data = DecodeGZip(data);
             }
+
             return data;
         }
 
@@ -209,29 +242,30 @@ namespace App.Core.Desktop
 
             if (FileDownloaded == null)
             {
-                //request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                // request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
             }
+
             return request;
         }
 
-        //For DownloadString
+        // For DownloadString
         protected override WebResponse GetWebResponse(WebRequest request)
         {
             return base.GetWebResponse(request);
         }
 
-        //For DownloadFile
+        // For DownloadFile
         protected override WebResponse GetWebResponse(WebRequest request, IAsyncResult result)
         {
             HttpWebResponse response = null;
             try
             {
-                _Error = false;
+                Error = false;
                 response = base.GetWebResponse(request, result) as HttpWebResponse;
             }
             catch (WebException we)
             {
-                _Error = true;
+                Error = true;
                 if (we.Response == null)
                 {
                     ErrorMessage = "Download Error: \r\n\r\n" + "Status: " + we.Status + "\r\n\r\n" + we.Message;
@@ -249,6 +283,7 @@ namespace App.Core.Desktop
                         ErrorMessage = "Error to download: \r\n\r\n";
                         ErrorMessage += FileDownloaded.URL;
                     }
+
                     ErrorMessage += "\r\n\r\n" + "Status Code: " + (int)response.StatusCode + " " + response.StatusDescription;
                 }
             }
@@ -270,7 +305,7 @@ namespace App.Core.Desktop
 
         protected override void OnDownloadFileCompleted(AsyncCompletedEventArgs e)
         {
-            if (_Error)
+            if (Error)
             {
                 File.Delete(FileDownloaded.Path);
                 base.OnDownloadFileCompleted(e);
@@ -304,6 +339,7 @@ namespace App.Core.Desktop
                         originalFileStream.Position = 0;
                         GetGZipSize(ms.ToArray());
                     }
+
                     using (FileStream decompressedFileStream = File.Create(oldName))
                     {
                         using (GZipStream decompressionStream = new GZipStream(originalFileStream, CompressionMode.Decompress))
@@ -312,6 +348,7 @@ namespace App.Core.Desktop
                         }
                     }
                 }
+
                 File.Delete(gzName);
             }
 
@@ -319,12 +356,12 @@ namespace App.Core.Desktop
             return;
         }
 
-        string SetTempFile(string fileName)
+        private string SetTempFile(string fileName)
         {
             return fileName + ".tmp";
         }
 
-        void RevertTempFile(string fileName)
+        private void RevertTempFile(string fileName)
         {
             var newFile = fileName.Substring(0, fileName.Length - 4);
             FileDownloaded.Path = newFile;
@@ -333,10 +370,11 @@ namespace App.Core.Desktop
             {
                 File.Delete(newFile);
             }
+
             File.Move(fileName, newFile);
         }
 
-        void GetGZipSize(byte[] data)
+        private void GetGZipSize(byte[] data)
         {
             if (IsGZipContent)
             {
@@ -351,10 +389,14 @@ namespace App.Core.Desktop
             }
         }
 
-        byte[] DecodeGZip(byte[] gzBuffer)
+        private byte[] DecodeGZip(byte[] gzBuffer)
         {
-            var isGZip = (gzBuffer.Length >= 2 && gzBuffer[0] == 31 && gzBuffer[1] == 139);
-            if (isGZip == false) { return gzBuffer; }
+            var isGZip = gzBuffer.Length >= 2 && gzBuffer[0] == 31 && gzBuffer[1] == 139;
+
+            if (isGZip == false)
+            {
+                return gzBuffer;
+            }
 
             using (MemoryStream ms = new MemoryStream())
             {

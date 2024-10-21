@@ -7,14 +7,15 @@ namespace App.Core.Desktop
     /// <summary>
     /// <para>Provides a generic collection that supports data binding and additionally supports sorting.</para>
     /// <para>If the elements are IComparable it uses that; otherwise compares the ToString()</para>
-    /// See http://msdn.microsoft.com/en-us/library/ms993236.aspx
     /// </summary>
     /// <typeparam name="T">The type of elements in the list.</typeparam>
     public class ListBind_old<T> : BindingList<T> where T : class
     {
-        bool _isSorted;
-        ListSortDirection _sortDirection = ListSortDirection.Ascending;
-        PropertyDescriptor _sortProperty;
+        private bool _isSorted;
+
+        private ListSortDirection _sortDirection = ListSortDirection.Ascending;
+
+        private PropertyDescriptor _sortProperty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListBind_old{T}"/> class.
@@ -64,6 +65,14 @@ namespace App.Core.Desktop
             get { return _sortProperty; }
         }
 
+        public void AddRange(IEnumerable<T> itemsToAdd)
+        {
+            foreach (T item in itemsToAdd)
+            {
+                Add(item);
+            }
+        }
+
         /// <summary>
         /// Removes any sort applied with ApplySortCore if sorting is implemented
         /// </summary>
@@ -71,68 +80,73 @@ namespace App.Core.Desktop
         {
             _sortDirection = ListSortDirection.Ascending;
             _sortProperty = null;
-            _isSorted = false; //thanks Luca
+            _isSorted = false; // thanks Luca
         }
 
         /// <summary>
         /// Sorts the items if overridden in a derived class
         /// </summary>
-        /// <param name="prop"></param>
-        /// <param name="direction"></param>
+        /// <param name="prop">property object</param>
+        /// <param name="direction">direction of list</param>
         protected override void ApplySortCore(PropertyDescriptor prop, ListSortDirection direction)
         {
             _sortProperty = prop;
             _sortDirection = direction;
 
             var list = Items as List<T>;
-            if (list == null) return;
+
+            if (list == null)
+            {
+                return;
+            }
 
             list.Sort(Compare);
 
             _isSorted = true;
-            //fire an event that the list has been changed.
+
+            // fire an event that the list has been changed.
             OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, -1));
         }
 
-        int Compare(T lhs, T rhs)
+        private int Compare(T lhs, T rhs)
         {
             var result = OnComparison(lhs, rhs);
-            //invert if descending
+
+            // invert if descending
             if (_sortDirection == ListSortDirection.Descending)
+            {
                 result = -result;
+            }
+
             return result;
         }
 
-        int OnComparison(T lhs, T rhs)
+        private int OnComparison(T lhs, T rhs)
         {
             object lhsValue = lhs == null ? null : _sortProperty.GetValue(lhs);
             object rhsValue = rhs == null ? null : _sortProperty.GetValue(rhs);
             if (lhsValue == null)
             {
-                return (rhsValue == null) ? 0 : -1; //nulls are equal
+                return (rhsValue == null) ? 0 : -1; // nulls are equal
             }
+
             if (rhsValue == null)
             {
-                return 1; //first has value, second doesn't
+                return 1; // first has value, second doesn't
             }
+
             if (lhsValue is IComparable)
             {
                 return ((IComparable)lhsValue).CompareTo(rhsValue);
             }
+
             if (lhsValue.Equals(rhsValue))
             {
-                return 0; //both are the same
+                return 0; // both are the same
             }
-            //not comparable, compare ToString
-            return string.Compare(lhsValue.ToString(), rhsValue.ToString(), StringComparison.OrdinalIgnoreCase);
-        }
 
-        public void AddRange(IEnumerable<T> itemsToAdd)
-        {
-            foreach (T item in itemsToAdd)
-            {
-                Add(item);
-            }
+            // not comparable, compare ToString
+            return string.Compare(lhsValue.ToString(), rhsValue.ToString(), StringComparison.OrdinalIgnoreCase);
         }
     }
 }

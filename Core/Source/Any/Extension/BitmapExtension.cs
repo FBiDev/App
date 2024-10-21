@@ -14,7 +14,10 @@ namespace App.Core
             int width = bitmap.Width;
             int height = bitmap.Height;
 
-            if (maxSize.Width == 0 && maxSize.Height == 0) { return new Size(width, height); }
+            if (maxSize.Width == 0 && maxSize.Height == 0)
+            {
+                return new Size(width, height);
+            }
 
             float factorW = height / (float)width;
             float factorH = width / (float)height;
@@ -50,15 +53,20 @@ namespace App.Core
             if (File.Exists(path) == false || new FileInfo(path).Length == 0)
             {
                 if (errorBitmap == null)
+                {
                     return Resources.img_notfound;
+                }
+
                 return errorBitmap;
             }
 
             using (MemoryStream ms = new MemoryStream(File.ReadAllBytes(path)))
-            using (Bitmap bitmapFile = ((Bitmap)Image.FromStream(ms, false, false)))
+            using (Bitmap bitmapFile = (Bitmap)Image.FromStream(ms, false, false))
             {
                 if (IsAnimatedGif(bitmapFile))
+                {
                     return Image.FromFile(path) as Bitmap;
+                }
 
                 return bitmapFile.Clone32bpp();
             }
@@ -68,7 +76,10 @@ namespace App.Core
         {
             using (var srcImage = SuperFastLoad(filePath))
             {
-                if (srcImage == null) return errorBitmap;
+                if (srcImage == null)
+                {
+                    return errorBitmap;
+                }
 
                 var dest = new Bitmap(newSize.Width, newSize.Height, PixelFormat.Format32bppPArgb);
                 using (var g = Graphics.FromImage(dest))
@@ -93,6 +104,7 @@ namespace App.Core
 
                     g.DrawImage(srcImage, new Rectangle(Point.Empty, newSize), 0, 0, srcImage.Width, srcImage.Height, GraphicsUnit.Pixel, wrapMode);
                 }
+
                 return dest;
             }
         }

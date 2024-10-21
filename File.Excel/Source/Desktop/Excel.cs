@@ -8,7 +8,7 @@ namespace App.File.Desktop
     {
         public static List<T> Read<T>(string path, ExcelOptions<T> options, bool is64Bits = false) where T : class, new()
         {
-            ExcelOleDb.Excel.versionType = is64Bits ? ExcelOleDb.Excel.Version.ACE_x86_x64 : ExcelOleDb.Excel.Version.Jet_x86;
+            ExcelOleDb.Excel.VersionType = is64Bits ? ExcelOleDb.Excel.Version.ACE_x86_x64 : ExcelOleDb.Excel.Version.Jet_x86;
 
             path = GetFile(path);
 

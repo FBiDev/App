@@ -7,6 +7,22 @@ namespace App.Core.Desktop
 {
     public partial class FlatCheckBox : UserControl
     {
+        private Color _backgroundColor = Color.White;
+        private Color _borderColor = Color.FromArgb(213, 223, 229);
+        private Color _borderColorFocus = Color.FromArgb(108, 132, 199);
+
+        public FlatCheckBox()
+        {
+            InitializeComponent();
+
+            CheckBox.CheckedChanged += CheckBox_CheckedChanged;
+            Click += (sender, e) => BackgroundPanel_Click(null, null);
+
+            AlignControl();
+        }
+
+        public event EventHandler CheckedChanged = delegate { };
+
         [DefaultValue(typeof(AutoSizeMode), "GrowAndShrink")]
         public new AutoSizeMode AutoSizeMode
         {
@@ -17,70 +33,92 @@ namespace App.Core.Desktop
         [Category("_Colors"), DefaultValue(typeof(Color), "White")]
         public new Color BackColor
         {
-            get { return pnlBgWhite.BackColor; }
-            set { pnlBgWhite.BackColor = value; }
+            get { return BackgroundPanel.BackColor; }
+            set { BackgroundPanel.BackColor = value; }
         }
 
         #region Properties
-        protected Color _BackgroundColor = Color.White;
+
         [Category("_Colors"), DefaultValue(typeof(Color), "White")]
-        internal Color BackgroundColor { get { return _BackgroundColor; } set { _BackgroundColor = value; } }
+        public Color BackgroundColor
+        {
+            get { return _backgroundColor; }
+            set { _backgroundColor = value; }
+        }
 
-        protected Color _BorderColor = Color.FromArgb(213, 223, 229);
         [Category("_Colors"), DefaultValue(typeof(Color), "213, 223, 229")]
-        public Color BorderColor { get { return _BorderColor; } set { _BorderColor = value; } }
+        public Color BorderColor
+        {
+            get { return _borderColor; }
+            set { _borderColor = value; }
+        }
 
-        protected Color _BorderColorFocus = Color.FromArgb(108, 132, 199);
         [Category("_Colors"), DefaultValue(typeof(Color), "108, 132, 199")]
-        public Color BorderColorFocus { get { return _BorderColorFocus; } set { _BorderColorFocus = value; } }
+        public Color BorderColorFocus
+        {
+            get { return _borderColorFocus; }
+            set { _borderColorFocus = value; }
+        }
 
         [Category("_Colors"), DefaultValue(typeof(Color), "213, 223, 229")]
-        Color BorderColorLeave { get; set; }
+        public Color BorderColorLeave
+        {
+            get;
+            set;
+        }
         #endregion
 
         [Category("_Data"), DefaultValue("")]
         public string TextLegend
         {
-            get { return lblLegend.Text; }
+            get
+            {
+                return LegendLabel.Text;
+            }
+
             set
             {
-                lblLegend.Text = value;
+                LegendLabel.Text = value;
                 AlignControl();
             }
         }
 
-        CheckBox CheckBox { get { return chkBox; } }
-
         [DefaultValue(false)]
-        public bool Checked { get { return CheckBox.Checked; } set { CheckBox.Checked = value; } }
-        public event EventHandler CheckedChanged = delegate { };
-        public new bool Focused { get { return chkBox.Focused; } }
-
-        public FlatCheckBox()
+        public bool Checked
         {
-            InitializeComponent();
+            get { return CheckBox.Checked; }
+            set { CheckBox.Checked = value; }
+        }
 
-            CheckBox.CheckedChanged += ChkBox_CheckedChanged;
-            Click += (sender, e) => PnlBgWhite_Click(null, null);
+        public new bool Focused
+        {
+            get { return MainCheckBox.Focused; }
+        }
 
-            AlignControl();
+        private CheckBox CheckBox
+        {
+            get { return MainCheckBox; }
         }
 
         public new bool Focus()
         {
-            chkBox.Focus();
-            return chkBox.Focused;
+            MainCheckBox.Focus();
+            return MainCheckBox.Focused;
         }
 
         public void ResetColors()
         {
             if (Focused)
+            {
                 base.BackColor = BorderColorFocus;
+            }
             else
+            {
                 base.BackColor = BorderColor;
+            }
 
             BackColor = BackgroundColor;
-            BorderColorFocus = _BorderColorFocus;
+            BorderColorFocus = _borderColorFocus;
             BorderColorLeave = BorderColor;
         }
 
@@ -90,47 +128,21 @@ namespace App.Core.Desktop
             ResetColors();
         }
 
-        void AlignControl()
+        private void AlignControl()
         {
-            var newLocation = new Point((pnlBgWhite.Width - CheckBox.Width) / 2, CheckBox.Location.Y);
+            var newLocation = new Point((BackgroundPanel.Width - CheckBox.Width) / 2, CheckBox.Location.Y);
             CheckBox.Location = newLocation;
 
-            newLocation = new Point((pnlBgWhite.Width - lblLegend.Width) / 2, lblLegend.Location.Y);
-            lblLegend.Location = newLocation;
+            newLocation = new Point((BackgroundPanel.Width - LegendLabel.Width) / 2, LegendLabel.Location.Y);
+            LegendLabel.Location = newLocation;
         }
 
-        void CheckBoxBlue_SizeChanged(object sender, EventArgs e)
+        private void CheckBox_SizeChanged(object sender, EventArgs e)
         {
             AlignControl();
         }
 
-        void PnlBgWhite_Click(object sender, EventArgs e)
-        {
-            CheckBox.Focus();
-            Checked = !CheckBox.Checked;
-        }
-
-        void PnlBgWhite_DoubleClick(object sender, EventArgs e)
-        {
-            PnlBgWhite_Click(null, null);
-        }
-
-        void LblLegend_Click(object sender, EventArgs e)
-        {
-            PnlBgWhite_Click(null, null);
-        }
-
-        void LblLegend_DoubleClick(object sender, EventArgs e)
-        {
-            PnlBgWhite_Click(null, null);
-        }
-
-        void PnlBgWhite_MouseEnter(object sender, EventArgs e)
-        {
-            Cursor = Cursors.Hand;
-        }
-
-        void ChkBox_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (CheckedChanged.NotNull())
             {
@@ -147,34 +159,60 @@ namespace App.Core.Desktop
             }
         }
 
-        void ChkBox_Enter(object sender, EventArgs e)
+        private void CheckBox_Enter(object sender, EventArgs e)
         {
             base.BackColor = BorderColorFocus;
         }
 
-        void CheckBoxBlue_Leave(object sender, EventArgs e)
+        private void CheckBox_Leave(object sender, EventArgs e)
         {
             base.BackColor = BorderColorLeave;
         }
 
-        void PnlBgWhite_MouseDown(object sender, MouseEventArgs e)
+        private void BackgroundPanel_MouseEnter(object sender, EventArgs e)
         {
-            ChkBox_Enter(null, null);
+            Cursor = Cursors.Hand;
         }
 
-        void PnlBgWhite_MouseUp(object sender, MouseEventArgs e)
+        private void BackgroundPanel_Click(object sender, EventArgs e)
         {
-            CheckBoxBlue_Leave(null, null);
+            CheckBox.Focus();
+            Checked = !CheckBox.Checked;
         }
 
-        void LblLegend_MouseDown(object sender, MouseEventArgs e)
+        private void BackgroundPanel_DoubleClick(object sender, EventArgs e)
         {
-            ChkBox_Enter(null, null);
+            BackgroundPanel_Click(null, null);
         }
 
-        void LblLegend_MouseUp(object sender, MouseEventArgs e)
+        private void BackgroundPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            CheckBoxBlue_Leave(null, null);
+            CheckBox_Enter(null, null);
+        }
+
+        private void BackgroundPanel_MouseUp(object sender, MouseEventArgs e)
+        {
+            CheckBox_Leave(null, null);
+        }
+
+        private void LegendLabel_Click(object sender, EventArgs e)
+        {
+            BackgroundPanel_Click(null, null);
+        }
+
+        private void LegendLabel_DoubleClick(object sender, EventArgs e)
+        {
+            BackgroundPanel_Click(null, null);
+        }
+
+        private void LegendLabel_MouseDown(object sender, MouseEventArgs e)
+        {
+            CheckBox_Enter(null, null);
+        }
+
+        private void LegendLabel_MouseUp(object sender, MouseEventArgs e)
+        {
+            CheckBox_Leave(null, null);
         }
     }
 }

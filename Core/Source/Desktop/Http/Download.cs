@@ -5,25 +5,34 @@ namespace App.Core.Desktop
 {
     public class Download : DownloadBase
     {
-        public Download() { }
-        public Download(DownloadFile file) { SetFile(file); }
+        public Download()
+        {
+        }
+
+        public Download(DownloadFile file)
+        {
+            SetFile(file);
+        }
 
         public override async Task<bool> Start()
         {
             await base.Start();
 
-            if (Error) { MessageBox.Show(ErrorMessage); }
+            if (Error)
+            {
+                MessageBox.Show(ErrorMessage);
+            }
 
             return !Error;
         }
 
-        //==========//===Desktop//==========
+        // ==========//===Desktop//==========
         public void SetControls(Label resultLabel, ProgressBar resultBar, Label resultTime)
         {
             ProgressChanged += () => DownloadChanged(resultLabel, resultBar, resultTime);
         }
 
-        void DownloadChanged(Label resultLabel, ProgressBar resultBar, Label resultTime)
+        private void DownloadChanged(Label resultLabel, ProgressBar resultBar, Label resultTime)
         {
             resultLabel.InvokeIfRequired(() =>
             {
@@ -42,7 +51,7 @@ namespace App.Core.Desktop
                     resultBar.InvokeIfRequired(() =>
                     {
                         resultBar.Value = Percentage;
-                        resultBar.Style = (TotalBytesToReceive == -1 ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous);
+                        resultBar.Style = TotalBytesToReceive == -1 ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
                     });
                     break;
                 case DownloadStatus.FileDownloaded: break;
@@ -70,7 +79,7 @@ namespace App.Core.Desktop
             }
         }
 
-        void BarStart(ProgressBar bar, ProgressBarStyle style = ProgressBarStyle.Continuous, int maximum = 100)
+        private void BarStart(ProgressBar bar, ProgressBarStyle style = ProgressBarStyle.Continuous, int maximum = 100)
         {
             bar.Visible = true;
             bar.Maximum = maximum;
@@ -79,15 +88,15 @@ namespace App.Core.Desktop
             bar.Style = style;
         }
 
-        void BarStop(ProgressBar bar)
+        private void BarStop(ProgressBar bar)
         {
             if (bar.Style == ProgressBarStyle.Marquee)
             {
-                //bar.MarqueeAnimationSpeed = 0;
+                // bar.MarqueeAnimationSpeed = 0;
                 bar.Style = ProgressBarStyle.Continuous;
             }
 
-            //Hack for Win7
+            // Hack for Win7
             bar.Maximum++;
             bar.Value = bar.Maximum;
             bar.Value--;

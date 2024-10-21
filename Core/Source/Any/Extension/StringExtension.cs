@@ -20,8 +20,8 @@ namespace App.Core
             var name = Path.GetFileNameWithoutExtension(s);
             var ext = Path.GetExtension(s);
 
-            var NowString = DateTime.Now.ToFileName();
-            var fullName = name + "(" + NowString + ")" + ext;
+            var nowString = DateTime.Now.ToFileName();
+            var fullName = name + "(" + nowString + ")" + ext;
             return Path.Combine(folder, fullName).NormalizePath();
         }
 
@@ -32,7 +32,7 @@ namespace App.Core
 
         public static string HtmlRemoveTags(this string s)
         {
-            return Regex.Replace(s, @"<[^>]+>|", "").Trim();
+            return Regex.Replace(s, @"<[^>]+>|", string.Empty).Trim();
         }
 
         public static short? ToShortNull(this string s)
@@ -92,11 +92,19 @@ namespace App.Core
 
         public static bool Contains(this string[] source, string toCheck, StringComparison comp)
         {
-            if (source == null) return false;
+            if (source == null)
+            {
+                return false;
+            }
+
             foreach (var item in source)
             {
-                if (item.IndexOf(toCheck, comp) >= 0) return true;
+                if (item.IndexOf(toCheck, comp) >= 0)
+                {
+                    return true;
+                }
             }
+
             return false;
         }
 
@@ -124,16 +132,15 @@ namespace App.Core
 
         public static bool ContainsExtend(this string source, string value)
         {
-            string[] IgnoreSymbols = { ", The:", ",", ":", "'", "-", ".", "+", "/", " " };
-            foreach (string symbol in IgnoreSymbols)
+            string[] ignoreSymbols = { ", The:", ",", ":", "'", "-", ".", "+", "/", " " };
+            foreach (string symbol in ignoreSymbols)
             {
-                source = source.Replace(symbol, "");
-                value = value.Replace(symbol, "");
+                source = source.Replace(symbol, string.Empty);
+                value = value.Replace(symbol, string.Empty);
             }
 
             var index = CultureInfo.InvariantCulture.CompareInfo.IndexOf(
-                source, value, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace);
-            //| CompareOptions.IgnoreSymbols
+                source, value, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace); // | CompareOptions.IgnoreSymbols
 
             return index != -1;
         }
@@ -147,32 +154,38 @@ namespace App.Core
         {
             foreach (var value in valueArray)
             {
-                if (source.ContainsExtend(value)) { return false; }
+                if (source.ContainsExtend(value))
+                {
+                    return false;
+                }
             }
+
             return true;
         }
 
         public static string GetBetween(this string s, string start, string end, bool inclusive = false, bool firstMatch = true, bool singleLine = true)
         {
-            string first = firstMatch ? "?" : "";
+            string first = firstMatch ? "?" : string.Empty;
 
-            string pattern = @"" + Regex.Escape(start) + "(.*" + first + ")" + Regex.Escape(end);
+            string pattern = Regex.Escape(start) + "(.*" + first + ")" + Regex.Escape(end);
             RegexOptions opt = singleLine ? RegexOptions.Singleline : 0;
-            var rgx = new Regex(pattern, opt | RegexOptions.IgnoreCase);
 
+            var rgx = new Regex(pattern, opt | RegexOptions.IgnoreCase);
             var match = rgx.Match(s);
+
             if (match.Success)
             {
                 return match.Groups[inclusive ? 0 : 1].Value;
             }
+
             return string.Empty;
         }
 
         public static List<string> GetBetweenList(this string s, string start, string end, bool inclusive = false, bool firstMatch = true, bool singleLine = true)
         {
-            string first = firstMatch ? "?" : "";
+            string first = firstMatch ? "?" : string.Empty;
 
-            string pattern = @"" + Regex.Escape(start) + "(.*" + first + ")" + Regex.Escape(end);
+            string pattern = Regex.Escape(start) + "(.*" + first + ")" + Regex.Escape(end);
             RegexOptions opt = singleLine ? RegexOptions.Singleline : 0;
             var rgx = new Regex(pattern, opt | RegexOptions.IgnoreCase);
 
@@ -189,7 +202,7 @@ namespace App.Core
             {
                 int len = text.Length;
 
-                foreach (var entry in SpecialCharacters)
+                foreach (var entry in StringValues.SpecialCharacters)
                 {
                     if (entry.Key.IndexOf(c) != -1)
                     {
@@ -206,100 +219,5 @@ namespace App.Core
 
             return text;
         }
-
-        #region SpecialCharacters
-        public static readonly Dictionary<string, string> SpecialCharacters = new Dictionary<string, string>
-        {
-            { "äæǽ", "ae" },
-            { "öœ", "oe" },
-            { "ü", "ue" },
-            { "Ä", "Ae" },
-            { "Ü", "Ue" },
-            { "Ö", "Oe" },
-            { "ÀÁÂÃÄÅǺĀĂĄǍΑΆẢẠẦẪẨẬẰẮẴẲẶА", "A" },
-            { "àáâãåǻāăąǎªαάảạầấẫẩậằắẵẳặа", "a" },
-            { "Б", "B" },
-            { "б", "b" },
-            { "ÇĆĈĊČ", "C" },
-            { "çćĉċč", "c" },
-            { "Д", "D" },
-            { "д", "d" },
-            { "ÐĎĐΔ", "Dj" },
-            { "ðďđδ", "dj" },
-            { "ÈÉÊËĒĔĖĘĚΕΈẼẺẸỀẾỄỂỆЕЭ", "E" },
-            { "èéêëēĕėęěέεẽẻẹềếễểệеэ", "e" },
-            { "Ф", "F" },
-            { "ф", "f" },
-            { "ĜĞĠĢΓГҐ", "G" },
-            { "ĝğġģγгґ", "g" },
-            { "ĤĦ", "H" },
-            { "ĥħ", "h" },
-            { "ÌÍÎÏĨĪĬǏĮİΗΉΊΙΪỈỊИЫ", "I" },
-            { "ìíîïĩīĭǐįıηήίιϊỉịиыї", "i" },
-            { "Ĵ", "J" },
-            { "ĵ", "j" },
-            { "ĶΚК", "K" },
-            { "ķκк", "k" },
-            { "ĹĻĽĿŁΛЛ", "L" },
-            { "ĺļľŀłλл", "l" },
-            { "М", "M" },
-            { "м", "m" },
-            { "ÑŃŅŇΝН", "N" },
-            { "ñńņňŉνн", "n" },
-            { "ÒÓÔÕŌŎǑŐƠØǾΟΌΩΏỎỌỒỐỖỔỘỜỚỠỞỢО", "O" },
-            { "òóôõōŏǒőơøǿºοόωώỏọồốỗổộờớỡởợо", "o" },
-            { "П", "P" },
-            { "п", "p" },
-            { "ŔŖŘΡР", "R" },
-            { "ŕŗřρр", "r" },
-            { "ŚŜŞȘŠΣС", "S" },
-            { "śŝşșšſσςс", "s" },
-            { "ȚŢŤŦτТ", "T" },
-            { "țţťŧт", "t" },
-            { "ÙÚÛŨŪŬŮŰŲƯǓǕǗǙǛŨỦỤỪỨỮỬỰУ", "U" },
-            { "ùúûũūŭůűųưǔǖǘǚǜυύϋủụừứữửựу", "u" },
-            { "ÝŸŶΥΎΫỲỸỶỴЙ", "Y" },
-            { "ýÿŷỳỹỷỵй", "y" },
-            { "В", "V" },
-            { "в", "v" },
-            { "Ŵ", "W" },
-            { "ŵ", "w" },
-            { "ŹŻŽΖЗ", "Z" },
-            { "źżžζз", "z" },
-            { "ÆǼ", "AE" },
-            { "ß", "ss" },
-            { "Ĳ", "IJ" },
-            { "ĳ", "ij" },
-            { "Œ", "OE" },
-            { "ƒ", "f" },
-            { "ξ", "ks" },
-            { "π", "p" },
-            { "β", "v" },
-            { "μ", "m" },
-            { "ψ", "ps" },
-            { "Ё", "Yo" },
-            { "ё", "yo" },
-            { "Є", "Ye" },
-            { "є", "ye" },
-            { "Ї", "Yi" },
-            { "Ж", "Zh" },
-            { "ж", "zh" },
-            { "Х", "Kh" },
-            { "х", "kh" },
-            { "Ц", "Ts" },
-            { "ц", "ts" },
-            { "Ч", "Ch" },
-            { "ч", "ch" },
-            { "Ш", "Sh" },
-            { "ш", "sh" },
-            { "Щ", "Shch" },
-            { "щ", "shch" },
-            { "ЪъЬь", string.Empty },
-            { "Ю", "Yu" },
-            { "ю", "yu" },
-            { "Я", "Ya" },
-            { "я", "ya" },
-        };
-        #endregion
     }
 }

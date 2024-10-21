@@ -8,29 +8,14 @@ namespace App.Core.Desktop
 {
     public class DownloadBase
     {
-        public string FolderBase { get; set; }
-        public List<DownloadFile> Files { get; set; }
+        public DownloadBase()
+        {
+            Overwrite = true;
+            Files = new List<DownloadFile>();
+            FilesToDownload = new List<DownloadFile>();
+        }
 
-        public void SetFile(DownloadFile file) { Files = new List<DownloadFile> { file }; }
-
-        public List<DownloadFile> FilesToDownload { get; set; }
-        public int FilesCompleted { get; set; }
-        public bool Overwrite { get; set; }
-
-        public DateTime TimeStart { get; set; }
-        public DateTime TimeCompleted { get; set; }
-        public TimeSpan TimeElapsed { get; set; }
-
-        public long BytesReceived { get; set; }
-        public long TotalBytesToReceive { get; set; }
-        public int Percentage { get; set; }
-
-        public string Result { get; set; }
         public event Action ProgressChanged = delegate { };
-        protected DownloadStatus Status { get; set; }
-
-        public bool Error { get; set; }
-        public string ErrorMessage { get; set; }
 
         protected enum DownloadStatus
         {
@@ -42,23 +27,53 @@ namespace App.Core.Desktop
             Stopped,
         }
 
-        public DownloadBase()
+        public string FolderBase { get; set; }
+
+        public List<DownloadFile> Files { get; set; }
+
+        public List<DownloadFile> FilesToDownload { get; set; }
+
+        public int FilesCompleted { get; set; }
+
+        public bool Overwrite { get; set; }
+
+        public DateTime TimeStart { get; set; }
+
+        public DateTime TimeCompleted { get; set; }
+
+        public TimeSpan TimeElapsed { get; set; }
+
+        public long BytesReceived { get; set; }
+
+        public long TotalBytesToReceive { get; set; }
+
+        public int Percentage { get; set; }
+
+        public string Result { get; set; }
+
+        public bool Error { get; set; }
+
+        public string ErrorMessage { get; set; }
+
+        protected DownloadStatus Status { get; set; }
+
+        public void SetFile(DownloadFile file)
         {
-            Overwrite = true;
-            Files = new List<DownloadFile>();
-            FilesToDownload = new List<DownloadFile>();
+            Files = new List<DownloadFile> { file };
         }
 
         public virtual async Task<bool> Start()
         {
-            if (string.IsNullOrWhiteSpace(FolderBase)) { FolderBase = @".\"; }
+            if (string.IsNullOrWhiteSpace(FolderBase))
+            {
+                FolderBase = @".\";
+            }
 
             TimeStart = DateTime.Now;
             TimeCompleted = TimeStart;
             TimeElapsed = default(TimeSpan);
 
-            var Tasks = new List<Task>();
-            //Remove Files with same URL
+            // Remove Files with same URL
             Files = Files.Distinct().ToList();
             FilesCompleted = 0;
 
@@ -66,6 +81,7 @@ namespace App.Core.Desktop
             TotalBytesToReceive = 0;
             Percentage = 0;
 
+            var tasks = new List<Task>();
             string connecting = "Connecting..." + Environment.NewLine;
             Result = connecting;
 
@@ -91,7 +107,7 @@ namespace App.Core.Desktop
                 notPresent.Sort();
                 Files = Files.OrderBy(f => f.Path).ToList();
 
-                //Add files that not already downloaded
+                // Add files that not already downloaded
                 foreach (DownloadFile file in Files)
                 {
                     foreach (string nt in notPresent)
@@ -109,11 +125,14 @@ namespace App.Core.Desktop
                 FilesToDownload.AddRange(Files);
             }
 
-            int FilesTotal = FilesToDownload.Count;
+            int filesTotal = FilesToDownload.Count;
 
             foreach (DownloadFile file in FilesToDownload)
             {
-                if (file == null) { continue; }
+                if (file == null)
+                {
+                    continue;
+                }
 
                 using (var client = new WebClientExtend())
                 {
@@ -121,13 +140,13 @@ namespace App.Core.Desktop
                     {
                         if (args.TotalBytesToReceive > 0 && args.TotalBytesToReceive > file.TotalBytesToReceive)
                         {
-                            TotalBytesToReceive += (args.TotalBytesToReceive - file.TotalBytesToReceive);
+                            TotalBytesToReceive += args.TotalBytesToReceive - file.TotalBytesToReceive;
                             file.TotalBytesToReceive = args.TotalBytesToReceive;
                         }
 
                         if (args.BytesReceived > 0 && args.BytesReceived > file.BytesReceived)
                         {
-                            BytesReceived += (args.BytesReceived - file.BytesReceived);
+                            BytesReceived += args.BytesReceived - file.BytesReceived;
                             file.BytesReceived = args.BytesReceived;
                         }
 
@@ -136,10 +155,10 @@ namespace App.Core.Desktop
 
                         foreach (DownloadFile f in FilesToDownload)
                         {
-                            ProgressPercentage += (f.ProgressPercentage / FilesTotal);
+                            ProgressPercentage += f.ProgressPercentage / filesTotal;
                         }
 
-                        Percentage = ProgressPercentage > 100 ? 100 : (int)(Math.Ceiling(ProgressPercentage));
+                        Percentage = ProgressPercentage > 100 ? 100 : (int)Math.Ceiling(ProgressPercentage);
 
                         CalculateResult();
 
@@ -155,7 +174,7 @@ namespace App.Core.Desktop
                         Error = client.Error;
                         ErrorMessage = client.ErrorMessage;
 
-                        //Downloaded All Files
+                        // Downloaded All Files
                         if (Percentage == 100)
                         {
                             Status = DownloadStatus.Completed;
@@ -166,22 +185,22 @@ namespace App.Core.Desktop
                         }
                     };
 
-                    Tasks.Add(client.DownloadFileTaskAsync(new Uri(file.URL), file.Path));
+                    tasks.Add(client.DownloadFileTaskAsync(new Uri(file.URL), file.Path));
 
-                    if (Tasks.Count == Browser.MaxConnections)
+                    if (tasks.Count == Browser.MaxConnections)
                     {
                         Status = DownloadStatus.NextFiles;
                         ProgressChanged();
 
-                        await Task.WhenAll(Tasks);
-                        Tasks.Clear();
+                        await Task.WhenAll(tasks);
+                        tasks.Clear();
                     }
                 }
             }
 
             try
             {
-                await Task.WhenAll(Tasks.Where(i => i != null));
+                await Task.WhenAll(tasks.Where(i => i != null));
 
                 if (Percentage == 100)
                 {
@@ -193,7 +212,7 @@ namespace App.Core.Desktop
                         TotalBytesToReceive += f.TotalBytesToReceive;
                     }
 
-                    FilesCompleted = FilesTotal;
+                    FilesCompleted = filesTotal;
 
                     TimeElapsed = new TimeSpan(DateTime.Now.Ticks - TimeStart.Ticks);
                     TimeCompleted = DateTime.Now;
@@ -216,18 +235,18 @@ namespace App.Core.Desktop
             return !Error;
         }
 
-        void CalculateResult()
+        private void CalculateResult()
         {
-            int FilesTotal = FilesToDownload.Count;
+            int filesTotal = FilesToDownload.Count;
             string progressBytes = string.Empty;
             string progressFiles = string.Empty;
 
             progressBytes = "Downloaded " + DownloadedProgress(BytesReceived, TotalBytesToReceive);
-            progressFiles = " (" + FilesCompleted + "/" + FilesTotal + ")";
+            progressFiles = " (" + FilesCompleted + "/" + filesTotal + ")";
             Result = progressBytes + progressFiles;
         }
 
-        string DownloadedProgress(double bytesIn, double bytesTotal)
+        private string DownloadedProgress(double bytesIn, double bytesTotal)
         {
             var bytesProgress = Archive.CalculateSize(bytesIn);
             double bytesCalc = bytesTotal <= 0 ? bytesIn : bytesTotal;

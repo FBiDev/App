@@ -7,6 +7,15 @@ namespace App.Core.Desktop
 {
     public class FlatTable : TableLayoutPanel
     {
+        public FlatTable()
+        {
+            AutoSize = true;
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            Dock = DockStyle.Top;
+            Margin = new Padding(0);
+            MinimumSize = new Size(64, 34);
+        }
+
         #region Defaults
         [DefaultValue(true)]
         public new bool AutoSize
@@ -42,22 +51,13 @@ namespace App.Core.Desktop
             get { return base.Margin; }
             set { base.Margin = value; }
         }
+        #endregion
 
         [DefaultValue(false)]
         public bool FillOnFormResize { get; set; }
-        #endregion
 
         [Browsable(false)]
         public Size SizeOriginal { get; set; }
-
-        public FlatTable()
-        {
-            AutoSize = true;
-            AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            Dock = DockStyle.Top;
-            Margin = new Padding(0);
-            MinimumSize = new Size(64, 34);
-        }
 
         protected override void OnHandleCreated(EventArgs e)
         {
@@ -74,7 +74,7 @@ namespace App.Core.Desktop
             }
         }
 
-        void Control_Enter(object sender, EventArgs e)
+        private void Control_Enter(object sender, EventArgs e)
         {
             var pnt = Parent;
 

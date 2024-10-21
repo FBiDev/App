@@ -7,56 +7,67 @@ namespace App.Core.Desktop
     {
         public static void DrawRoundBorder(this Graphics g, Control control, Color borderColor, int borderSize = 1, bool borderRound = true)
         {
-            if (borderSize <= 0) { return; }
+            if (borderSize <= 0)
+            {
+                return;
+            }
 
             Rectangle recInner = control.ClientRectangle;
-            if (control is GroupBox) recInner = new Rectangle(0, 6, control.Width, control.Height - 6);
 
-            //ControlPaint.DrawBorder(g, recInner, borderColor, ButtonBorderStyle.Solid);
-            ControlPaint.DrawBorder(g, recInner,
-                borderColor, borderSize, ButtonBorderStyle.Solid,
-                borderColor, borderSize, ButtonBorderStyle.Solid,
-                borderColor, borderSize, ButtonBorderStyle.Solid,
-                borderColor, borderSize, ButtonBorderStyle.Solid);
+            if (control is GroupBox)
+            {
+                recInner = new Rectangle(0, 6, control.Width, control.Height - 6);
+            }
 
-            if (!borderRound) { return; }
+            // ControlPaint.DrawBorder(g, recInner, borderColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(g, recInner, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid);
+
+            if (!borderRound)
+            {
+                return;
+            }
 
             var pBlank = new Pen(control.Parent.BackColor);
 
             if (pBlank.Color == Color.Transparent)
+            {
                 pBlank = new Pen(control.BackColor);
+            }
 
             var pBorder = new Pen(borderColor);
 
-            int WidthB = control.Width - 1;
-            int HeightB = control.Height - 1;
-            int Height0 = 0;
+            int widthB = control.Width - 1;
+            int heightB = control.Height - 1;
+            int height0 = 0;
 
-            if (control is GroupBox) Height0 = 6;
+            if (control is GroupBox)
+            {
+                height0 = 6;
+            }
 
-            //TopL
-            g.DrawLine(pBlank, 0, Height0, 2, Height0);
-            g.DrawLine(pBlank, 0, Height0, 0, Height0 + 2);
-            g.DrawLine(pBlank, 0, Height0, 1, Height0 + 1);
-            g.DrawLine(pBorder, 0, Height0 + 3, 3, Height0);
+            // TopL
+            g.DrawLine(pBlank, 0, height0, 2, height0);
+            g.DrawLine(pBlank, 0, height0, 0, height0 + 2);
+            g.DrawLine(pBlank, 0, height0, 1, height0 + 1);
+            g.DrawLine(pBorder, 0, height0 + 3, 3, height0);
 
-            //TopR
-            g.DrawLine(pBlank, WidthB, Height0, WidthB - 2, Height0);
-            g.DrawLine(pBlank, WidthB, Height0, WidthB, Height0 + 2);
-            g.DrawLine(pBlank, WidthB, Height0, WidthB - 1, Height0 + 1);
-            g.DrawLine(pBorder, WidthB, Height0 + 3, WidthB - 3, Height0);
+            // TopR
+            g.DrawLine(pBlank, widthB, height0, widthB - 2, height0);
+            g.DrawLine(pBlank, widthB, height0, widthB, height0 + 2);
+            g.DrawLine(pBlank, widthB, height0, widthB - 1, height0 + 1);
+            g.DrawLine(pBorder, widthB, height0 + 3, widthB - 3, height0);
 
-            //BottomL
-            g.DrawLine(pBlank, 0, HeightB, 2, HeightB);
-            g.DrawLine(pBlank, 0, HeightB, 0, HeightB - 2);
-            g.DrawLine(pBlank, 0, HeightB, 1, HeightB - 1);
-            g.DrawLine(pBorder, 0, HeightB - 3, 3, HeightB);
+            // BottomL
+            g.DrawLine(pBlank, 0, heightB, 2, heightB);
+            g.DrawLine(pBlank, 0, heightB, 0, heightB - 2);
+            g.DrawLine(pBlank, 0, heightB, 1, heightB - 1);
+            g.DrawLine(pBorder, 0, heightB - 3, 3, heightB);
 
-            //BottomR
-            g.DrawLine(pBlank, WidthB, HeightB, WidthB - 2, HeightB);
-            g.DrawLine(pBlank, WidthB, HeightB, WidthB, HeightB - 2);
-            g.DrawLine(pBlank, WidthB, HeightB, WidthB - 1, HeightB - 1);
-            g.DrawLine(pBorder, WidthB, HeightB - 3, WidthB - 3, HeightB);
+            // BottomR
+            g.DrawLine(pBlank, widthB, heightB, widthB - 2, heightB);
+            g.DrawLine(pBlank, widthB, heightB, widthB, heightB - 2);
+            g.DrawLine(pBlank, widthB, heightB, widthB - 1, heightB - 1);
+            g.DrawLine(pBorder, widthB, heightB - 3, widthB - 3, heightB);
         }
     }
 }

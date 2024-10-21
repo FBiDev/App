@@ -7,6 +7,22 @@ namespace App.Core.Desktop
 {
     public partial class FlatTextBoxBase : UserControl
     {
+        private Color _borderColor = Color.FromArgb(213, 223, 229);
+        private Color _borderColorFocus = Color.FromArgb(108, 132, 199);
+        private Color _backgroundColor = Color.White;
+        private Color _labelTextColor = Color.FromArgb(108, 132, 199);
+
+        public FlatTextBoxBase()
+        {
+            InitializeComponent();
+
+            ContentPanel.MouseEnter += PnlBg_MouseEnter;
+            SubtitleLabel.MouseEnter += LblSubtitle_MouseEnter;
+
+            Font = new Font("Segoe UI", 9);
+            Margin = new Padding(2);
+        }
+
         #region Defaults
         [DefaultValue(typeof(AnchorStyles), "Top, Left")]
         public new AnchorStyles Anchor
@@ -39,73 +55,76 @@ namespace App.Core.Desktop
 
         #region Properties
         [Category("_Colors"), DefaultValue(typeof(Color), "213, 223, 229")]
-        public override Color BackColor { get { return base.BackColor; } set { base.BackColor = value; } }
+        public override Color BackColor
+        {
+            get { return base.BackColor; }
+            set { base.BackColor = value; }
+        }
 
-        protected Color _BorderColor = Color.FromArgb(213, 223, 229);
         [Category("_Colors"), DefaultValue(typeof(Color), "213, 223, 229")]
-        public Color BorderColor { get { return _BorderColor; } set { _BorderColor = value; } }
+        public Color BorderColor
+        {
+            get { return _borderColor; }
+            set { _borderColor = value; }
+        }
 
-        protected Color _BorderColorFocus = Color.FromArgb(108, 132, 199);
         [Category("_Colors"), DefaultValue(typeof(Color), "108, 132, 199")]
-        public Color BorderColorFocus { get { return _BorderColorFocus; } set { _BorderColorFocus = value; } }
+        public Color BorderColorFocus
+        {
+            get { return _borderColorFocus; }
+            set { _borderColorFocus = value; }
+        }
 
-        protected Color _BackgroundColor = Color.White;
         [Category("_Colors"), DefaultValue(typeof(Color), "White")]
-        public Color BackgroundColor { get { return _BackgroundColor; } set { _BackgroundColor = value; } }
+        public Color BackgroundColor
+        {
+            get { return _backgroundColor; }
+            set { _backgroundColor = value; }
+        }
 
-        protected Color _LabelTextColor = Color.FromArgb(108, 132, 199);
         [Category("_Colors"), DefaultValue(typeof(Color), "108, 132, 199")]
-        public Color LabelTextColor { get { return _LabelTextColor; } set { _LabelTextColor = value; } }
+        public Color LabelTextColor
+        {
+            get { return _labelTextColor; }
+            set { _labelTextColor = value; }
+        }
 
         [Category("_Colors"), DefaultValue(typeof(string), "Label")]
-        public string LabelText { get { return lblSubtitle.Text; } set { lblSubtitle.Text = value; } }
-        #endregion
-
-        public FlatTextBoxBase()
+        public string LabelText
         {
-            InitializeComponent();
-
-            pnlContent.MouseEnter += PnlBg_MouseEnter;
-            lblSubtitle.MouseEnter += LblSubtitle_MouseEnter;
-
-            Font = new Font("Segoe UI", 9);
-            Margin = new Padding(2);
+            get { return SubtitleLabel.Text; }
+            set { SubtitleLabel.Text = value; }
         }
+        #endregion
 
         protected override void OnHandleCreated(EventArgs e)
         {
             BackColor = BorderColor;
-            pnlContent.BackColor = BackgroundColor;
+            ContentPanel.BackColor = BackgroundColor;
 
-            lblSubtitle.BackColor = BackgroundColor;
-            lblSubtitle.ForeColor = LabelTextColor;
+            SubtitleLabel.BackColor = BackgroundColor;
+            SubtitleLabel.ForeColor = LabelTextColor;
         }
 
         protected void ChangeCursor()
         {
-            if (TabStop)
-                Cursor = Cursors.IBeam;
-            else
-                Cursor = Cursors.No;
+            Cursor = TabStop ? Cursors.IBeam : Cursors.No;
         }
 
         protected void ChangeCursor2()
         {
-            if (TabStop)
-                Cursor = Cursors.Default;
-            else
-                Cursor = Cursors.No;
+            Cursor = TabStop ? Cursors.Default : Cursors.No;
         }
 
         protected void TextBoxBase_Paint(object sender, PaintEventArgs e)
         {
             if (Parent != null)
             {
-                //this.MaximumSize = new Size(Parent.Width, this.MaximumSize.Height);
-                //if (Width > MaximumSize.Width)
-                //{
+                // this.MaximumSize = new Size(Parent.Width, this.MaximumSize.Height);
+                // if (Width > MaximumSize.Width)
+                // {
                 //    Width = MaximumSize.Width;
-                //}
+                // }
             }
         }
 

@@ -8,6 +8,9 @@ namespace App.Core.Desktop
 {
     public partial class DebugForm : BaseForm2
     {
+        private bool enableFormLevelDoubleBuffering = true;
+        private int originalExStyle = -1;
+
         public DebugForm()
         {
             InitializeComponent();
@@ -18,7 +21,10 @@ namespace App.Core.Desktop
             Shown += Form_Shown;
             HandleCreated += (sender, e) =>
             {
-                if (DesignMode) return;
+                if (DesignMode)
+                {
+                    return;
+                }
 
                 ResizeBegin += (s, ev) => { TurnOffFormLevelDoubleBuffering(); };
                 ResizeEnd += (s, ev) => { TurnOnFormLevelDoubleBuffering(); };
@@ -41,9 +47,96 @@ namespace App.Core.Desktop
             mniSqlBaseCopyLog.MouseDown += MniSqlBaseCopyLog_MouseDown;
         }
 
-        void Form_Load(object sender, EventArgs e)
+        #region Fix_Flickering_Controls
+        protected override CreateParams CreateParams
         {
-            //TopMost = true;
+            get
+            {
+                if (originalExStyle == -1)
+                {
+                    originalExStyle = base.CreateParams.ExStyle;
+                }
+
+                CreateParams cp = base.CreateParams;
+                if (enableFormLevelDoubleBuffering && DesignMode == false)
+                {
+                    cp.ExStyle |= 0x02000000;   // WS_EX_COMPOSITED
+                }
+                else
+                {
+                    cp.ExStyle = originalExStyle;
+                }
+
+                return cp;
+            }
+        }
+        #endregion
+
+        public void TabSelectIndex(int index)
+        {
+            tabControl.SelectedIndex = index;
+        }
+
+        public void UpdateErrors()
+        {
+            UpdateErrorTitle();
+            var errors = DebugManager.GetErrors();
+
+            txtErrors.Text = string.Empty;
+            foreach (KeyValuePair<string, int> item in errors)
+            {
+                txtErrors.Text += "[" + item.Value + "x] " + item.Key;
+            }
+        }
+
+        public void UpdateErrorTitle()
+        {
+            var errors = DebugManager.GetErrors();
+            string title = errors.Count + " Error";
+
+            if (errors.Count == 0 || errors.Count > 1)
+            {
+                title += "s";
+            }
+
+            tabError.Text = title;
+        }
+
+        public void UpdateMessages()
+        {
+            UpdateMessageTitle();
+            txtMessages.Text = DebugManager.GetMessages();
+        }
+
+        public void UpdateMessageTitle()
+        {
+            var messages = DebugManager.GetMessages();
+            int total = messages.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Length - 1;
+            string title = total + " Message";
+
+            if (total == 0 || total > 1)
+            {
+                title += "s";
+            }
+
+            tabMessage.Text = title;
+        }
+
+        private void TurnOnFormLevelDoubleBuffering()
+        {
+            enableFormLevelDoubleBuffering = true;
+            UpdateStyles();
+        }
+
+        private void TurnOffFormLevelDoubleBuffering()
+        {
+            enableFormLevelDoubleBuffering = false;
+            UpdateStyles();
+        }
+
+        private void Form_Load(object sender, EventArgs e)
+        {
+            // TopMost = true;
             Top = Screen.PrimaryScreen.WorkingArea.Height - Height;
             Left = 0;
 
@@ -69,9 +162,11 @@ namespace App.Core.Desktop
             UpdateMessages();
         }
 
-        void Form_Shown(object sender, EventArgs e) { }
+        private void Form_Shown(object sender, EventArgs e)
+        {
+        }
 
-        void TabControl_SelectedIndexChanged(object sender, EventArgs e)
+        private void TabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (tabControl.SelectedTab == tabSQLSistema)
             {
@@ -83,12 +178,7 @@ namespace App.Core.Desktop
             }
         }
 
-        public void TabSelectIndex(int index)
-        {
-            tabControl.SelectedIndex = index;
-        }
-
-        void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+        private void DataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
             ((DataGridView)sender).Visible = true;
             if (((DataGridView)sender) == dgvSQLSistema)
@@ -106,112 +196,53 @@ namespace App.Core.Desktop
             }
         }
 
-        void MniSqlSystemCopyCommand_MouseDown(object sender, MouseEventArgs e)
+        private void MniSqlSystemCopyCommand_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left) return;
+            if (e.Button != MouseButtons.Left)
+            {
+                return;
+            }
 
             var log = dgvSQLSistema.GetCurrentRowObject<SqlLog>();
             ClipboardSafe.SetText(log.Command + Environment.NewLine);
         }
 
-        void MniSqlBaseCopyCommand_MouseDown(object sender, MouseEventArgs e)
+        private void MniSqlBaseCopyCommand_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left) return;
+            if (e.Button != MouseButtons.Left)
+            {
+                return;
+            }
 
             var log = dgvSQLBase.GetCurrentRowObject<SqlLog>();
             ClipboardSafe.SetText(log.Command + Environment.NewLine);
         }
 
-        void MniSqlSystemCopyLog_MouseDown(object sender, MouseEventArgs e)
+        private void MniSqlSystemCopyLog_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left) return;
+            if (e.Button != MouseButtons.Left)
+            {
+                return;
+            }
 
             var log = dgvSQLSistema.GetCurrentRowValue(true);
             ClipboardSafe.SetText(log);
         }
 
-        void MniSqlBaseCopyLog_MouseDown(object sender, MouseEventArgs e)
+        private void MniSqlBaseCopyLog_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left) return;
+            if (e.Button != MouseButtons.Left)
+            {
+                return;
+            }
 
             var log = dgvSQLBase.GetCurrentRowValue(true);
             ClipboardSafe.SetText(log);
         }
 
-        public void UpdateErrors()
-        {
-            UpdateErrorTitle();
-            var errors = DebugManager.GetErrors();
-
-            txtErrors.Text = string.Empty;
-            foreach (KeyValuePair<string, int> item in errors)
-            {
-                txtErrors.Text += "[" + item.Value + "x] " + item.Key;
-            }
-        }
-
-        public void UpdateErrorTitle()
-        {
-            var errors = DebugManager.GetErrors();
-            string title = errors.Count + " Error";
-
-            if (errors.Count == 0 || errors.Count > 1) { title += "s"; }
-            tabError.Text = title;
-        }
-
-        public void UpdateMessages()
-        {
-            UpdateMessageTitle();
-            txtMessages.Text = DebugManager.GetMessages();
-        }
-
-        public void UpdateMessageTitle()
-        {
-            var messages = DebugManager.GetMessages();
-            int total = (messages.Split(new string[] { Environment.NewLine }, StringSplitOptions.None)).Length - 1;
-            string title = total + " Message";
-
-            if (total == 0 || total > 1) { title += "s"; }
-            tabMessage.Text = title;
-        }
-
-        void GarbageCollectOnClick(object sender, EventArgs e)
+        private void GarbageCollectOnClick(object sender, EventArgs e)
         {
             AppManager.CollectGarbage();
         }
-
-        #region Fix_Flickering_Controls
-        bool enableFormLevelDoubleBuffering = true;
-        int originalExStyle = -1;
-
-        void TurnOnFormLevelDoubleBuffering()
-        {
-            enableFormLevelDoubleBuffering = true;
-            UpdateStyles();
-        }
-
-        void TurnOffFormLevelDoubleBuffering()
-        {
-            enableFormLevelDoubleBuffering = false;
-            UpdateStyles();
-        }
-
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                if (originalExStyle == -1)
-                    originalExStyle = base.CreateParams.ExStyle;
-
-                CreateParams cp = base.CreateParams;
-                if (enableFormLevelDoubleBuffering && DesignMode == false)
-                    cp.ExStyle |= 0x02000000;   // WS_EX_COMPOSITED
-                else
-                    cp.ExStyle = originalExStyle;
-
-                return cp;
-            }
-        }
-        #endregion
     }
 }

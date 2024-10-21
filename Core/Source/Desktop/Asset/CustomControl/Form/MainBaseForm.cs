@@ -8,6 +8,62 @@ namespace App.Core.Desktop
 {
     public partial class MainBaseForm : Form
     {
+        private bool _statusBarEnable;
+
+        public MainBaseForm()
+        {
+            InitializeComponent();
+
+            IsDesignMode = true;
+            AutoResizeWindow = true;
+            AutoCenterWindow = true;
+
+            HandleCreated += (sender, e) =>
+            {
+                Init();
+
+                if (IsDesignMode)
+                {
+                    return;
+                }
+
+                ThemeBase.CheckTheme(this);
+            };
+
+            Shown += (sender, e) =>
+            {
+                IsDesignMode = DesignMode;
+
+                if (IsDesignMode)
+                {
+                    return;
+                }
+
+                AwaitShown().TryAwait();
+
+                // ThemeBase.CheckTheme(this);
+            };
+
+            if (DesignMode == false)
+            {
+                Opacity = 0;
+            }
+
+            ResizeRedraw = true;
+            StatusBarEnable = true;
+            DoubleBuffered = true;
+        }
+
+        public event Action TabPressed = delegate { };
+
+        public static Icon Ico { get; set; }
+
+        public static bool DebugMode { get; set; }
+
+        public static bool AutoResizeWindow { get; set; }
+
+        public static bool AutoCenterWindow { get; set; }
+
         [DefaultValue(typeof(AutoScaleMode), "None")]
         public new AutoScaleMode AutoScaleMode
         {
@@ -15,11 +71,12 @@ namespace App.Core.Desktop
             set { base.AutoScaleMode = value; }
         }
 
-        protected bool _statusBarEnable;
-
         public bool StatusBarEnable
         {
-            get { return _statusBarEnable; }
+            get
+            {
+                return _statusBarEnable;
+            }
 
             set
             {
@@ -33,75 +90,7 @@ namespace App.Core.Desktop
             }
         }
 
-        public static Icon Ico { get; set; }
-        public bool isDesignMode = true;
-        public static bool DebugMode;
-
-        public MainBaseForm()
-        {
-            InitializeComponent();
-            HandleCreated += (sender, e) =>
-            {
-                Init();
-                if (isDesignMode) return;
-
-                ThemeBase.CheckTheme(this);
-            };
-
-            Shown += (sender, e) =>
-            {
-                isDesignMode = DesignMode;
-                if (isDesignMode) return;
-
-                AwaitShown().TryAwait();
-                //ThemeBase.CheckTheme(this);
-            };
-
-            if (DesignMode == false)
-                Opacity = 0;
-
-            ResizeRedraw = true;
-            StatusBarEnable = true;
-            DoubleBuffered = true;
-        }
-
-        async Task AwaitShown()
-        {
-            await Task.Delay(50);
-            Opacity = 1;
-        }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-
-            AutoScaleDimensions = new SizeF(0F, 0F);
-            AutoScaleMode = AutoScaleMode.None;
-        }
-
-        public event Action TabPressed = delegate { };
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Tab)
-            {
-                if (TabPressed.NotNull())
-                {
-                    TabPressed();
-                }
-            }
-            else if (DebugMode && keyData == (Keys.F1))
-            {
-                DebugManager.Open();
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        void Init()
-        {
-            if (Ico is Icon)
-                Icon = Ico;
-        }
+        public bool IsDesignMode { get; set; }
 
         public void SetMainFormContent(Form frm)
         {
@@ -112,14 +101,53 @@ namespace App.Core.Desktop
             frm.Show();
         }
 
-        public static bool AutoResizeWindow = true;
-        public static bool AutoCenterWindow = true;
-
         public void CenterWindow()
         {
-            if (AutoCenterWindow == false) return;
+            if (AutoCenterWindow == false)
+            {
+                return;
+            }
 
             this.InvokeIfRequired(CenterToScreen);
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+
+            AutoScaleDimensions = new SizeF(0F, 0F);
+            AutoScaleMode = AutoScaleMode.None;
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Tab)
+            {
+                if (TabPressed.NotNull())
+                {
+                    TabPressed();
+                }
+            }
+            else if (DebugMode && keyData == Keys.F1)
+            {
+                DebugManager.Open();
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private async Task AwaitShown()
+        {
+            await Task.Delay(50);
+            Opacity = 1;
+        }
+
+        private void Init()
+        {
+            if (Ico is Icon)
+            {
+                Icon = Ico;
+            }
         }
     }
 }

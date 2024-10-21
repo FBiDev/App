@@ -30,27 +30,8 @@ namespace App.Cohab
                     Notes = row.Value<string>("Usuario_Notes")
                 });
             }
+
             return list;
-        }
-        #endregion
-
-        #region " _Consistir "
-        string Consistir()
-        {
-            string erro = null;
-            return erro;
-        }
-        #endregion
-
-        #region " _Parameters "
-        List<SqlParameter> GetFilters(Usuario obj)
-        {
-            return new List<SqlParameter>
-            {
-                new SqlParameter("@Ativo", obj.Ativo),
-                new SqlParameter("@Login",  obj.Login),
-                new SqlParameter("@Nome", obj.Nome)
-            };
         }
         #endregion
 
@@ -66,7 +47,7 @@ namespace App.Cohab
         public async Task<List<Usuario>> PesquisarAtivos()
         {
             var obj = new Usuario { Ativo = true };
-            return (await Pesquisar(obj));
+            return await Pesquisar(obj);
         }
 
         public async Task<Usuario> Buscar(Usuario obj)
@@ -77,7 +58,7 @@ namespace App.Cohab
         public async Task<Usuario> BuscarLogin(string login)
         {
             var obj = new Usuario { Login = login.Trim() };
-            return (await Buscar(obj));
+            return await Buscar(obj);
         }
 
         public async Task<List<Usuario>> ListarCombo()
@@ -170,5 +151,25 @@ namespace App.Cohab
 
             return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
         }
+
+        #region " _Consistir "
+        private string Consistir()
+        {
+            string erro = null;
+            return erro;
+        }
+        #endregion
+
+        #region " _Parameters "
+        private List<SqlParameter> GetFilters(Usuario obj)
+        {
+            return new List<SqlParameter>
+            {
+                new SqlParameter("@Ativo", obj.Ativo),
+                new SqlParameter("@Login",  obj.Login),
+                new SqlParameter("@Nome", obj.Nome)
+            };
+        }
+        #endregion
     }
 }

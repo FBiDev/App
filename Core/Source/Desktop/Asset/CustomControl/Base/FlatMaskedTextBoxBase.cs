@@ -7,7 +7,21 @@ namespace App.Core.Desktop
 {
     public class FlatMaskedTextBoxBase : MaskedTextBox
     {
+        private static readonly PropertyInfo MaxLengthProperty = typeof(TextBoxBase).GetProperty("MaxLength", BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+        private static readonly MethodInfo MaxLengthMethod = MaxLengthProperty.GetSetMethod();
+        private static readonly FieldInfo MaxLengthField = typeof(TextBoxBase).GetField("maxLength", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        public FlatMaskedTextBoxBase()
+        {
+            GotFocus += FlatMaskedTextBoxBase_GotFocus;
+            LostFocus += FlatMaskedTextBoxBase_LostFocus;
+            TextChanged += FlatMaskedTextBoxBase_TextChanged;
+
+            MxLength = 50;
+        }
+
         public string LastText { get; set; }
+
         public bool TxtChanged { get; set; }
 
         [DefaultValue(50)]
@@ -19,26 +33,33 @@ namespace App.Core.Desktop
             set { }
         }
 
-        public FlatMaskedTextBoxBase()
+        public void SetMaxLength(int value)
         {
-            GotFocus += FlatMaskedTextBoxBase_GotFocus;
-            LostFocus += FlatMaskedTextBoxBase_LostFocus;
-            TextChanged += FlatMaskedTextBoxBase_TextChanged;
-
-            MxLength = 50;
+            if (IsHandleCreated)
+            {
+                MaxLengthMethod.Invoke(this, new object[] { value });
+                MaxLengthField.SetValue(this, value);
+            }
         }
 
-        void FlatMaskedTextBoxBase_LostFocus(object sender, EventArgs e)
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+
+            SetMaxLength(MxLength);
+        }
+
+        private void FlatMaskedTextBoxBase_LostFocus(object sender, EventArgs e)
         {
             TxtChanged = false;
         }
 
-        void FlatMaskedTextBoxBase_GotFocus(object sender, EventArgs e)
+        private void FlatMaskedTextBoxBase_GotFocus(object sender, EventArgs e)
         {
             TxtChanged = false;
         }
 
-        void FlatMaskedTextBoxBase_TextChanged(object sender, EventArgs e)
+        private void FlatMaskedTextBoxBase_TextChanged(object sender, EventArgs e)
         {
             TxtChanged = false;
 
@@ -54,25 +75,5 @@ namespace App.Core.Desktop
                 TxtChanged = true;
             }
         }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-
-            SetMaxLength(MxLength);
-        }
-
-        public void SetMaxLength(int value)
-        {
-            if (IsHandleCreated)
-            {
-                MaxLengthProperty_Set.Invoke(this, new object[] { value });
-                MaxLengthField.SetValue(this, value);
-            }
-        }
-
-        private static readonly PropertyInfo MaxLengthProperty = typeof(TextBoxBase).GetProperty("MaxLength", BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
-        private static readonly MethodInfo MaxLengthProperty_Set = MaxLengthProperty.GetSetMethod();
-        private static readonly FieldInfo MaxLengthField = typeof(TextBoxBase).GetField("maxLength", BindingFlags.Instance | BindingFlags.NonPublic);
     }
 }

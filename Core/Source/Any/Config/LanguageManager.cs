@@ -8,30 +8,54 @@ namespace App.Core
     public static class LanguageManager
     {
         #region Language
-        public static CultureInfo CultureBrazil = SetCultureDateNames(CultureID.Brazil_Portuguese);
-        public static CultureInfo CultureUSA = SetCultureDateNames(CultureID.UnitedStates_English);
+        public static readonly CultureInfo CultureBrazil = SetCultureDateNames(CultureID.Brazil_Portuguese);
+        public static readonly CultureInfo CultureUSA = SetCultureDateNames(CultureID.UnitedStates_English);
 
-        static CultureInfo Language = SetCultureDateNames(CultureID.UnitedStates_English);
-        static RegionInfo Country;
+        private static CultureInfo language = SetCultureDateNames(CultureID.UnitedStates_English);
+        private static RegionInfo country;
 
-        public static CultureInfo LanguageNumbers;
+        public static CultureInfo LanguageNumbers { get; private set; }
 
-        public static CultureInfo GetLanguage() { return Language; }
+        public static string CurrencySymbol
+        {
+            get { return language.NumberFormat.CurrencySymbol; }
+        }
+
+        public static string CurrencyGroupSeparator
+        {
+            get { return language.NumberFormat.CurrencyGroupSeparator; }
+        }
+
+        public static string CurrencyDecimalSeparator
+        {
+            get { return language.NumberFormat.CurrencyDecimalSeparator; }
+        }
+
+        public static string NumberDecimalSeparator
+        {
+            get { return language.NumberFormat.NumberDecimalSeparator; }
+        }
+        #endregion
+
+        public static CultureInfo GetLanguage()
+        {
+            return language;
+        }
 
         public static void SetLanguage(CultureID cultureID)
         {
-            var CultureName = Convert.ToInt32(cultureID);
-            Language = new CultureInfo(CultureName);
+            var cultureName = Convert.ToInt32(cultureID);
+            language = new CultureInfo(cultureName);
 
-            SetCultureDateNames(Language);
+            SetCultureDateNames(language);
 
-            //Culture for any thread
-            CultureInfo.DefaultThreadCurrentCulture = Language;
+            // Culture for any thread
+            CultureInfo.DefaultThreadCurrentCulture = language;
 
-            //Culture for UI in any thread
-            CultureInfo.DefaultThreadCurrentUICulture = Language;
+            // Culture for UI in any thread
+            CultureInfo.DefaultThreadCurrentUICulture = language;
 
-            Country = new RegionInfo(Thread.CurrentThread.CurrentUICulture.LCID);
+            country = new RegionInfo(Thread.CurrentThread.CurrentUICulture.LCID);
         }
 
         public static void SetLanguageNumbers(CultureID name)
@@ -50,7 +74,7 @@ namespace App.Core
 
         public static void SetCultureDateNames(CultureInfo culture)
         {
-            //Change Culture Info Month names.
+            // Change Culture Info Month names
             culture.DateTimeFormat.MonthNames = culture.DateTimeFormat.MonthNames.Select(m => culture.TextInfo.ToTitleCase(m)).ToArray();
             culture.DateTimeFormat.MonthGenitiveNames = culture.DateTimeFormat.MonthGenitiveNames.Select(m => culture.TextInfo.ToTitleCase(m)).ToArray();
             culture.DateTimeFormat.AbbreviatedMonthNames = culture.DateTimeFormat.AbbreviatedMonthNames.Select(m => culture.TextInfo.ToTitleCase(m)).ToArray();
@@ -59,29 +83,8 @@ namespace App.Core
 
             if (culture.LCID == (int)CultureID.Brazil_Portuguese)
             {
-                culture.DateTimeFormat.DayNames = culture.DateTimeFormat.DayNames.Select(d => d.Replace("-Feira", "")).ToArray();
+                culture.DateTimeFormat.DayNames = culture.DateTimeFormat.DayNames.Select(d => d.Replace("-Feira", string.Empty)).ToArray();
             }
         }
-
-        public static string CurrencySymbol
-        {
-            get { return Language.NumberFormat.CurrencySymbol; }
-        }
-
-        public static string CurrencyGroupSeparator
-        {
-            get { return Language.NumberFormat.CurrencyGroupSeparator; }
-        }
-
-        public static string CurrencyDecimalSeparator
-        {
-            get { return Language.NumberFormat.CurrencyDecimalSeparator; }
-        }
-
-        public static string NumberDecimalSeparator
-        {
-            get { return Language.NumberFormat.NumberDecimalSeparator; }
-        }
-        #endregion
     }
 }

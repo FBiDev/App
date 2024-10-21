@@ -9,7 +9,8 @@ namespace App.Core.Desktop
         public FlatProgressBar()
         {
             InitializeComponent();
-            //this.SetStyle(ControlStyles.UserPaint, true);
+
+            // this.SetStyle(ControlStyles.UserPaint, true);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -19,7 +20,9 @@ namespace App.Core.Desktop
             var rec = new Rectangle(0, 0, Width, Height);
 
             if (ProgressBarRenderer.IsSupported)
+            {
                 ProgressBarRenderer.DrawHorizontalBar(e.Graphics, rec);
+            }
 
             double scaleFactor = (Value - (double)Minimum) / (Maximum - (double)Minimum);
             rec.Width = (int)((rec.Width * scaleFactor) - 1);

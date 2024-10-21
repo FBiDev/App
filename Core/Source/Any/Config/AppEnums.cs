@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace App.Core
 {
     public enum CultureID

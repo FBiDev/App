@@ -7,14 +7,37 @@ namespace App.Core
 {
     public static class Brotli
     {
-        static Assembly assembly;
+        private static readonly string DllName = "Brotli.Core";
 
-        static readonly string DllName = "Brotli.Core";
-        static readonly string DllFile = "" + DllName + ".dll";
+        private static readonly string DllFile = DllName + ".dll";
 
-        static Type BrotliClass;
+        private static Assembly assembly;
 
-        static bool LoadAssembly()
+        private static Type brotliClass;
+
+        public static byte[] Decompress(byte[] data)
+        {
+            if (LoadAssembly() == false)
+            {
+                return null;
+            }
+
+            var args = new object[] { new MemoryStream(data), CompressionMode.Decompress };
+            using (var stream = (Stream)Activator.CreateInstance(brotliClass, args))
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    data = memoryStream.ToArray();
+
+                    return data;
+                }
+
+                // using (var reader = new StreamReader(stream)) { return reader.ReadToEnd(); }
+            }
+        }
+
+        private static bool LoadAssembly()
         {
             if (assembly == null)
             {
@@ -24,7 +47,7 @@ namespace App.Core
                     var dllPath = Path.Combine(assemblyFolder, DllFile);
 
                     assembly = Assembly.LoadFrom(dllPath);
-                    BrotliClass = assembly.GetType("Brotli.BrotliStream");
+                    brotliClass = assembly.GetType("Brotli.BrotliStream");
                 }
                 catch (Exception)
                 {
@@ -32,25 +55,7 @@ namespace App.Core
                 }
             }
 
-            return assembly != null & BrotliClass != null;
-        }
-
-        public static byte[] Decompress(byte[] data)
-        {
-            if (LoadAssembly() == false) return null;
-
-            var args = new object[] { new MemoryStream(data), CompressionMode.Decompress };
-            using (var stream = (Stream)Activator.CreateInstance(BrotliClass, args))
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    stream.CopyTo(memoryStream);
-                    data = memoryStream.ToArray();
-
-                    return data;
-                }
-                //using (var reader = new StreamReader(stream)) { return reader.ReadToEnd(); }
-            }
+            return assembly != null & brotliClass != null;
         }
     }
 }

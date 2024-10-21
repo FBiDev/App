@@ -7,36 +7,42 @@ namespace App.Core
 {
     public class SqlParameter
     {
-        public string ParameterName { get; set; }
-        public DbType DbType { get; set; }
-        public object Value { get; set; }
-        public int Size { get; set; }
-        public byte Precision { get; set; }
-        public byte Scale { get; set; }
-
-        public SqlParameter(string ParameterName, object Value, DbType dbType = DbType.AnsiString, int Size = 0)
+        public SqlParameter(string name, object value, DbType type = DbType.AnsiString, int size = 0)
         {
-            this.ParameterName = ParameterName;
+            this.ParameterName = name;
+            this.Value = value ?? DBNull.Value;
 
-            this.Value = Value ?? DBNull.Value;
-            if (this.Value == DBNull.Value) Size = 1;
+            if (this.Value == DBNull.Value)
+            {
+                size = 1;
+            }
 
             if (this.Value != null && this.Value != DBNull.Value)
             {
-                var ValueType = Value.GetType();
+                var valueType = value.GetType();
 
-                switch (ValueType.Name)
+                switch (valueType.Name)
                 {
                     case "String":
                         DbType = DbType.String;
-                        if (string.IsNullOrWhiteSpace((string)Value))
-                        { this.Value = DBNull.Value; }
-                        else { this.Value = ((string)Value).Trim(); }
 
-                        if (Size == 0) Size = -1;
+                        if (string.IsNullOrWhiteSpace((string)value))
+                        {
+                            this.Value = DBNull.Value;
+                        }
+                        else
+                        {
+                            this.Value = ((string)value).Trim();
+                        }
+
+                        if (size == 0)
+                        {
+                            size = -1;
+                        }
+
                         break;
-                    case "Int32":
-                        DbType = DbType.Int32; break;
+                    case "Int32": DbType = DbType.Int32;
+                        break;
                     case "Decimal":
                         DbType = DbType.Decimal;
                         Precision = 10;
@@ -45,62 +51,86 @@ namespace App.Core
                     case "DateTime":
                         DbType = DbType.DateTime2;
 
-                        if (DateTime.MinValue == ((DateTime)Value))
+                        if (DateTime.MinValue == ((DateTime)value))
                         {
                             DbType = DbType.AnsiString;
                             this.Value = DBNull.Value;
                         }
                         else
                         {
-                            if (dbType == DbType.Date)
-                                this.Value = ((DateTime?)Value).ToDB(dbType);
+                            if (type == DbType.Date)
+                                this.Value = ((DateTime?)value).ToDB(type);
                             else
-                                this.Value = ((DateTime?)Value).ToDB();
+                                this.Value = ((DateTime?)value).ToDB();
                         }
 
-                        if (Size == 0) Size = 1;
+                        if (size == 0)
+                        {
+                            size = 1;
+                        }
+
                         break;
                     case "Boolean":
                         DbType = DbType.Boolean;
-                        this.Value = Cast.ToIntNull(Value);
+                        this.Value = Cast.ToIntNull(value);
                         break;
                 }
             }
 
-            if (Size > 0 || Size == -1) this.Size = Size;
-        }
-
-        public SqlParameter(string ParameterName, DbType DbType, object Value, int Size = 0, byte Precision = 0, byte Scale = 0)
-        {
-            if (DbType == DbType.String && Size == 0) Size = -1;
-
-            this.ParameterName = ParameterName;
-            this.DbType = DbType;
-            this.Value = Value.ToString();
-            this.Size = Size;
-            this.Precision = Precision;
-            this.Scale = Scale;
-        }
-
-        public static string Replace(string query, List<SqlParameter> lParamsReplace)
-        {
-            foreach (SqlParameter p in lParamsReplace)
+            if (size > 0 || size == -1)
             {
-                query = ReplaceItem(query, p.Value, p.DbType, p.ParameterName);
+                this.Size = size;
             }
+        }
+
+        public SqlParameter(string name, DbType type, object value, int size = 0, byte precision = 0, byte scale = 0)
+        {
+            if (type == DbType.String && size == 0)
+            {
+                size = -1;
+            }
+
+            this.ParameterName = name;
+            this.DbType = type;
+            this.Value = value.ToString();
+            this.Size = size;
+            this.Precision = precision;
+            this.Scale = scale;
+        }
+
+        public string ParameterName { get; set; }
+
+        public DbType DbType { get; set; }
+
+        public object Value { get; set; }
+
+        public int Size { get; set; }
+
+        public byte Precision { get; set; }
+
+        public byte Scale { get; set; }
+
+        public static string Replace(List<SqlParameter> parameters, string query)
+        {
+            foreach (SqlParameter p in parameters)
+            {
+                query = ReplaceItem(p.ParameterName, p.Value, p.DbType, query);
+            }
+
             return query;
         }
 
-        public static string Replace(string query, IDataParameterCollection Parameters)
+        public static string Replace(IDataParameterCollection parameters, string query)
         {
-            foreach (IDbDataParameter p in Parameters)
+            foreach (IDbDataParameter p in parameters)
             {
-                query = ReplaceItem(query, p.Value, p.DbType, p.ParameterName);
+                query = ReplaceItem(p.ParameterName, p.Value, p.DbType, query);
             }
+
             return query;
         }
 
-        static string ReplaceItem(string query, object value, DbType DbType, string ParameterName)
+        private static string ReplaceItem(string parameterName, object value, DbType type, string query)
         {
             string val;
 
@@ -113,15 +143,18 @@ namespace App.Core
                 val = value.ToString();
                 val = val.Replace("'", "''");
 
-                switch (DbType)
+                switch (type)
                 {
-                    case DbType.String: val = "'" + val + "'"; break;
-                    case DbType.DateTime2: val = "'" + val + "'"; break;
-                    case DbType.DateTime: val = "'" + val + "'"; break;
+                    case DbType.String: val = "'" + val + "'";
+                        break;
+                    case DbType.DateTime2: val = "'" + val + "'";
+                        break;
+                    case DbType.DateTime: val = "'" + val + "'";
+                        break;
                 }
             }
 
-            query = Regex.Replace(query, ParameterName + @"\b", val);
+            query = Regex.Replace(query, parameterName + @"\b", val);
 
             return query;
         }

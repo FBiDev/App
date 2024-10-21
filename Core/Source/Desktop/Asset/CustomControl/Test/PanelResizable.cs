@@ -4,54 +4,32 @@ using System.Windows.Forms;
 
 namespace App.Core.Desktop
 {
-    enum ResizeFace
-    {
-        Top,
-        TopRight,
-        Right,
-        BottomRight,
-        Bottom,
-        BottomLeft,
-        Left,
-        TopLeft
-    }
-
     public partial class PanelResizable : Panel
     {
-        //[Browsable(true), EditorBrowsable(EditorBrowsableState.Always), Bindable(true)]
-        //[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        //public override string Text { get; set; }
-
-        //public string Text2 { get; set; }
-
-        //[Description("Miau"), Category("Data")]
-        //public string Text3 { get; set; }
-
-        //protected override CreateParams CreateParams
-        //{
-        //    get
-        //    {
-        //        var cp = base.CreateParams;
-        //        cp.Style |= 0x840000;  // Turn on WS_BORDER + WS_THICKFRAME
-        //        return cp;
-        //    }
-        //}
-
+        private readonly int borderSize = 8;
+        private bool isResizeMode;
+        private ResizeFace face;
 
         public PanelResizable()
         {
             InitializeComponent();
 
-            Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom)
-            | AnchorStyles.Left)
-            | AnchorStyles.Right);
+            Anchor = ((AnchorStyles.Top | AnchorStyles.Bottom) | AnchorStyles.Left) | AnchorStyles.Right;
         }
 
-        bool isResizeMode;
-        ResizeFace Face;
-        readonly int PanelBorderSize = 8;
+        private enum ResizeFace
+        {
+            Top,
+            TopRight,
+            Right,
+            BottomRight,
+            Bottom,
+            BottomLeft,
+            Left,
+            TopLeft
+        }
 
-        void PanelResizable_MouseDown(object sender, MouseEventArgs e)
+        private void PanelResizable_MouseDown(object sender, MouseEventArgs e)
         {
             if (((Form)Parent).WindowState == FormWindowState.Maximized)
             {
@@ -62,50 +40,50 @@ namespace App.Core.Desktop
             {
                 isResizeMode = true;
 
-                if (e.Y <= PanelBorderSize && e.X >= Location.X + Size.Width - PanelBorderSize)
+                if (e.Y <= borderSize && e.X >= Location.X + Size.Width - borderSize)
                 {
-                    Face = ResizeFace.TopRight;
+                    face = ResizeFace.TopRight;
                     Cursor = Cursors.SizeNESW;
                 }
-                else if (e.Y <= PanelBorderSize && e.X <= PanelBorderSize)
+                else if (e.Y <= borderSize && e.X <= borderSize)
                 {
-                    Face = ResizeFace.TopLeft;
+                    face = ResizeFace.TopLeft;
                     Cursor = Cursors.SizeNWSE;
                 }
-                else if (e.X >= Location.X + Size.Width - PanelBorderSize && e.Y >= Location.Y + Size.Height - PanelBorderSize)
+                else if (e.X >= Location.X + Size.Width - borderSize && e.Y >= Location.Y + Size.Height - borderSize)
                 {
-                    Face = ResizeFace.BottomRight;
+                    face = ResizeFace.BottomRight;
                     Cursor = Cursors.SizeNWSE;
                 }
-                else if (e.X <= Location.X + PanelBorderSize && e.Y >= Location.Y + Size.Height - PanelBorderSize)
+                else if (e.X <= Location.X + borderSize && e.Y >= Location.Y + Size.Height - borderSize)
                 {
-                    Face = ResizeFace.BottomLeft;
+                    face = ResizeFace.BottomLeft;
                     Cursor = Cursors.SizeNESW;
                 }
-                else if (e.X >= Location.X + Size.Width - PanelBorderSize)
+                else if (e.X >= Location.X + Size.Width - borderSize)
                 {
-                    Face = ResizeFace.Right;
+                    face = ResizeFace.Right;
                     Cursor = Cursors.SizeWE;
                 }
-                else if (e.Y >= Location.Y + Size.Height - PanelBorderSize)
+                else if (e.Y >= Location.Y + Size.Height - borderSize)
                 {
-                    Face = ResizeFace.Bottom;
+                    face = ResizeFace.Bottom;
                     Cursor = Cursors.SizeNS;
                 }
-                else if (e.Y <= PanelBorderSize)
+                else if (e.Y <= borderSize)
                 {
-                    Face = ResizeFace.Top;
+                    face = ResizeFace.Top;
                     Cursor = Cursors.SizeNS;
                 }
-                else if (e.X <= PanelBorderSize)
+                else if (e.X <= borderSize)
                 {
-                    Face = ResizeFace.Left;
+                    face = ResizeFace.Left;
                     Cursor = Cursors.SizeWE;
                 }
             }
         }
 
-        void PanelResizable_MouseMove(object sender, MouseEventArgs e)
+        private void PanelResizable_MouseMove(object sender, MouseEventArgs e)
         {
             if (((Form)Parent).WindowState == FormWindowState.Maximized)
             {
@@ -114,165 +92,176 @@ namespace App.Core.Desktop
 
             if (isResizeMode)
             {
-                Size NewSize;
-                Point NewLocation;
+                Size newSize;
+                Point newLocation;
 
-                if (Face == ResizeFace.Top)
+                if (face == ResizeFace.Top)
                 {
-                    NewLocation = new Point(Parent.Location.X, Parent.Location.Y - (-e.Y));
-                    NewSize = new Size(Parent.Width, -e.Y + Parent.Height);
-                    if (NewSize.Height >= Parent.MinimumSize.Height)
+                    newLocation = new Point(Parent.Location.X, Parent.Location.Y - (-e.Y));
+                    newSize = new Size(Parent.Width, -e.Y + Parent.Height);
+                    if (newSize.Height >= Parent.MinimumSize.Height)
                     {
-                        Parent.Location = NewLocation;
-                        Parent.Size = NewSize;
+                        Parent.Location = newLocation;
+                        Parent.Size = newSize;
                     }
+
                     return;
                 }
 
-                if (Face == ResizeFace.Bottom)
+                if (face == ResizeFace.Bottom)
                 {
-                    NewSize = new Size(Parent.Width, e.Y);
-                    if (NewSize.Height >= Parent.MinimumSize.Height)
+                    newSize = new Size(Parent.Width, e.Y);
+                    if (newSize.Height >= Parent.MinimumSize.Height)
                     {
-                        Parent.Size = NewSize;
+                        Parent.Size = newSize;
                     }
+
                     return;
                 }
 
-                if (Face == ResizeFace.Right)
+                if (face == ResizeFace.Right)
                 {
-                    NewSize = new Size(e.X, Parent.Height);
-                    if (NewSize.Width >= Parent.MinimumSize.Width)
+                    newSize = new Size(e.X, Parent.Height);
+                    if (newSize.Width >= Parent.MinimumSize.Width)
                     {
-                        Parent.Size = NewSize;
+                        Parent.Size = newSize;
                     }
+
                     return;
                 }
 
-                if (Face == ResizeFace.Left)
+                if (face == ResizeFace.Left)
                 {
-                    NewLocation = new Point(Parent.Location.X - (-e.X), Parent.Location.Y);
-                    NewSize = new Size(-e.X + Parent.Width, Parent.Height);
-                    if (NewSize.Width >= Parent.MinimumSize.Width)
+                    newLocation = new Point(Parent.Location.X - (-e.X), Parent.Location.Y);
+                    newSize = new Size(-e.X + Parent.Width, Parent.Height);
+                    if (newSize.Width >= Parent.MinimumSize.Width)
                     {
-                        Parent.Location = NewLocation;
-                        Parent.Size = NewSize;
+                        Parent.Location = newLocation;
+                        Parent.Size = newSize;
                     }
+
                     return;
                 }
 
-                if (Face == ResizeFace.BottomRight)
+                if (face == ResizeFace.BottomRight)
                 {
-                    NewSize = new Size(e.X, e.Y);
-                    if (NewSize.Height >= Parent.MinimumSize.Height)
+                    newSize = new Size(e.X, e.Y);
+                    if (newSize.Height >= Parent.MinimumSize.Height)
                     {
-                        Parent.Size = new Size(Parent.Size.Width, NewSize.Height);
+                        Parent.Size = new Size(Parent.Size.Width, newSize.Height);
                     }
 
-                    if (NewSize.Width >= Parent.MinimumSize.Width)
+                    if (newSize.Width >= Parent.MinimumSize.Width)
                     {
-                        Parent.Size = new Size(NewSize.Width, Parent.Size.Height);
+                        Parent.Size = new Size(newSize.Width, Parent.Size.Height);
                     }
+
                     return;
                 }
 
-                if (Face == ResizeFace.BottomLeft)
+                if (face == ResizeFace.BottomLeft)
                 {
-                    NewLocation = new Point(Parent.Location.X - (-e.X), Parent.Location.Y);
-                    NewSize = new Size(-e.X + Parent.Width, e.Y);
-                    if (NewSize.Height >= Parent.MinimumSize.Height)
+                    newLocation = new Point(Parent.Location.X - (-e.X), Parent.Location.Y);
+                    newSize = new Size(-e.X + Parent.Width, e.Y);
+                    if (newSize.Height >= Parent.MinimumSize.Height)
                     {
-                        Parent.Size = new Size(Parent.Size.Width, NewSize.Height);
+                        Parent.Size = new Size(Parent.Size.Width, newSize.Height);
                     }
 
-                    if (NewSize.Width >= Parent.MinimumSize.Width)
+                    if (newSize.Width >= Parent.MinimumSize.Width)
                     {
-                        Parent.Location = NewLocation;
-                        Parent.Size = new Size(NewSize.Width, Parent.Size.Height);
+                        Parent.Location = newLocation;
+                        Parent.Size = new Size(newSize.Width, Parent.Size.Height);
                     }
+
                     return;
                 }
 
-                if (Face == ResizeFace.TopRight)
+                if (face == ResizeFace.TopRight)
                 {
-                    NewLocation = new Point(Parent.Location.X, Parent.Location.Y - (-e.Y));
-                    NewSize = new Size(e.X, -e.Y + Parent.Height);
-                    if (NewSize.Height >= Parent.MinimumSize.Height)
+                    newLocation = new Point(Parent.Location.X, Parent.Location.Y - (-e.Y));
+                    newSize = new Size(e.X, -e.Y + Parent.Height);
+                    if (newSize.Height >= Parent.MinimumSize.Height)
                     {
-                        Parent.Location = NewLocation;
-                        Parent.Size = new Size(Parent.Size.Width, NewSize.Height);
+                        Parent.Location = newLocation;
+                        Parent.Size = new Size(Parent.Size.Width, newSize.Height);
                     }
 
-                    if (NewSize.Width >= Parent.MinimumSize.Width)
+                    if (newSize.Width >= Parent.MinimumSize.Width)
                     {
-                        Parent.Size = new Size(NewSize.Width, Parent.Size.Height);
+                        Parent.Size = new Size(newSize.Width, Parent.Size.Height);
                     }
+
                     return;
                 }
 
-                if (Face == ResizeFace.TopLeft)
+                if (face == ResizeFace.TopLeft)
                 {
-                    NewLocation = new Point(Parent.Location.X - (-e.X), Parent.Location.Y - (-e.Y));
-                    NewSize = new Size(-e.X + Parent.Width, -e.Y + Parent.Height);
-                    if (NewSize.Height >= Parent.MinimumSize.Height)
+                    newLocation = new Point(Parent.Location.X - (-e.X), Parent.Location.Y - (-e.Y));
+                    newSize = new Size(-e.X + Parent.Width, -e.Y + Parent.Height);
+                    if (newSize.Height >= Parent.MinimumSize.Height)
                     {
-                        Parent.Location = new Point(Parent.Location.X, NewLocation.Y);
-                        Parent.Size = new Size(Parent.Size.Width, NewSize.Height);
+                        Parent.Location = new Point(Parent.Location.X, newLocation.Y);
+                        Parent.Size = new Size(Parent.Size.Width, newSize.Height);
                     }
 
-                    if (NewSize.Width >= Parent.MinimumSize.Width)
+                    if (newSize.Width >= Parent.MinimumSize.Width)
                     {
-                        Parent.Location = new Point(NewLocation.X, Parent.Location.Y);
-                        Parent.Size = new Size(NewSize.Width, Parent.Size.Height);
+                        Parent.Location = new Point(newLocation.X, Parent.Location.Y);
+                        Parent.Size = new Size(newSize.Width, Parent.Size.Height);
                     }
+
                     return;
                 }
             }
             else
             {
-                if (e.Y <= PanelBorderSize && e.X >= Location.X + Size.Width - PanelBorderSize)
+                if (e.Y <= borderSize && e.X >= Location.X + Size.Width - borderSize)
                 {
                     Cursor = Cursors.SizeNESW;
                 }
-                else if (e.Y <= PanelBorderSize && e.X <= PanelBorderSize)
+                else if (e.Y <= borderSize && e.X <= borderSize)
                 {
                     Cursor = Cursors.SizeNWSE;
                 }
-                else if (e.X >= Location.X + Size.Width - PanelBorderSize && e.Y >= Location.Y + Size.Height - PanelBorderSize)
+                else if (e.X >= Location.X + Size.Width - borderSize && e.Y >= Location.Y + Size.Height - borderSize)
                 {
                     Cursor = Cursors.SizeNWSE;
                 }
-                else if (e.X <= Location.X + PanelBorderSize && e.Y >= Location.Y + Size.Height - PanelBorderSize)
+                else if (e.X <= Location.X + borderSize && e.Y >= Location.Y + Size.Height - borderSize)
                 {
                     Cursor = Cursors.SizeNESW;
                 }
-                else if (e.X >= Location.X + Size.Width - PanelBorderSize)
+                else if (e.X >= Location.X + Size.Width - borderSize)
                 {
                     Cursor = Cursors.SizeWE;
                 }
-                else if (e.Y >= Location.Y + Size.Height - PanelBorderSize)
+                else if (e.Y >= Location.Y + Size.Height - borderSize)
                 {
                     Cursor = Cursors.SizeNS;
                 }
-                else if (e.Y <= PanelBorderSize)
+                else if (e.Y <= borderSize)
                 {
                     Cursor = Cursors.SizeNS;
                 }
-                else if (e.X <= PanelBorderSize)
+                else if (e.X <= borderSize)
                 {
                     Cursor = Cursors.SizeWE;
                 }
             }
         }
 
-        void PanelResizable_MouseUp(object sender, MouseEventArgs e)
+        private void PanelResizable_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button != MouseButtons.Left)
+            {
                 return;
+            }
+
             isResizeMode = false;
         }
 
-        void PanelResizable_MouseLeave(object sender, EventArgs e)
+        private void PanelResizable_MouseLeave(object sender, EventArgs e)
         {
             Cursor = Cursors.Default;
             Refresh();

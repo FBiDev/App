@@ -1,30 +1,17 @@
 ﻿using System;
-using System.Linq;
 using System.IO;
+using System.Linq;
 
 namespace App.Core
 {
     public class HexFile
     {
-        byte[] Content { get; set; }
-
         public HexFile(byte[] fileContent)
         {
             Content = fileContent;
         }
 
-        string ConvertToString()
-        {
-            return BitConverter.ToString(Content).Replace("-", "");
-        }
-
-        byte[] ConvertToByteArray(string strHex)
-        {
-            return Enumerable.Range(0, strHex.Length)
-                             .Where(x => x % 2 == 0)
-                             .Select(x => Convert.ToByte(strHex.Substring(x, 2), 16))
-                             .ToArray();
-        }
+        private byte[] Content { get; set; }
 
         public void Replace(string oldValue, string newValue)
         {
@@ -35,6 +22,19 @@ namespace App.Core
         public void Save(string newFileName)
         {
             File.WriteAllBytes(newFileName, Content);
+        }
+
+        private string ConvertToString()
+        {
+            return BitConverter.ToString(Content).Replace("-", string.Empty);
+        }
+
+        private byte[] ConvertToByteArray(string strHex)
+        {
+            return Enumerable.Range(0, strHex.Length)
+                             .Where(x => x % 2 == 0)
+                             .Select(x => Convert.ToByte(strHex.Substring(x, 2), 16))
+                             .ToArray();
         }
     }
 }

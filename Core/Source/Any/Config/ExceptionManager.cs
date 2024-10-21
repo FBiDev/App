@@ -6,35 +6,18 @@ using System.Reflection;
 
 namespace App.Core
 {
-    static class ExceptionManager
+    internal static class ExceptionManager
     {
-        static void AddDataError(Exception ex)
+        internal static ExceptionProcessed Process(Exception ex, string argumentString = null)
         {
-            var stackTrace = string.Empty;
-
-            try
-            {
-                stackTrace += ObjectManager.GetStackTrace(null);
-            }
-            catch
-            {
-                stackTrace += "";
-            }
-
-            ex.Data.Remove("Error");
-            ex.Data.Add("Error", stackTrace);
-        }
-
-        internal static ExceptionProcessed Process(Exception ex, string ArgumentString = null)
-        {
-            string CustomMessage = "";
+            string customMessage = string.Empty;
             string errorLineBreak = "\r\n\r\n";
 
-            Exception Error = ex;
-            var ExType = ex.GetType();
+            Exception exceptionError = ex;
+            var exceptionType = ex.GetType();
 
-            OleDbError ErrorDb;
-            bool OleDb = false;
+            OleDbError errorDb;
+            bool isOleDbException = false;
 
             bool link = false;
             string linkStr = string.Empty;
@@ -44,208 +27,220 @@ namespace App.Core
             string innerMessage = string.Empty;
 
             if (ex.InnerException != null)
+            {
                 innerMessage = ex.InnerException.Message + errorLineBreak;
+            }
 
             AddDataError(ex);
 
-            if (ExType == typeof(Exception))
+            if (exceptionType == typeof(Exception))
             {
-                if (Error.TargetSite.Module.Name == "ControleCasamentos.exe")
+                if (exceptionError.TargetSite.Module.Name == "ControleCasamentos.exe")
                 {
-                    //No Database File
-                    if (Error.TargetSite.Name == "CreateConnection")
+                    // No Database File
+                    if (exceptionError.TargetSite.Name == "CreateConnection")
                     {
-                        //CustomMessage = "Arquivo de Banco de dados não encontrado";
+                        // CustomMessage = "Arquivo de Banco de dados não encontrado";
                     }
                 }
-                CustomMessage = ex.Message + errorLineBreak + innerMessage + Error.Data["Error"];
-            }
-            else if (ExType == typeof(TargetInvocationException))
-            {
-                CustomMessage = ex.Message + errorLineBreak + innerMessage + Error.Data["Error"];
-            }
-            else if (ExType == typeof(InvalidOperationException))
-            {
-                Error = ((InvalidOperationException)ex);
-                var Message = ((InvalidOperationException)ex).Message;
 
-                if (Error.TargetSite.Module.Name == "System.Data.dll")
+                customMessage = ex.Message + errorLineBreak + innerMessage + exceptionError.Data["Error"];
+            }
+            else if (exceptionType == typeof(TargetInvocationException))
+            {
+                customMessage = ex.Message + errorLineBreak + innerMessage + exceptionError.Data["Error"];
+            }
+            else if (exceptionType == typeof(InvalidOperationException))
+            {
+                exceptionError = (InvalidOperationException)ex;
+                var message = ((InvalidOperationException)ex).Message;
+
+                if (exceptionError.TargetSite.Module.Name == "System.Data.dll")
                 {
-                    switch (Error.TargetSite.Name)
+                    switch (exceptionError.TargetSite.Name)
                     {
                         case "GetDataSource":
-                            //Engine not Installed
+                            // Engine not Installed
                             link = true;
                             linkStr = "https://www.microsoft.com/en-us/download/confirmation.aspx?id=54920";
 
-                            CustomMessage = "Motor Excel não instalado, clique em OK para ir fazer o download";
+                            customMessage = "Motor Excel não instalado, clique em OK para ir fazer o download";
                             break;
                         case "TryOpenConnection":
-                            //Not Closed Connectiond
-                            CustomMessage = "Falha na conexão com o Banco de Dados";
+                            // Not Closed Connectiond
+                            customMessage = "Falha na conexão com o Banco de Dados";
                             break;
                         case "Prepare":
-                            CustomMessage = Message + errorLineBreak + Error.Data["Error"];
+                            customMessage = message + errorLineBreak + exceptionError.Data["Error"];
                             break;
                     }
                 }
-                else if (Error.TargetSite.Module.Name == "System.Data.SQLite.dll")
+                else if (exceptionError.TargetSite.Module.Name == "System.Data.SQLite.dll")
                 {
-                    //Database is not Open
-                    if (Error.TargetSite.Name == "InitializeForReader")
+                    // Database is not Open
+                    if (exceptionError.TargetSite.Name == "InitializeForReader")
                     {
-                        CustomMessage = "Banco de dados não está aberto";
+                        customMessage = "Banco de dados não está aberto";
                     }
                 }
             }
-            else if (ExType == typeof(ArgumentException))
+            else if (exceptionType == typeof(ArgumentException))
             {
-                Error = ((ArgumentException)ex);
+                exceptionError = (ArgumentException)ex;
 
-                if (Error.TargetSite.Module.Name == "System.Data.dll")
+                if (exceptionError.TargetSite.Module.Name == "System.Data.dll")
                 {
-                    //Provider
-                    if (Error.TargetSite.Name == "ValidateProvider")
+                    // Provider
+                    if (exceptionError.TargetSite.Name == "ValidateProvider")
                     {
-                        CustomMessage = "Falha ao validar Provider do arquivo";
+                        customMessage = "Falha ao validar Provider do arquivo";
                     }
                 }
-                else if (Error.TargetSite.Module.Name == "System.Data.SQLite.dll")
+                else if (exceptionError.TargetSite.Module.Name == "System.Data.SQLite.dll")
                 {
-                    //Datasource
-                    if (Error.TargetSite.Name == "Open")
+                    // Datasource
+                    if (exceptionError.TargetSite.Name == "Open")
                     {
-                        CustomMessage = "Falha na conexão com o Banco de Dados";
-                    }
-                }
-            }
-            else if (ExType == typeof(SqlException))
-            {
-                Error = ((SqlException)ex);
-                var Messages = ((SqlException)ex).Errors;
-
-                if (Error.TargetSite.Module.Name == "System.Data.dll")
-                {
-                    if (Error.TargetSite.DeclaringType.FullName == "System.Data.SqlClient.SqlInternalConnectionTds")
-                    {
-                        //CustomMessage = "Falha na conexão com o Banco de Dados";
-                        //CustomMessage += errorLineBreak + Messages[0];
-                    }
-
-                    CustomMessage = Messages[0] + errorLineBreak + Error.Data["Error"];
-                }
-            }
-            else if (ExType == typeof(FormatException))
-            {
-                Error = ((FormatException)ex);
-
-                if (Error.TargetSite.Module.Name == "mscorlib.dll")
-                {
-                    switch (Error.TargetSite.Name)
-                    {
-                        case "StringToNumber": CustomMessage = "Falha ao converter Texto para Número:\r\n" + ArgumentString; break;
-                        case "ParseExactMultiple": CustomMessage = "Falha ao converter Texto para Data:\r\n" + ArgumentString; break;
-                        case "ParseDouble": CustomMessage = "Falha ao converter Texto para Double:\r\n" + ArgumentString; break;
-                        case "Parse": CustomMessage = "Falha ao converter Texto para Boolean:\r\n" + ArgumentString; break;
+                        customMessage = "Falha na conexão com o Banco de Dados";
                     }
                 }
             }
-            else if (ExType == typeof(InvalidCastException))
+            else if (exceptionType == typeof(SqlException))
             {
-                Error = ((InvalidCastException)ex);
+                exceptionError = (SqlException)ex;
+                var messages = ((SqlException)ex).Errors;
 
-                if (Error.TargetSite.Module.Name == "System.Data.SQLite.dll")
+                if (exceptionError.TargetSite.Module.Name == "System.Data.dll")
                 {
-                    //Conversion
-                    if (Error.TargetSite.Name == "BindParameter")
+                    if (exceptionError.TargetSite.DeclaringType.FullName == "System.Data.SqlClient.SqlInternalConnectionTds")
                     {
-                        CustomMessage = "Falha ao converter Parâmetro:\r\n" + ArgumentString;
+                        // CustomMessage = "Falha na conexão com o Banco de Dados";
+                        // CustomMessage += errorLineBreak + Messages[0];
+                    }
+
+                    customMessage = messages[0] + errorLineBreak + exceptionError.Data["Error"];
+                }
+            }
+            else if (exceptionType == typeof(FormatException))
+            {
+                exceptionError = (FormatException)ex;
+
+                if (exceptionError.TargetSite.Module.Name == "mscorlib.dll")
+                {
+                    switch (exceptionError.TargetSite.Name)
+                    {
+                        case "StringToNumber":
+                            customMessage = "Falha ao converter Texto para Número:\r\n" + argumentString;
+                            break;
+                        case "ParseExactMultiple":
+                            customMessage = "Falha ao converter Texto para Data:\r\n" + argumentString;
+                            break;
+                        case "ParseDouble":
+                            customMessage = "Falha ao converter Texto para Double:\r\n" + argumentString;
+                            break;
+                        case "Parse":
+                            customMessage = "Falha ao converter Texto para Boolean:\r\n" + argumentString;
+                            break;
                     }
                 }
             }
-            else if (ExType == typeof(BadImageFormatException))
+            else if (exceptionType == typeof(InvalidCastException))
             {
-                Error = ((BadImageFormatException)ex);
+                exceptionError = (InvalidCastException)ex;
 
-                if (Error.TargetSite.Module.Name == "System.Data.SQLite.dll")
+                if (exceptionError.TargetSite.Module.Name == "System.Data.SQLite.dll")
                 {
-                    //No ODBC Driver installed
-                    if (Error.TargetSite.Name == "sqlite3_config_none")
+                    // Conversion
+                    if (exceptionError.TargetSite.Name == "BindParameter")
                     {
-                        CustomMessage = "Falha na conexão com o Banco de Dados";
+                        customMessage = "Falha ao converter Parâmetro:\r\n" + argumentString;
                     }
                 }
             }
-            else if (ExType == typeof(NotSupportedException))
+            else if (exceptionType == typeof(BadImageFormatException))
             {
-                Error = ((NotSupportedException)ex);
+                exceptionError = (BadImageFormatException)ex;
 
-                if (Error.TargetSite.Module.Name == "System.Data.SQLite.dll")
+                if (exceptionError.TargetSite.Module.Name == "System.Data.SQLite.dll")
                 {
-                    //SQLite Version
-                    if (Error.TargetSite.Name == "Open")
+                    // No ODBC Driver installed
+                    if (exceptionError.TargetSite.Name == "sqlite3_config_none")
                     {
-                        CustomMessage = "Versão do SQLite incorreta";
+                        customMessage = "Falha na conexão com o Banco de Dados";
                     }
                 }
             }
-            else if (ExType == typeof(FileNotFoundException))
+            else if (exceptionType == typeof(NotSupportedException))
             {
-                //Error = ((FileNotFoundException)ex);
+                exceptionError = (NotSupportedException)ex;
 
-                CustomMessage = "Arquivo não encontrado";
-            }
-            else if (ExType == typeof(DllNotFoundException))
-            {
-                //Error = ((DllNotFoundException)ex);
-
-                CustomMessage = "Arquivo DLL não encontrado\r\n" + ex.Message;
-            }
-            else if (ExType == typeof(OleDbException))
-            {
-                OleDb = true;
-                ErrorDb = ((OleDbException)ex).Errors[0];
-
-                switch (ErrorDb.NativeError)
+                if (exceptionError.TargetSite.Module.Name == "System.Data.SQLite.dll")
                 {
-                    //ISAM Extended Properties
+                    // SQLite Version
+                    if (exceptionError.TargetSite.Name == "Open")
+                    {
+                        customMessage = "Versão do SQLite incorreta";
+                    }
+                }
+            }
+            else if (exceptionType == typeof(FileNotFoundException))
+            {
+                // Error = ((FileNotFoundException)ex);
+                customMessage = "Arquivo não encontrado";
+            }
+            else if (exceptionType == typeof(DllNotFoundException))
+            {
+                // Error = ((DllNotFoundException)ex);
+                customMessage = "Arquivo DLL não encontrado\r\n" + ex.Message;
+            }
+            else if (exceptionType == typeof(OleDbException))
+            {
+                isOleDbException = true;
+                errorDb = ((OleDbException)ex).Errors[0];
+
+                switch (errorDb.NativeError)
+                {
+                    // ISAM Extended Properties
                     case -69141536: break;
-                    //Opened File
-                    case -67568648: CustomMessage = "Arquivo já esta aberto em outro programa"; break;
-                    //Excel Tab Wrong Name
+
+                    // Opened File
+                    case -67568648:
+                        customMessage = "Arquivo já esta aberto em outro programa";
+                        break;
+
+                    // Excel Tab Wrong Name
                     case -537199594: break;
                 }
             }
             else
             {
-                string ExTypeStr = "ExType  : " + ExType;
-                string Target = "\r\nTarget   : " + Error.TargetSite.Module.Name;
-                string Method = "\r\nMethod : " + Error.TargetSite.Name;
+                string exceptionTypeString = "ExType  : " + exceptionType;
+                string target = "\r\nTarget   : " + exceptionError.TargetSite.Module.Name;
+                string method = "\r\nMethod : " + exceptionError.TargetSite.Name;
 
-                CustomMessage = "Erro inesperado não tratado";
-                CustomMessage += errorLineBreak + ExTypeStr + Target + Method;
+                customMessage = "Erro inesperado não tratado";
+                customMessage += errorLineBreak + exceptionTypeString + target + method;
             }
 
-            var Processed = new ExceptionProcessed(link, linkStr, OleDb, externalDLL, CustomMessage);
-            return Processed;
+            var processed = new ExceptionProcessed(link, linkStr, isOleDbException, externalDLL, customMessage);
+            return processed;
         }
-    }
 
-    class ExceptionProcessed
-    {
-        public readonly bool HasLink;
-        public readonly string Link;
-        public readonly bool OleDb;
-        public readonly bool ExternalDll;
-        public readonly string Message;
-
-        public ExceptionProcessed(bool haslink, string link, bool oledb, bool externalDll, string msg)
+        private static void AddDataError(Exception ex)
         {
-            HasLink = haslink;
-            Link = link;
-            OleDb = oledb;
-            ExternalDll = externalDll;
-            Message = msg;
+            var stackTrace = string.Empty;
+
+            try
+            {
+                stackTrace += ObjectManager.GetStackTrace(null);
+            }
+            catch
+            {
+                stackTrace += string.Empty;
+            }
+
+            ex.Data.Remove("Error");
+            ex.Data.Add("Error", stackTrace);
         }
     }
 }

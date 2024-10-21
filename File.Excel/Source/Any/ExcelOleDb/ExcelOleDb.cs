@@ -8,18 +8,18 @@ namespace App.File.ExcelOleDb
 {
     internal static class Excel
     {
+        private static DataColumn[] columnNames;
+        private static int totalRecords = 0;
+        private static int topEmptyRecords = 0;
+        private static int bottomEmptyRecords = 0;
+
         public enum Version
         {
             Jet_x86,
             ACE_x86_x64
         }
 
-        private static DataColumn[] columnNames;
-        private static int totalRecords = 0;
-        private static int topEmptyRecords = 0;
-        private static int bottomEmptyRecords = 0;
-
-        public static Version versionType { get; set; }
+        public static Version VersionType { get; set; }
 
         [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "hide")]
         public static DataTable Read<T>(string file, ExcelOptions<T> options) where T : class
@@ -130,7 +130,7 @@ namespace App.File.ExcelOleDb
 
         private static OleDbConnection OpenConnection(string filePath)
         {
-            string constr = versionType == Version.ACE_x86_x64 ?
+            string constr = VersionType == Version.ACE_x86_x64 ?
                 "Provider=Microsoft.ACE.OLEDB.12.0;" +
                 "Data Source=" + filePath + ";" +
                 "Extended Properties='Excel 12.0 XML;HDR=No;IMEX=1';" +

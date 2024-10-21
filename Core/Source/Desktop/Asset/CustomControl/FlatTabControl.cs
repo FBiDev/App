@@ -8,25 +8,23 @@ using FlatTabControl;
 
 namespace App.Core.Desktop
 {
-    /// <summary>
-    /// Summary description for FlatTabControl.
-    /// </summary>
-    [ToolboxBitmap(typeof(TabControl))] //,
-    //Designer(typeof(Designers.FlatTabControlDesigner))]
+    [ToolboxBitmap(typeof(TabControl))]
+
+    //// , Designer(typeof(Designers.FlatTabControlDesigner))]
 
     public class FlatTabControl : TabControl
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
-        Container components;
-        SubClass scUpDown;
-        bool bUpDown; // true when the button UpDown is required
-        readonly ImageList leftRightImages;
-        const int nMargin = 5;
-        Color mBackColor = Color.FromArgb(240, 240, 240);
-        Color mBackColor2 = Color.FromArgb(212, 208, 200);
-        Color mBorderColor = ColorTranslator.FromHtml("#A0A0A0");
+        private const int NMargin = 5;
+        private readonly ImageList leftRightImages;
+        private Container components;
+        private SubClass scUpDown;
+        private bool bUpDown; // true when the button UpDown is required        
+        private Color mBackColor = Color.FromArgb(240, 240, 240);
+        private Color mBackColor2 = Color.FromArgb(212, 208, 200);
+        private Color mBorderColor = ColorTranslator.FromHtml("#A0A0A0");
 
         public FlatTabControl()
         {
@@ -47,78 +45,136 @@ namespace App.Core.Desktop
             SelectedIndexChanged += FlatTabControl_SelectedIndexChanged;
 
             leftRightImages = new ImageList();
-            //leftRightImages.ImageSize = new Size(16, 16); // default
 
-            //System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(FlatTabControl));
-            //Bitmap updownImage = ((System.Drawing.Bitmap)(resources.GetObject("TabIcons.bmp")));
+            ////leftRightImages.ImageSize = new Size(16, 16); // default
 
-            //if (updownImage != null)
-            //{
-            //    updownImage.MakeTransparent(Color.White);
-            //    leftRightImages.Images.AddStrip(updownImage);
-            //}
+            ////System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(FlatTabControl));
+            ////Bitmap updownImage = ((System.Drawing.Bitmap)(resources.GetObject("TabIcons.bmp")));
+
+            ////if (updownImage != null)
+            ////{
+            ////    updownImage.MakeTransparent(Color.White);
+            ////    leftRightImages.Images.AddStrip(updownImage);
+            ////}
 
             MyBackColor = Color.FromArgb(240, 240, 240);
-            //if (TabPages.Count > 0) { SelectedIndex = 0; }
+            ////if (TabPages.Count > 0) { SelectedIndex = 0; }
         }
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        protected override void Dispose(bool disposing)
+        #region Properties
+        [Editor(typeof(TabpageExCollectionEditor), typeof(UITypeEditor))]
+        public new TabPageCollection TabPages
         {
-            if (disposing)
+            get { return base.TabPages; }
+        }
+
+        public new TabAlignment Alignment
+        {
+            get
             {
-                if (components == null) { }
-                else
+                return base.Alignment;
+            }
+
+            set
+            {
+                TabAlignment ta = value;
+                if ((ta != TabAlignment.Top) && (ta != TabAlignment.Bottom))
                 {
-                    components.Dispose();
+                    ta = TabAlignment.Top;
                 }
 
-                leftRightImages.Dispose();
+                base.Alignment = ta;
             }
-            base.Dispose(disposing);
         }
 
-        protected override void OnPaint(PaintEventArgs e)
+        [Browsable(false)]
+        public new bool Multiline
         {
-            base.OnPaint(e);
+            get
+            {
+                return base.Multiline;
+            }
 
-            DrawControl(e.Graphics);
+            set
+            {
+                value = false;
+                base.Multiline = value;
+            }
         }
+
+        [Browsable(true)]
+        public Color MyBackColor
+        {
+            get
+            {
+                return mBackColor;
+            }
+
+            set
+            {
+                mBackColor = value;
+                Invalidate();
+            }
+        }
+
+        [Browsable(true)]
+        public Color MyBackColor2
+        {
+            get
+            {
+                return mBackColor2;
+            }
+
+            set
+            {
+                mBackColor2 = value;
+                Invalidate();
+            }
+        }
+
+        [Browsable(true)]
+        public Color MyBorderColor
+        {
+            get
+            {
+                return mBorderColor;
+            }
+
+            set
+            {
+                mBorderColor = value;
+                Invalidate();
+            }
+        }
+        #endregion
 
         internal void DrawControl(Graphics g)
         {
             if (!Visible)
+            {
                 return;
+            }
 
-            Rectangle TabControlArea = ClientRectangle;
-            Rectangle TabArea = DisplayRectangle;
+            Rectangle tabControlArea = ClientRectangle;
+            Rectangle tabArea = DisplayRectangle;
 
-            //----------------------------
             // fill client area
-            Brush br = new SolidBrush(mBackColor); //(SystemColors.Control); UPDATED
-            g.FillRectangle(br, TabControlArea);
+            Brush br = new SolidBrush(mBackColor); // (SystemColors.Control); UPDATED
+            g.FillRectangle(br, tabControlArea);
             br.Dispose();
-            //----------------------------
 
-            //----------------------------
             // draw border
             int nDelta = SystemInformation.Border3DSize.Width;
-
             var border = new Pen(MyBorderColor);
-            TabArea.Inflate(nDelta, nDelta);
-            g.DrawRectangle(border, TabArea);
+            tabArea.Inflate(nDelta, nDelta);
+            g.DrawRectangle(border, tabArea);
             border.Dispose();
-            //----------------------------
 
-
-            //----------------------------
             // clip region for drawing tabs
             Region rsaved = g.Clip;
             Rectangle rreg;
 
-            int nWidth = TabArea.Width + nMargin;
+            int nWidth = tabArea.Width + NMargin;
             if (bUpDown)
             {
                 // exclude updown control for painting
@@ -132,19 +188,18 @@ namespace App.Core.Desktop
                 }
             }
 
-            rreg = new Rectangle(TabArea.Left, TabControlArea.Top, nWidth - nMargin, TabControlArea.Height);
+            rreg = new Rectangle(tabArea.Left, tabControlArea.Top, nWidth - NMargin, tabControlArea.Height);
 
             g.SetClip(rreg);
 
             // draw tabs
             for (int i = 0; i < TabCount; i++)
+            {
                 DrawTab(g, TabPages[i], i);
+            }
 
             g.Clip = rsaved;
-            //----------------------------
 
-
-            //----------------------------
             // draw background to cover flat border areas
             if (SelectedTab != null)
             {
@@ -152,18 +207,17 @@ namespace App.Core.Desktop
                 Color color = tabPage.BackColor;
                 border = new Pen(color);
 
-                TabArea.Offset(1, 1);
-                TabArea.Width -= 2;
-                TabArea.Height -= 2;
+                tabArea.Offset(1, 1);
+                tabArea.Width -= 2;
+                tabArea.Height -= 2;
 
-                g.DrawRectangle(border, TabArea);
-                TabArea.Width -= 1;
-                TabArea.Height -= 1;
-                g.DrawRectangle(border, TabArea);
+                g.DrawRectangle(border, tabArea);
+                tabArea.Width -= 1;
+                tabArea.Height -= 1;
+                g.DrawRectangle(border, tabArea);
 
                 border.Dispose();
             }
-            //----------------------------
         }
 
         internal void DrawTab(Graphics g, TabPage tabPage, int nIndex)
@@ -171,7 +225,7 @@ namespace App.Core.Desktop
             var recBounds = GetTabRect(nIndex);
             RectangleF tabTextArea = GetTabRect(nIndex);
 
-            bool bSelected = (SelectedIndex == nIndex);
+            bool bSelected = SelectedIndex == nIndex;
 
             Point[] pt = new Point[7];
             if (Alignment == TabAlignment.Top)
@@ -195,25 +249,23 @@ namespace App.Core.Desktop
                 pt[6] = new Point(recBounds.Left, recBounds.Top);
             }
 
-            //----------------------------
             // fill this tab with background color
-            //Brush br = new SolidBrush(tabPage.BackColor);
-            //g.FillPolygon(br, pt);
-            //br.Dispose();
+            ////Brush br = new SolidBrush(tabPage.BackColor);
+            ////g.FillPolygon(br, pt);
+            ////br.Dispose();
 
             Brush br = new SolidBrush(tabPage.BackColor);
             if (!bSelected)
             {
                 br = new SolidBrush(mBackColor2);
             }
+
             g.FillPolygon(br, pt);
             br.Dispose();
-            //----------------------------
 
-            //----------------------------
             // draw border
-            //g.DrawRectangle(SystemPens.ControlDark, recBounds);
-            //g.DrawPolygon(new Pen(Color.FromArgb(160, 160, 160)), pt);
+            // g.DrawRectangle(SystemPens.ControlDark, recBounds);
+            // g.DrawPolygon(new Pen(Color.FromArgb(160, 160, 160)), pt);
             g.DrawPolygon(new Pen(MyBorderColor), pt);
 
             if (bSelected)
@@ -237,11 +289,8 @@ namespace App.Core.Desktop
                 }
 
                 pen.Dispose();
-                //----------------------------
             }
-            //----------------------------
 
-            //----------------------------
             // draw tab's icon
             if ((tabPage.ImageIndex >= 0) && (ImageList != null) && (ImageList.Images[tabPage.ImageIndex] != null))
             {
@@ -261,9 +310,7 @@ namespace App.Core.Desktop
                 // draw icon
                 g.DrawImage(img, rimage);
             }
-            //----------------------------
 
-            //----------------------------
             // draw string
             var stringFormat = new StringFormat
             {
@@ -274,17 +321,17 @@ namespace App.Core.Desktop
             br = new SolidBrush(tabPage.ForeColor);
 
             g.DrawString(tabPage.Text, Font, br, tabTextArea, stringFormat);
-            //----------------------------
         }
 
         internal void DrawIcons(Graphics g)
         {
             if ((leftRightImages == null) || (leftRightImages.Images.Count != 4))
+            {
                 return;
+            }
 
-            //----------------------------
             // calc positions
-            Rectangle TabControlArea = ClientRectangle;
+            Rectangle tabControlArea = ClientRectangle;
 
             var r0 = new Rectangle();
             Win32.GetClientRect(scUpDown.Handle, ref r0);
@@ -299,15 +346,13 @@ namespace App.Core.Desktop
             g.DrawRectangle(border, rborder);
             border.Dispose();
 
-            int nMiddle = (r0.Width / 2);
+            int nMiddle = r0.Width / 2;
             int nTop = (r0.Height - 16) / 2;
             int nLeft = (nMiddle - 16) / 2;
 
             var r1 = new Rectangle(nLeft, nTop, 16, 16);
             var r2 = new Rectangle(nMiddle + nLeft, nTop, 16, 16);
-            //----------------------------
 
-            //----------------------------
             // draw buttons
             Image img = leftRightImages.Images[1];
             if (img != null)
@@ -315,13 +360,17 @@ namespace App.Core.Desktop
                 if (TabCount > 0)
                 {
                     var r3 = GetTabRect(0);
-                    if (r3.Left < TabControlArea.Left)
+                    if (r3.Left < tabControlArea.Left)
+                    {
                         g.DrawImage(img, r1);
+                    }
                     else
                     {
                         img = leftRightImages.Images[3];
                         if (img != null)
+                        {
                             g.DrawImage(img, r1);
+                        }
                     }
                 }
             }
@@ -332,45 +381,74 @@ namespace App.Core.Desktop
                 if (TabCount > 0)
                 {
                     var r3 = GetTabRect(TabCount - 1);
-                    if (r3.Right > (TabControlArea.Width - r0.Width))
+                    if (r3.Right > (tabControlArea.Width - r0.Width))
+                    {
                         g.DrawImage(img, r2);
+                    }
                     else
                     {
                         img = leftRightImages.Images[2];
                         if (img != null)
+                        {
                             g.DrawImage(img, r2);
+                        }
                     }
                 }
             }
-            //----------------------------
+        }
+
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">dispose components</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+
+                leftRightImages.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            DrawControl(e.Graphics);
         }
 
         protected override void OnCreateControl()
         {
             base.OnCreateControl();
 
-            //FindUpDown();
+            // FindUpDown();
         }
 
-        void FlatTabControl_ControlAdded(object sender, ControlEventArgs e)
+        private void FlatTabControl_ControlAdded(object sender, ControlEventArgs e)
         {
-            //FindUpDown();
-            //UpdateUpDown();
+            // FindUpDown();
+            // UpdateUpDown();
         }
 
-        void FlatTabControl_ControlRemoved(object sender, ControlEventArgs e)
+        private void FlatTabControl_ControlRemoved(object sender, ControlEventArgs e)
         {
-            //FindUpDown();
-            //UpdateUpDown();
+            // FindUpDown();
+            // UpdateUpDown();
         }
 
-        void FlatTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        private void FlatTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //UpdateUpDown();
-            //Invalidate();	// we need to update border and background colors
+            // UpdateUpDown();
+            // Invalidate(); // we need to update border and background colors
         }
 
-        void FindUpDown()
+        private void FindUpDown()
         {
             bool bFound = false;
 
@@ -379,13 +457,13 @@ namespace App.Core.Desktop
 
             while (pWnd != IntPtr.Zero)
             {
-                //----------------------------
+                ////----------------------------
                 // Get the window class name
                 char[] className = new char[33];
 
                 var length = Win32.GetClassName(pWnd, className, 32);
                 var s = new string(className, 0, length);
-                //----------------------------
+                ////----------------------------
 
                 if (s == "msctls_updown32")
                 {
@@ -393,27 +471,28 @@ namespace App.Core.Desktop
 
                     if (!bUpDown)
                     {
-                        //----------------------------
+                        ////----------------------------
                         // Subclass it
                         scUpDown = new SubClass(pWnd, true);
                         scUpDown.SubClassedWndProc += ScUpDown_SubClassedWndProc;
-                        //----------------------------
+                        ////----------------------------
 
                         bUpDown = true;
                     }
+
                     break;
                 }
 
                 pWnd = Win32.GetWindow(pWnd, Win32.GW_HWNDNEXT);
             }
 
-            if ((!bFound) && (bUpDown))
+            if (!bFound && bUpDown)
             {
                 bUpDown = false;
             }
         }
 
-        void UpdateUpDown()
+        private void UpdateUpDown()
         {
             if (bUpDown)
             {
@@ -428,13 +507,13 @@ namespace App.Core.Desktop
         }
 
         #region scUpDown_SubClassedWndProc Event Handler
-        int ScUpDown_SubClassedWndProc(ref Message m)
+        private int ScUpDown_SubClassedWndProc(ref Message m)
         {
             switch (m.Msg)
             {
                 case Win32.WM_PAINT:
                     {
-                        //------------------------
+                        ////------------------------
                         // redraw
                         var hDC = Win32.GetWindowDC(scUpDown.Handle);
                         var g = Graphics.FromHdc(hDC);
@@ -443,19 +522,20 @@ namespace App.Core.Desktop
 
                         g.Dispose();
                         Win32.ReleaseDC(scUpDown.Handle, hDC);
-                        //------------------------
+                        ////------------------------
 
                         // return 0 (processed)
                         m.Result = IntPtr.Zero;
 
-                        //------------------------
+                        ////------------------------
                         // validate current rect
                         var rect = new Rectangle();
 
                         Win32.GetClientRect(scUpDown.Handle, ref rect);
                         Win32.ValidateRect(scUpDown.Handle, ref rect);
-                        //------------------------
+                        ////------------------------
                     }
+
                     return 1;
             }
 
@@ -474,63 +554,13 @@ namespace App.Core.Desktop
         }
         #endregion
 
-        #region Properties
-        [Editor(typeof(TabpageExCollectionEditor), typeof(UITypeEditor))]
-        public new TabPageCollection TabPages
-        {
-            get { return base.TabPages; }
-        }
-
-        new public TabAlignment Alignment
-        {
-            get { return base.Alignment; }
-            set
-            {
-                TabAlignment ta = value;
-                if ((ta != TabAlignment.Top) && (ta != TabAlignment.Bottom))
-                    ta = TabAlignment.Top;
-
-                base.Alignment = ta;
-            }
-        }
-
-        [Browsable(false)]
-        new public bool Multiline
-        {
-            get { return base.Multiline; }
-            set
-            {
-                value = false;
-                base.Multiline = value;
-            }
-        }
-
-        [Browsable(true)]
-        public Color MyBackColor
-        {
-            get { return mBackColor; }
-            set { mBackColor = value; Invalidate(); }
-        }
-
-        [Browsable(true)]
-        public Color MyBackColor2
-        {
-            get { return mBackColor2; }
-            set { mBackColor2 = value; Invalidate(); }
-        }
-
-        [Browsable(true)]
-        public Color MyBorderColor
-        {
-            get { return mBorderColor; }
-            set { mBorderColor = value; Invalidate(); }
-        }
-        #endregion
-
         #region TabpageExCollectionEditor
         internal class TabpageExCollectionEditor : CollectionEditor
         {
-            public TabpageExCollectionEditor(Type type) : base(type) { }
+            public TabpageExCollectionEditor(Type type)
+                : base(type)
+            {
+            }
 
             protected override Type CreateCollectionItemType()
             {

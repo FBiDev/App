@@ -54,7 +54,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Source\Any\Config\AppEnums.cs" />
+    <Compile Include="Source\Any\Config\ExceptionProcessed.cs" />
+    <Compile Include="Source\Any\Config\StringValues.cs" />
     <Compile Include="Source\Any\FileManager\HexFile.cs" />
+    <Compile Include="Source\Any\Generic\ListSyncedChangedEventArgs.cs" />
+    <Compile Include="Source\Any\Util\DisplayAttribute.cs" />
+    <Compile Include="Source\Any\Util\StyleAttribute.cs" />
     <Compile Include="Source\Desktop\Asset\CustomControl\Base\FlatMaskedTextBoxBase.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -66,7 +71,6 @@
     </Compile>
     <Compile Include="Source\Desktop\Config\DB.cs" />
     <Compile Include="Source\Any\Config\ExceptionManager.cs" />
-    <Compile Include="Source\Any\Config\ExceptionSQLite.cs" />
     <Compile Include="Source\Any\Config\LanguageManager.cs" />
     <Compile Include="Source\Any\Database\DatabaseDao.cs" />
     <Compile Include="Source\Any\Database\DatabaseManager.cs" />
@@ -89,7 +93,7 @@
     <Compile Include="Source\Any\FileManager\CRC32.cs" />
     <Compile Include="Source\Any\FileManager\StringWriterUTF8.cs" />
     <Compile Include="Source\Any\FileManager\XmlManager.cs" />
-    <Compile Include="Source\Any\Generic\Attributes.cs" />
+    <Compile Include="Source\Any\Util\FieldAttribute.cs" />
     <Compile Include="Source\Any\Generic\Cast.cs" />
     <Compile Include="Source\Any\Generic\Colors.cs" />
     <Compile Include="Source\Any\Generic\ListItem.cs" />
@@ -145,6 +149,7 @@
     </Compile>
     <Compile Include="Source\Desktop\Asset\CustomControl\FlatComboBox.cs">
       <SubType>UserControl</SubType>
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Source\Desktop\Asset\CustomControl\FlatComboBox.designer.cs">
       <DependentUpon>FlatComboBox.cs</DependentUpon>
@@ -179,12 +184,6 @@
     </Compile>
     <Compile Include="Source\Desktop\Asset\CustomControl\FlatMaskedTextBox.designer.cs">
       <DependentUpon>FlatMaskedTextBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatMaskedTextBoxOLD.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatMaskedTextBoxOLD.designer.cs">
-      <DependentUpon>FlatMaskedTextBoxOLD.cs</DependentUpon>
     </Compile>
     <Compile Include="Source\Desktop\Asset\CustomControl\FlatPanel.cs">
       <SubType>Component</SubType>
@@ -252,12 +251,6 @@
     <Compile Include="Source\Desktop\Asset\CustomControl\Form\MainBaseForm.Designer.cs">
       <DependentUpon>MainBaseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Test\MaskedTextBoxBlue.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Test\MaskedTextBoxBlue.Designer.cs">
-      <DependentUpon>MaskedTextBoxBlue.cs</DependentUpon>
-    </Compile>
     <Compile Include="Source\Desktop\Asset\CustomControl\Test\MenuBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -275,6 +268,7 @@
     <Compile Include="Source\Desktop\Database\DataRowExtension.cs" />
     <Compile Include="Source\Desktop\DebugLayer\DebugForm.cs">
       <SubType>Form</SubType>
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Source\Desktop\DebugLayer\DebugForm.designer.cs">
       <DependentUpon>DebugForm.cs</DependentUpon>
@@ -292,6 +286,7 @@
     <Compile Include="Source\Desktop\FileManager\Archive.cs" />
     <Compile Include="Source\Desktop\FileManager\CMD.cs" />
     <Compile Include="Source\Desktop\FileManager\FileBackup.cs" />
+    <Compile Include="Source\Desktop\FileManager\FilePick.cs" />
     <Compile Include="Source\Desktop\FileManager\FolderPicker.cs" />
     <Compile Include="Source\Desktop\FileManager\Picture.cs" />
     <Compile Include="Source\Desktop\Generic\ClipboardSafe.cs" />
@@ -307,6 +302,7 @@
     <Compile Include="Source\Desktop\Http\WebClientExtend.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Source\Desktop\WindowsOS\NativeCodes.cs" />
     <Compile Include="Source\Desktop\WindowsOS\NativeMethods.cs" />
     <Compile Include="Source\Web\Config\ExceptionManager.cs" />
     <Compile Include="Source\Web\Database\DatabaseDao.cs" />
@@ -346,9 +342,6 @@
     <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\FlatMaskedTextBox.resx">
       <DependentUpon>FlatMaskedTextBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\FlatMaskedTextBoxOLD.resx">
-      <DependentUpon>FlatMaskedTextBoxOLD.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\FlatPanel.resx">
       <DependentUpon>FlatPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -372,9 +365,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Form\MainBaseForm.resx">
       <DependentUpon>MainBaseForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Test\MaskedTextBoxBlue.resx">
-      <DependentUpon>MaskedTextBoxBlue.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Test\MenuBar.resx">
       <DependentUpon>MenuBar.cs</DependentUpon>

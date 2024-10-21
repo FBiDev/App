@@ -6,16 +6,7 @@ namespace App.Core.Desktop
 {
     public partial class MenuBar : UserControl
     {
-        MenuMode _Modo;
-        public MenuMode Modo
-        {
-            get { return _Modo; }
-            set
-            {
-                _Modo = value;
-                lblModo.Text = _Modo.ToString();
-            }
-        }
+        private MenuMode _modo;
 
         public MenuBar()
         {
@@ -24,7 +15,21 @@ namespace App.Core.Desktop
             Modo = MenuMode.Consulta;
         }
 
-        void MenuBarOnSizeChanged(object sender, EventArgs e)
+        public MenuMode Modo
+        {
+            get
+            {
+                return _modo;
+            }
+
+            set
+            {
+                _modo = value;
+                lblModo.Text = _modo.ToString();
+            }
+        }
+
+        private void MenuBarOnSizeChanged(object sender, EventArgs e)
         {
             int ctrs = pnlMenuBar.Controls.Count;
             int each = pnlMenuBar.Width / ctrs;
@@ -32,22 +37,22 @@ namespace App.Core.Desktop
 
             foreach (Control c in pnlMenuBar.Controls)
             {
-                var newLocation = new Point((each / 2) - (c.Width / 2) + cItem * each, c.Location.Y);
+                var newLocation = new Point((each / 2) - (c.Width / 2) + (cItem * each), c.Location.Y);
                 c.Location = newLocation;
                 cItem++;
             }
         }
 
-        void SearchOnClick(object sender, EventArgs e)
+        private void SearchOnClick(object sender, EventArgs e)
         {
         }
 
-        void SaveOnClick(object sender, EventArgs e)
+        private void SaveOnClick(object sender, EventArgs e)
         {
-            //lblModo.Text = Modo.ToString();
+            // lblModo.Text = Modo.ToString();
         }
 
-        void NewOnClick(object sender, EventArgs e)
+        private void NewOnClick(object sender, EventArgs e)
         {
             Modo = MenuMode.Inclusão;
 

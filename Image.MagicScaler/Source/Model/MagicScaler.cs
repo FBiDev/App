@@ -4,16 +4,81 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using PhotoSauce.MagicScaler;
 using App.Core;
 using App.Core.Desktop;
+using PhotoSauce.MagicScaler;
 
 namespace App.Image.MagicScaler
 {
     public class MagicScaler
     {
         #region main
-        public enum EncoderOptions
+        private ProcessImageSettings settings;
+
+        private EncoderOptions encoderSelected;
+
+        private PngFilter pngFilter = PngFilter.Unspecified;
+
+        private bool pngInterlace;
+
+        private int jpgQuality = 98;
+
+        private ChromaSubsampleMode jpgChromaSubsample = ChromaSubsampleMode.Subsample444;
+
+        private Sizes sizeSelected;
+
+        private string imageFormats = "Image Formats (*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tiff)|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tiff";
+
+        private string _originPath;
+
+        private string _destinationPath;
+
+        public MagicScaler()
+        {
+            settings = new ProcessImageSettings
+            {
+                Width = 64,
+                Height = 64
+                ////ResizeMode = CropScaleMode.Stretch,
+                ////EncoderOptions = new PngEncoderOptions(PngFilter.Unspecified, false),
+                ////EncoderOptions = new JpegEncoderOptions(98, ChromaSubsampleMode.Subsample444, true),
+                ////Interpolation = InterpolationSettings.Average,
+                ////Anchor = CropAnchor.Center,
+                ////BlendingMode = GammaMode.Linear,
+                ////HybridMode = HybridScaleMode.FavorQuality,
+            };
+
+            SetEncoderOptions();
+
+            OriginDialog = new OpenFileDialog
+            {
+                ValidateNames = true,
+                CheckFileExists = true,
+                CheckPathExists = true,
+                FileName = string.Empty,
+                Filter = imageFormats
+            };
+
+            DestinationDialog = new SaveFileDialog
+            {
+                Filter = imageFormats
+            };
+
+            CustomName = true;
+            OriginFile = string.Empty;
+        }
+
+        public delegate void BoolAction(bool enable);
+
+        public event Action EncoderChanged = delegate { };
+
+        public event BoolAction EnableAnchor = delegate { };
+
+        public event Action Resized = delegate { };
+
+        public event Action InvalidFile = delegate { };
+
+        private enum EncoderOptions
         {
             Png = 0,
             PngIndexed = 1,
@@ -22,95 +87,91 @@ namespace App.Image.MagicScaler
             Tiff = 4
         }
 
-        public enum Sizes
-        {
-            Auto,
-            NESHalf_128x112,
-            Cover_320x320,
-            Cover_360x512,
-            Cover_512x512,
-            Cover_420x600,
-            Cover_600x600
-        }
-
-        public enum Interpolation
+        private enum Interpolation
         {
             Average,
+            Hermite,
+            NearestNeighbor,            
             CatmullRom,
             Cubic,
             CubicSmoother,
-            Hermite,
             Lanczos,
             Linear,
             Mitchell,
-            NearestNeighbor,
             Quadratic,
             Spline36,
         }
 
-        EncoderOptions EncoderSelected;
-        Sizes SizeSelected;
-        public ProcessImageSettings Settings;
-        public event Action Resized = delegate { };
-
-        PngFilter PngFilter = PngFilter.Unspecified;
-        bool PngInterlace;
-
-        int JpgQuality = 98;
-        ChromaSubsampleMode JpgChromaSubsample = ChromaSubsampleMode.Subsample444;
-
-        string ImageFormats = "Image Formats (*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tiff)|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tiff";
-
-        public MagicScaler()
+        private enum Sizes
         {
-            Settings = new ProcessImageSettings
-            {
-                Width = 64,
-                Height = 64
-                //ResizeMode = CropScaleMode.Stretch,
-                //EncoderOptions = new PngEncoderOptions(PngFilter.Unspecified, false),
-                //EncoderOptions = new JpegEncoderOptions(98, ChromaSubsampleMode.Subsample444, true),
-                //Interpolation = InterpolationSettings.Average,
-                //Anchor = CropAnchor.Center,
-                //BlendingMode = GammaMode.Linear,
-                //HybridMode = HybridScaleMode.FavorQuality,
-            };
-
-            SetEncoderOptions();
-
-            dlgOrigin = new OpenFileDialog
-            {
-                ValidateNames = true,
-                CheckFileExists = true,
-                CheckPathExists = true,
-                FileName = "",
-                Filter = ImageFormats
-            };
-
-            dlgDestinationCustom = new SaveFileDialog
-            {
-                Filter = ImageFormats
-            };
-
-            CustomName = true;
-            OriginFile = string.Empty;
+            Same,
+            _128x112,
+            _320x320,
+            _360x512,
+            _420x600,
+            _512x512,
+            _600x600
         }
+
+        public string OriginFolder { get; set; }
+
+        public string OriginFile { get; set; }
+
+        public string DestinationFolder { get; set; }
+
+        public string DestinationFile { get; set; }
+
+        public string OriginPath
+        {
+            get
+            {
+                return _originPath;
+            }
+
+            set
+            {
+                _originPath = value;
+                UpdateOrigin();
+            }
+        }
+
+        public string DestinationPath
+        {
+            get
+            {
+                return _destinationPath;
+            }
+
+            set
+            {
+                _destinationPath = value;
+                UpdateDestination();
+            }
+        }
+
+        private OpenFileDialog OriginDialog { get; set; }
+
+        private SaveFileDialog DestinationDialog { get; set; }
+
+        private bool CustomName { get; set; }
 
         public async Task<bool> Resize()
         {
             if (IsInvalidInputs())
+            {
                 return false;
+            }
 
-            if (SizeSelected == Sizes.Auto)
+            if (sizeSelected == Sizes.Same)
             {
                 var imageOrigin = BitmapExtension.SuperFastLoad(OriginPath);
-                Settings.Width = imageOrigin.Width;
-                Settings.Height = imageOrigin.Height;
+                settings.Width = imageOrigin.Width;
+                settings.Height = imageOrigin.Height;
             }
 
             await Task.Run(() =>
             {
-                MagicImageProcessor.ProcessImage(OriginPath, DestinationPath, Settings);
+                MagicImageProcessor.ProcessImage(OriginPath, DestinationPath, settings);
             });
 
             Resized();
@@ -119,10 +180,6 @@ namespace App.Image.MagicScaler
         #endregion
 
         #region LoadCombos
-        public event Action EncoderChanged = delegate { };
-        public delegate void BoolAction(bool enable);
-        public event BoolAction EnableAnchor = delegate { };
-
         public void LoadEncoders(FlatComboBox cbo)
         {
             cbo.DataSource = Enum.GetValues(typeof(EncoderOptions));
@@ -130,13 +187,16 @@ namespace App.Image.MagicScaler
             cbo.SelectedIndexChanged += (s, e) =>
             {
                 var innerCombo = s as FlatComboBoxNew;
-                EncoderSelected = (EncoderOptions)innerCombo.SelectedItem;
+                encoderSelected = (EncoderOptions)innerCombo.SelectedItem;
 
                 SetEncoderOptions();
 
-                dlgDestinationCustom.FileName = SetExtension("", dlgOrigin.FileName);
+                DestinationDialog.FileName = SetExtension(string.Empty, OriginDialog.FileName);
 
-                if (string.IsNullOrWhiteSpace(DestinationPath)) return;
+                if (string.IsNullOrWhiteSpace(DestinationPath))
+                {
+                    return;
+                }
 
                 DestinationPath = SetExtension(DestinationFolder, DestinationPath);
 
@@ -154,7 +214,7 @@ namespace App.Image.MagicScaler
             {
                 var cboItem = (CropScaleMode)cbo.SelectedItem;
 
-                Settings.ResizeMode = cboItem;
+                settings.ResizeMode = cboItem;
                 EnableAnchor(cboItem == CropScaleMode.Crop);
             };
 
@@ -168,33 +228,33 @@ namespace App.Image.MagicScaler
             cbo.SelectedIndexChanged += (s, e) =>
             {
                 var innerCombo = s as FlatComboBoxNew;
-                SizeSelected = (Sizes)innerCombo.SelectedItem;
+                sizeSelected = (Sizes)innerCombo.SelectedItem;
 
-                switch (SizeSelected)
+                switch (sizeSelected)
                 {
-                    case Sizes.NESHalf_128x112:
-                        Settings.Width = 128;
-                        Settings.Height = 112;
+                    case Sizes._128x112:
+                        settings.Width = 128;
+                        settings.Height = 112;
                         break;
-                    case Sizes.Cover_320x320:
-                        Settings.Width = 320;
-                        Settings.Height = 320;
+                    case Sizes._320x320:
+                        settings.Width = 320;
+                        settings.Height = 320;
                         break;
-                    case Sizes.Cover_360x512:
-                        Settings.Width = 360;
-                        Settings.Height = 512;
+                    case Sizes._360x512:
+                        settings.Width = 360;
+                        settings.Height = 512;
                         break;
-                    case Sizes.Cover_420x600:
-                        Settings.Width = 420;
-                        Settings.Height = 600;
+                    case Sizes._420x600:
+                        settings.Width = 420;
+                        settings.Height = 600;
                         break;
-                    case Sizes.Cover_512x512:
-                        Settings.Width = 512;
-                        Settings.Height = 512;
+                    case Sizes._512x512:
+                        settings.Width = 512;
+                        settings.Height = 512;
                         break;
-                    case Sizes.Cover_600x600:
-                        Settings.Width = 600;
-                        Settings.Height = 600;
+                    case Sizes._600x600:
+                        settings.Width = 600;
+                        settings.Height = 600;
                         break;
                 }
             };
@@ -208,7 +268,7 @@ namespace App.Image.MagicScaler
 
             cbo.SelectedIndexChanged += (s, e) =>
             {
-                Settings.Anchor = (CropAnchor)cbo.SelectedItem;
+                settings.Anchor = (CropAnchor)cbo.SelectedItem;
             };
 
             cbo.SelectedIndex = 0;
@@ -225,7 +285,7 @@ namespace App.Image.MagicScaler
 
             cbo.SelectedIndexChanged += (s, e) =>
             {
-                Settings.MatteColor = Color.FromKnownColor((KnownColor)cbo.SelectedItem);
+                settings.MatteColor = Color.FromKnownColor((KnownColor)cbo.SelectedItem);
             };
 
             cbo.SelectedIndex = 0;
@@ -239,17 +299,17 @@ namespace App.Image.MagicScaler
             {
                 switch ((Interpolation)cbo.SelectedItem)
                 {
-                    case Interpolation.Average: Settings.Interpolation = InterpolationSettings.Average; break;
-                    case Interpolation.CatmullRom: Settings.Interpolation = InterpolationSettings.CatmullRom; break;
-                    case Interpolation.Cubic: Settings.Interpolation = InterpolationSettings.Cubic; break;
-                    case Interpolation.CubicSmoother: Settings.Interpolation = InterpolationSettings.CubicSmoother; break;
-                    case Interpolation.Hermite: Settings.Interpolation = InterpolationSettings.Hermite; break;
-                    case Interpolation.Lanczos: Settings.Interpolation = InterpolationSettings.Lanczos; break;
-                    case Interpolation.Linear: Settings.Interpolation = InterpolationSettings.Linear; break;
-                    case Interpolation.Mitchell: Settings.Interpolation = InterpolationSettings.Mitchell; break;
-                    case Interpolation.NearestNeighbor: Settings.Interpolation = InterpolationSettings.NearestNeighbor; break;
-                    case Interpolation.Quadratic: Settings.Interpolation = InterpolationSettings.Quadratic; break;
-                    case Interpolation.Spline36: Settings.Interpolation = InterpolationSettings.Spline36; break;
+                    case Interpolation.Average: settings.Interpolation = InterpolationSettings.Average; break;
+                    case Interpolation.CatmullRom: settings.Interpolation = InterpolationSettings.CatmullRom; break;
+                    case Interpolation.Cubic: settings.Interpolation = InterpolationSettings.Cubic; break;
+                    case Interpolation.CubicSmoother: settings.Interpolation = InterpolationSettings.CubicSmoother; break;
+                    case Interpolation.Hermite: settings.Interpolation = InterpolationSettings.Hermite; break;
+                    case Interpolation.Lanczos: settings.Interpolation = InterpolationSettings.Lanczos; break;
+                    case Interpolation.Linear: settings.Interpolation = InterpolationSettings.Linear; break;
+                    case Interpolation.Mitchell: settings.Interpolation = InterpolationSettings.Mitchell; break;
+                    case Interpolation.NearestNeighbor: settings.Interpolation = InterpolationSettings.NearestNeighbor; break;
+                    case Interpolation.Quadratic: settings.Interpolation = InterpolationSettings.Quadratic; break;
+                    case Interpolation.Spline36: settings.Interpolation = InterpolationSettings.Spline36; break;
                 }
             };
 
@@ -262,19 +322,19 @@ namespace App.Image.MagicScaler
 
             cbo.SelectedIndexChanged += (s, e) =>
             {
-                Settings.BlendingMode = (GammaMode)cbo.SelectedItem;
+                settings.BlendingMode = (GammaMode)cbo.SelectedItem;
             };
 
-            cbo.SelectedIndex = 0;
+            cbo.SelectedIndex = 1;
         }
 
         public void LoadSharpen(FlatComboBox cbo)
         {
-            cbo.DataSource = new ListBind<bool> { true, false };
+            cbo.DataSource = new ListBind<bool> { false, true };
 
             cbo.SelectedIndexChanged += (s, e) =>
             {
-                Settings.Sharpen = (bool)cbo.SelectedItem;
+                settings.Sharpen = (bool)cbo.SelectedItem;
             };
 
             cbo.SelectedIndex = 0;
@@ -286,7 +346,7 @@ namespace App.Image.MagicScaler
 
             cbo.SelectedIndexChanged += (s, e) =>
             {
-                Settings.ColorProfileMode = (ColorProfileMode)cbo.SelectedItem;
+                settings.ColorProfileMode = (ColorProfileMode)cbo.SelectedItem;
             };
 
             cbo.SelectedIndex = 0;
@@ -298,7 +358,7 @@ namespace App.Image.MagicScaler
 
             cbo.SelectedIndexChanged += (s, e) =>
             {
-                Settings.HybridMode = (HybridScaleMode)cbo.SelectedItem;
+                settings.HybridMode = (HybridScaleMode)cbo.SelectedItem;
             };
 
             cbo.SelectedIndex = 0;
@@ -310,7 +370,7 @@ namespace App.Image.MagicScaler
 
             cbo.SelectedIndexChanged += (s, e) =>
             {
-                PngFilter = (PngFilter)cbo.SelectedItem;
+                pngFilter = (PngFilter)cbo.SelectedItem;
                 SetEncoderOptions();
             };
 
@@ -323,8 +383,8 @@ namespace App.Image.MagicScaler
 
             cbo.SelectedIndexChanged += (s, e) =>
             {
-                PngInterlace = (bool)cbo.SelectedItem;
-
+                pngInterlace = (bool)cbo.SelectedItem;
+                SetEncoderOptions();
             };
 
             cbo.SelectedIndex = 0;
@@ -336,7 +396,7 @@ namespace App.Image.MagicScaler
 
             cbo.SelectedIndexChanged += (s, e) =>
             {
-                JpgQuality = (int)cbo.SelectedItem;
+                jpgQuality = (int)cbo.SelectedItem;
                 SetEncoderOptions();
             };
 
@@ -352,7 +412,7 @@ namespace App.Image.MagicScaler
 
             cbo.SelectedIndexChanged += (s, e) =>
             {
-                JpgChromaSubsample = (ChromaSubsampleMode)cbo.SelectedItem;
+                jpgChromaSubsample = (ChromaSubsampleMode)cbo.SelectedItem;
                 SetEncoderOptions();
             };
 
@@ -361,73 +421,94 @@ namespace App.Image.MagicScaler
 
         public void SetEncoderOptions()
         {
-            switch (EncoderSelected)
+            switch (encoderSelected)
             {
-                case EncoderOptions.Png: Settings.EncoderOptions = new PngEncoderOptions(PngFilter, PngInterlace); break;
-                case EncoderOptions.PngIndexed: Settings.EncoderOptions = new PngIndexedEncoderOptions(256, null, DitherMode.Auto, PngFilter, PngInterlace); break;
-                case EncoderOptions.Jpg: Settings.EncoderOptions = new JpegEncoderOptions(JpgQuality, JpgChromaSubsample); break;
-                case EncoderOptions.Gif: Settings.EncoderOptions = new GifEncoderOptions(16, null, DitherMode.Auto); break;
-                case EncoderOptions.Tiff: Settings.EncoderOptions = new TiffEncoderOptions(TiffCompression.Deflate); break;
+                case EncoderOptions.Png:
+                    settings.EncoderOptions = new PngEncoderOptions(pngFilter, pngInterlace);
+                    break;
+                case EncoderOptions.PngIndexed:
+                    settings.EncoderOptions = new PngIndexedEncoderOptions(256, null, DitherMode.Auto, pngFilter, pngInterlace);
+                    break;
+                case EncoderOptions.Jpg:
+                    settings.EncoderOptions = new JpegEncoderOptions(jpgQuality, jpgChromaSubsample);
+                    break;
+                case EncoderOptions.Gif:
+                    settings.EncoderOptions = new GifEncoderOptions(16, null, DitherMode.Auto);
+                    break;
+                case EncoderOptions.Tiff:
+                    settings.EncoderOptions = new TiffEncoderOptions(TiffCompression.Deflate);
+                    break;
             }
         }
         #endregion
 
         #region OriginFileAndDestination
-        public event Action InvalidFile = delegate { };
-
-        bool CustomName { get; set; }
-
-        OpenFileDialog dlgOrigin;
-        SaveFileDialog dlgDestinationCustom { get; set; }
-
-        string _OriginPath;
-        public string OriginPath
+        public bool PickOrigin()
         {
-            get { return _OriginPath; }
-            set
+            bool result;
+
+            if (result = OriginDialog.ShowDialog() == DialogResult.OK)
             {
-                _OriginPath = value;
-                UpdateOrigin();
+                OriginPath = OriginDialog.FileName.NormalizePath();
+                UpdateDestinationFile();
             }
-        }
-        public string OriginFolder { get; set; }
-        public string OriginFile { get; set; }
 
-        string _DestinationPath;
-        public string DestinationPath
+            return result;
+        }
+
+        public bool PickDestination()
         {
-            get { return _DestinationPath; }
-            set
+            if (CustomName)
             {
-                _DestinationPath = value;
-                UpdateDestination();
+                DestinationDialog.InitialDirectory = DestinationFolder;
+                if (DestinationDialog.InitialDirectory == null)
+                {
+                    DestinationDialog.InitialDirectory = OriginDialog.InitialDirectory;
+                }
+
+                if (DestinationDialog.ShowDialog() == DialogResult.OK)
+                {
+                    DestinationPath = DestinationDialog.FileName.NormalizePath();
+
+                    DestinationPath = SetExtension(DestinationFolder, DestinationPath);
+
+                    return true;
+                }
+
+                return false;
             }
-        }
-        public string DestinationFolder { get; set; }
-        public string DestinationFile { get; set; }
 
-        void UpdateOrigin()
-        {
-            if (string.IsNullOrWhiteSpace(OriginPath)) return;
-
-            dlgOrigin.InitialDirectory = Path.GetDirectoryName(OriginPath);
-            dlgOrigin.FileName = Path.GetFileName(OriginPath);
-
-            OriginFolder = dlgOrigin.InitialDirectory;
-            OriginFile = dlgOrigin.FileName;
+            return false;
         }
 
-        void UpdateDestination()
+        private void UpdateOrigin()
         {
-            if (string.IsNullOrWhiteSpace(DestinationPath)) return;
+            if (string.IsNullOrWhiteSpace(OriginPath))
+            {
+                return;
+            }
+
+            OriginDialog.InitialDirectory = Path.GetDirectoryName(OriginPath);
+            OriginDialog.FileName = Path.GetFileName(OriginPath);
+
+            OriginFolder = OriginDialog.InitialDirectory;
+            OriginFile = OriginDialog.FileName;
+        }
+
+        private void UpdateDestination()
+        {
+            if (string.IsNullOrWhiteSpace(DestinationPath))
+            {
+                return;
+            }
 
             if (CustomName)
             {
-                dlgDestinationCustom.InitialDirectory = Path.GetDirectoryName(DestinationPath);
-                dlgDestinationCustom.FileName = Path.GetFileName(DestinationPath);
+                DestinationDialog.InitialDirectory = Path.GetDirectoryName(DestinationPath);
+                DestinationDialog.FileName = Path.GetFileName(DestinationPath);
 
                 DestinationFolder = Path.GetDirectoryName(DestinationPath);
-                DestinationFile = dlgDestinationCustom.FileName;
+                DestinationFile = DestinationDialog.FileName;
                 return;
             }
 
@@ -435,64 +516,36 @@ namespace App.Image.MagicScaler
             DestinationFile = Path.GetFileName(DestinationPath);
         }
 
-        public bool PickOrigin()
-        {
-            bool result;
-
-            if (result = dlgOrigin.ShowDialog() == DialogResult.OK)
-            {
-                OriginPath = dlgOrigin.FileName.NormalizePath();
-                UpdateDestinationFile();
-            }
-
-            return result;
-        }
-
-        void UpdateDestinationFile()
+        private void UpdateDestinationFile()
         {
             if (string.IsNullOrWhiteSpace(DestinationPath) == false)
+            {
                 DestinationPath = SetExtension(Path.GetDirectoryName(DestinationPath), OriginFile);
+            }
             else if (CustomName)
             {
-                dlgDestinationCustom.FileName = SetExtension("", dlgOrigin.FileName);
+                DestinationDialog.FileName = SetExtension(string.Empty, OriginDialog.FileName);
             }
         }
 
-        public bool PickDestination()
-        {
-            if (CustomName)
-            {
-                dlgDestinationCustom.InitialDirectory = DestinationFolder;
-                if (dlgDestinationCustom.InitialDirectory == null)
-                    dlgDestinationCustom.InitialDirectory = dlgOrigin.InitialDirectory;
-
-                if (dlgDestinationCustom.ShowDialog() == DialogResult.OK)
-                {
-                    DestinationPath = dlgDestinationCustom.FileName.NormalizePath();
-
-                    DestinationPath = SetExtension(DestinationFolder, DestinationPath);
-
-                    return true;
-                }
-                return false;
-            }
-            return false;
-        }
-
-        string SetExtension(string folderBase, string baseFile)
+        private string SetExtension(string folderBase, string baseFile)
         {
             var newDestination = Path.GetFileNameWithoutExtension(baseFile);
-            if (EncoderSelected == EncoderOptions.PngIndexed)
+            if (encoderSelected == EncoderOptions.PngIndexed)
+            {
                 newDestination += "." + "Png".ToLower();
+            }
             else
-                newDestination += "." + EncoderSelected.ToString().ToLower();
+            {
+                newDestination += "." + encoderSelected.ToString().ToLower();
+            }
 
             newDestination = Path.Combine(folderBase, newDestination);
 
             return newDestination.NormalizePath();
         }
 
-        bool IsInvalidInputs()
+        private bool IsInvalidInputs()
         {
             if (string.IsNullOrWhiteSpace(OriginPath) || string.IsNullOrWhiteSpace(DestinationPath)
             || OriginPath == DestinationPath)
@@ -500,6 +553,7 @@ namespace App.Image.MagicScaler
                 InvalidFile();
                 return true;
             }
+
             return false;
         }
         #endregion

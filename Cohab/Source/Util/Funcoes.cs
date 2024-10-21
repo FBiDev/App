@@ -10,7 +10,7 @@ using App.Core.Desktop;
 
 namespace App.Cohab
 {
-    public enum eTratamento
+    public enum TratamentoTipo
     {
         Limpar,
         Habilitar,
@@ -19,7 +19,7 @@ namespace App.Cohab
 
     public static class Funcoes
     {
-        public enum eTipoCriptografia
+        public enum CriptografiaTipo
         {
             Simples,
             Delphi,
@@ -68,6 +68,7 @@ namespace App.Cohab
             {
                 lUsuario = string.Empty;
             }
+
             return lUsuario;
         }
 
@@ -91,7 +92,7 @@ namespace App.Cohab
             if (aEncriptar)
             {
                 var lDesdencrypt = lDes.CreateEncryptor();
-                var MyASCIIEncoding = new ASCIIEncoding();
+                var myASCIIEncoding = new ASCIIEncoding();
                 var lBuffer = Encoding.ASCII.GetBytes(aTexto);
                 lRetorno = Convert.ToBase64String(lDesdencrypt.TransformFinalBlock(lBuffer, 0, lBuffer.Length));
             }
@@ -107,7 +108,7 @@ namespace App.Cohab
 
         public static async Task<string> MostrarLotacao(string aLogin)
         {
-            //'***** Selecionar os dados da última lotação e carregar as propriedades
+            // Selecionar os dados da última lotação e carregar as propriedades
             var lSQL = "SELECT CASE WHEN Diretoria.Diretoria_Sigla IS NOT NULL THEN " +
                         "RTRIM(Diretoria.Diretoria_Sigla) ELSE '' END + " +
                         "CASE WHEN Departamento.Departamento_Sigla IS NOT NULL THEN '-' + " +
@@ -119,22 +120,17 @@ namespace App.Cohab
                         "LEFT OUTER JOIN Setor ON Lotacao.Lotacao_SetorId = Setor.Setor_Id " +
                         "WHERE Lotacao.Lotacao_DataFim IS NULL AND " +
                         "Lotacao.Lotacao_UsuarioLogin = '" + aLogin + "'";
-            var result = (await BancoCOHAB.ExecutarSelectString(lSQL));
+            var result = await BancoCOHAB.ExecutarSelectString(lSQL);
             return result;
         }
 
-        /// <summary>
-        /// Limpar, habilitar ou desabilitar os campos de um formulário
-        /// </summary>
-        /// <param name="aFormulario">Nome do formulário</param>
-        /// <param name="aTratamento">Limpar, habilitar ou desabilitar componentes</param>
-        public static void TratarFormulario(Form aFormulario, eTratamento aTratamento)
+        public static void TratarFormulario(Form aFormulario, TratamentoTipo aTratamento)
         {
-            bool lHabilitar = !(aTratamento == eTratamento.Desabilitar);
+            bool lHabilitar = !(aTratamento == TratamentoTipo.Desabilitar);
 
             foreach (Control lControle in aFormulario.Controls)
             {
-                if (aTratamento == eTratamento.Limpar)
+                if (aTratamento == TratamentoTipo.Limpar)
                 {
                     TratarFormularioLimparContainer(lControle);
                 }
@@ -145,11 +141,7 @@ namespace App.Cohab
             }
         }
 
-        /// <summary>
-        /// Limpar containers
-        /// </summary>
-        /// <param name="aContainer">type do controle</param>
-        static void TratarFormularioLimparContainer(Control aContainer)
+        private static void TratarFormularioLimparContainer(Control aContainer)
         {
             if (aContainer is GroupBox ||
                aContainer is FlowLayoutPanel ||
@@ -180,12 +172,7 @@ namespace App.Cohab
             }
         }
 
-        /// <summary>
-        /// Alterar a propriedade Enabled dos containers
-        /// </summary>
-        /// <param name="aContainer">controle</param>
-        /// <param name="aHabilitar">estado do componente</param>
-        static void TratarFormularioHabilitarContainer(Control aContainer, bool aHabilitar)
+        private static void TratarFormularioHabilitarContainer(Control aContainer, bool aHabilitar)
         {
             if (aContainer is TabControl || aContainer is SplitContainer)
             {
@@ -207,7 +194,11 @@ namespace App.Cohab
                             {
                                 TratarFormularioHabilitarContainer(lControleB, aHabilitar);
                             }
-                            if (aHabilitar == false) { TratarFormularioBranco(lControleB); }
+
+                            if (aHabilitar == false)
+                            {
+                                TratarFormularioBranco(lControleB);
+                            }
                         }
                     }
                 }
@@ -226,7 +217,11 @@ namespace App.Cohab
                     {
                         TratarFormularioHabilitarContainer(lControleA, aHabilitar);
                     }
-                    if (aHabilitar == false) { TratarFormularioBranco(lControleA); }
+
+                    if (aHabilitar == false)
+                    {
+                        TratarFormularioBranco(lControleA);
+                    }
                 }
             }
             else
@@ -235,50 +230,53 @@ namespace App.Cohab
             }
         }
 
-        /// <summary>
-        /// Limpar componentes
-        /// </summary>
-        /// <param name="aTipoControle">type do controle</param>
-        /// <param name="aControle">controle</param>
-        static void TratarFormularioLimpar(Control aTipoControle, Control aControle)
+        private static void TratarFormularioLimpar(Control aTipoControle, Control aControle)
         {
             switch (aTipoControle.GetType().Name)
             {
-                case "RichTextBox": aControle.Text = ""; break;
-                case "TextBox": aControle.Text = ""; break;
-                case "MaskedTextBox": aControle.Text = ""; break;
+                case "RichTextBox": aControle.Text = string.Empty;
+                    break;
+                case "TextBox": aControle.Text = string.Empty;
+                    break;
+                case "MaskedTextBox": aControle.Text = string.Empty;
+                    break;
                 case "ComboBox":
-                    aControle.Text = "";
+                    aControle.Text = string.Empty;
                     ((ComboBox)aControle).SelectedIndex = -1;
                     break;
-                case "CheckBox": ((CheckBox)aControle).Checked = false; break;
-                case "DateTimePicker": ((DateTimePicker)aControle).Value = DateTime.Today; break;
-                case "ListView": ((ListView)aControle).Clear(); break;
-                case "ListBox": ((ListBox)aControle).SelectedIndex = -1; break;
-
-                case "uDecimalBox": aControle.Text = ""; break;
-                case "uMaskedBox": aControle.Text = ""; break;
-                case "uTextBox": aControle.Text = ""; break;
-                case "uTextBoxAutoSelect": aControle.Text = ""; break;
+                case "CheckBox": ((CheckBox)aControle).Checked = false;
+                    break;
+                case "DateTimePicker": ((DateTimePicker)aControle).Value = DateTime.Today;
+                    break;
+                case "ListView": ((ListView)aControle).Clear();
+                    break;
+                case "ListBox": ((ListBox)aControle).SelectedIndex = -1;
+                    break;
+                case "uDecimalBox": aControle.Text = string.Empty;
+                    break;
+                case "uMaskedBox": aControle.Text = string.Empty;
+                    break;
+                case "uTextBox": aControle.Text = string.Empty;
+                    break;
+                case "uTextBoxAutoSelect": aControle.Text = string.Empty;
+                    break;
                 case "uComboBoxAutoComplete":
-                    aControle.Text = "";
+                    aControle.Text = string.Empty;
                     ((ComboBox)aControle).SelectedIndex = -1;
                     break;
             }
 
-            //Custom Controls
+            // Custom Controls
             switch (aTipoControle.GetType().BaseType.Name)
             {
-                case "FlatTextBox": ((FlatTextBox)aControle).Text = ""; break;
-                case "FlatComboBox": ((FlatComboBox)aControle).ResetIndex(); break;
+                case "FlatTextBox": ((FlatTextBox)aControle).Text = string.Empty;
+                    break;
+                case "FlatComboBox": ((FlatComboBox)aControle).ResetIndex();
+                    break;
             }
         }
 
-        /// <summary>
-        /// Tornar branco o fundo de controle desabilitados
-        /// </summary>
-        /// <param name="aControle">controle</param>
-        static void TratarFormularioBranco(Control aControle)
+        private static void TratarFormularioBranco(Control aControle)
         {
             if (!(aControle is CheckBox) &&
                 !(aControle is Label) &&
@@ -292,12 +290,7 @@ namespace App.Cohab
             }
         }
 
-        /// <summary>
-        /// Alterar a propriedade Enabled dos componentes
-        /// </summary>
-        /// <param name="aControle">controle</param>
-        /// <param name="aHabilitar">estado do componente</param>
-        static void TratarFormularioHabilitar(Control aControle, bool aHabilitar)
+        private static void TratarFormularioHabilitar(Control aControle, bool aHabilitar)
         {
             if (aControle.GetType().ToString() != "MyComponents.uToolbar" &&
                aControle.GetType().ToString() != "MyComponents.uBlinkLabel" &&
@@ -306,10 +299,13 @@ namespace App.Cohab
                !(aControle is ToolStrip) &&
                !(aControle is StatusStrip) &&
                !(aControle is Label))
-            { //And 
-                //aControle.GetType.ToString <> "System.Windows.Forms.Button" Then
+            {  // And aControle.GetType.ToString <> "System.Windows.Forms.Button" Then
                 aControle.Enabled = aHabilitar;
-                if (aHabilitar == false) { TratarFormularioBranco(aControle); }
+
+                if (aHabilitar == false)
+                {
+                    TratarFormularioBranco(aControle);
+                }
             }
         }
     }

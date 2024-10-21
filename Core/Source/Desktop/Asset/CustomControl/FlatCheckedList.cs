@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
@@ -8,6 +7,21 @@ namespace App.Core.Desktop
 {
     public partial class FlatCheckedList : UserControl
     {
+        private Color _borderColor = Color.FromArgb(213, 223, 229);
+        private Color _backgroundColor = Color.White;
+        private Color _textColor = Color.FromArgb(47, 47, 47);
+
+        public FlatCheckedList()
+        {
+            InitializeComponent();
+            chkList.ItemCheck += CheckedList_ItemCheck;
+
+            Font = new Font("Segoe UI", 9);
+            MinimumSize = new Size(58, 34);
+        }
+
+        public event ItemCheckEventHandler ItemCheck;
+
         #region Defaults
         [DefaultValue(typeof(AutoScaleMode), "None")]
         public new AutoScaleMode AutoScaleMode
@@ -54,31 +68,46 @@ namespace App.Core.Desktop
 
         #region Properties
         [Category("_Colors"), DefaultValue(typeof(Color), "213, 223, 229")]
-        public override Color BackColor { get { return base.BackColor; } set { base.BackColor = value; } }
+        public override Color BackColor
+        {
+            get { return base.BackColor; }
+            set { base.BackColor = value; }
+        }
 
-        protected Color _BorderColor = Color.FromArgb(213, 223, 229);
         [Category("_Colors"), DefaultValue(typeof(Color), "213, 223, 229")]
-        public Color BorderColor { get { return _BorderColor; } set { _BorderColor = value; } }
+        public Color BorderColor
+        {
+            get { return _borderColor; }
+            set { _borderColor = value; }
+        }
 
-        protected Color _BackgroundColor = Color.White;
         [Category("_Colors"), DefaultValue(typeof(Color), "White")]
-        public Color BackgroundColor { get { return _BackgroundColor; } set { _BackgroundColor = value; } }
+        public Color BackgroundColor
+        {
+            get { return _backgroundColor; }
+            set { _backgroundColor = value; }
+        }
 
-        protected Color _TextColor = Color.FromArgb(47, 47, 47);
         [Category("_Colors"), DefaultValue(typeof(Color), "47, 47, 47")]
-        public Color TextColor { get { return _TextColor; } set { _TextColor = value; } }
+        public Color TextColor
+        {
+            get { return _textColor; }
+            set { _textColor = value; }
+        }
 
         [Category("_Data"), DefaultValue("")]
         public string TextLegend
         {
-            get { return lblSubtitle.Text; }
+            get
+            {
+                return lblSubtitle.Text;
+            }
+
             set
             {
                 lblSubtitle.Text = value;
             }
         }
-
-        public event ItemCheckEventHandler ItemCheck;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         [Editor("System.Windows.Forms.Design.ListControlStringCollectionEditor, System.Design, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
@@ -89,6 +118,11 @@ namespace App.Core.Desktop
             set { chkList.Items.AddRange(value); }
         }
 
+        public CheckedListBox.CheckedItemCollection CheckedItems
+        {
+            get { return chkList.CheckedItems; }
+        }
+
         public void ColumnWidth(int value)
         {
             chkList.ColumnWidth = value;
@@ -97,11 +131,6 @@ namespace App.Core.Desktop
         public void MultiColumn(bool value)
         {
             chkList.MultiColumn = value;
-        }
-
-        public CheckedListBox.CheckedItemCollection CheckedItems
-        {
-            get { return chkList.CheckedItems; }
         }
 
         public void SetItemChecked(int index, bool value)
@@ -129,31 +158,17 @@ namespace App.Core.Desktop
                 for (int i = 0; i < chkList.Items.Count; i++)
                 {
                     bool indexFound = chkList.GetItemChecked(i) && chkList.Items[i].ToString() == value;
+
                     if (indexFound)
+                    {
                         return true;
+                    }
                 }
             }
+
             return false;
         }
         #endregion
-
-        public FlatCheckedList()
-        {
-            InitializeComponent();
-            chkList.ItemCheck += chkList_ItemCheck;
-
-            Font = new Font("Segoe UI", 9);
-            MinimumSize = new Size(58, 34);
-        }
-
-        void chkList_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            if (ItemCheck == null) return;
-
-            ParentForm.BeginInvoke((MethodInvoker)(() =>
-                ItemCheck(sender, e)
-            ));
-        }
 
         public void ResetColors()
         {
@@ -161,6 +176,16 @@ namespace App.Core.Desktop
             pnlContent.BackColor = BackgroundColor;
             chkList.BackColor = BackgroundColor;
             chkList.ForeColor = TextColor;
+        }
+
+        private void CheckedList_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (ItemCheck == null)
+            {
+                return;
+            }
+
+            ParentForm.BeginInvoke((MethodInvoker)(() => ItemCheck(sender, e)));
         }
     }
 }

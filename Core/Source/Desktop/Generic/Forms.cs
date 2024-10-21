@@ -7,38 +7,38 @@ namespace App.Core.Desktop
     {
         public static T Open<T>(Form parent = null, bool once = true) where T : new()
         {
-            T frmG = default(T);
-            var FormGeneric = ((Form)(object)frmG);
+            T gForm = default(T);
+            var genericForm = (Form)(object)gForm;
 
             if (once && Application.OpenForms.OfType<T>().Count() == 0)
             {
-                if (FormGeneric == null || FormGeneric.IsDisposed)
+                if (genericForm == null || genericForm.IsDisposed)
                 {
-                    //frm = new T();
-                    //FormGeneric = ((Form)(object)frm);
+                    // frm = new T();
+                    // FormGeneric = ((Form)(object)frm);
                 }
 
-                frmG = new T();
-                FormGeneric = ((Form)(object)frmG);
+                gForm = new T();
+                genericForm = (Form)(object)gForm;
             }
             else
             {
-                FormGeneric = ((Form)(object)(Application.OpenForms.OfType<T>().First()));
+                genericForm = (Form)(object)Application.OpenForms.OfType<T>().First();
             }
 
-            if (FormGeneric.WindowState == FormWindowState.Minimized)
+            if (genericForm.WindowState == FormWindowState.Minimized)
             {
-                FormGeneric.WindowState = FormWindowState.Normal;
+                genericForm.WindowState = FormWindowState.Normal;
             }
 
             if (parent != null)
             {
-                FormGeneric.MdiParent = parent;
+                genericForm.MdiParent = parent;
             }
 
-            FormGeneric.Show();
-            FormGeneric.Focus();
-            return (T)(object)FormGeneric;
+            genericForm.Show();
+            genericForm.Focus();
+            return (T)(object)genericForm;
         }
 
         public static T Get<T>() where T : Form
@@ -48,7 +48,8 @@ namespace App.Core.Desktop
                 if (f.GetType() == typeof(T))
                 {
                     return (T)f;
-                    //return (T)(object)f;
+                    
+                    // return (T)(object)f;
                 }
             }
 

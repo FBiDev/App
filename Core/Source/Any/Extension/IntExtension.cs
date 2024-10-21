@@ -7,7 +7,10 @@ namespace App.Core
         public static string ToDB(this int? value)
         {
             if (value.HasValue)
+            {
                 return value.ToString();
+            }
+
             return "NULL";
         }
 
@@ -45,8 +48,12 @@ namespace App.Core
         {
             foreach (var item in values)
             {
-                if (source == item) return true;
+                if (source == item)
+                {
+                    return true;
+                }
             }
+
             return false;
         }
     }

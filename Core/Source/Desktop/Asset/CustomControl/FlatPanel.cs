@@ -7,6 +7,22 @@ namespace App.Core.Desktop
 {
     public partial class FlatPanel : Panel
     {
+        private PanelType _backColorType;
+
+        public FlatPanel()
+        {
+            InitializeComponent();
+            SetStyle(ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
+            DoubleBuffered = true;
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+
+            BorderSize = 0;
+            BorderColor = ColorTranslator.FromHtml("#A0A0A0");
+            BorderRound = false;
+
+            BackColor = Color.Transparent;
+        }
+
         [DefaultValue(false)]
         public bool NoScrollOnFocus { get; set; }
 
@@ -17,14 +33,17 @@ namespace App.Core.Desktop
             set { base.BackColor = value; }
         }
 
-        PanelType _BackColorType;
         [DefaultValue(typeof(PanelType), "transparent")]
         public PanelType BackColorType
         {
-            get { return _BackColorType; }
+            get
+            {
+                return _backColorType;
+            }
+
             set
             {
-                _BackColorType = value;
+                _backColorType = value;
                 ThemeBase.CheckControlTheme(this);
             }
         }
@@ -53,25 +72,19 @@ namespace App.Core.Desktop
         }
 
         [DefaultValue(0)]
-        public new int TabIndex { get { return base.TabIndex; } set { base.TabIndex = value; } }
-
-        public FlatPanel()
+        public new int TabIndex
         {
-            InitializeComponent();
-            SetStyle(ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.DoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
-            DoubleBuffered = true;
-            AutoSizeMode = AutoSizeMode.GrowAndShrink;
-
-            BorderSize = 0;
-            BorderColor = ColorTranslator.FromHtml("#A0A0A0");
-            BorderRound = false;
-
-            BackColor = Color.Transparent;
+            get { return base.TabIndex; }
+            set { base.TabIndex = value; }
         }
 
-        protected override void OnHandleCreated(EventArgs e) { }
+        protected override void OnHandleCreated(EventArgs e)
+        {
+        }
 
-        protected override void OnControlAdded(ControlEventArgs e) { }
+        protected override void OnControlAdded(ControlEventArgs e)
+        {
+        }
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -81,7 +94,10 @@ namespace App.Core.Desktop
         protected override Point ScrollToControl(Control activeControl)
         {
             if (NoScrollOnFocus)
+            {
                 return DisplayRectangle.Location;
+            }
+
             return base.ScrollToControl(activeControl);
         }
     }

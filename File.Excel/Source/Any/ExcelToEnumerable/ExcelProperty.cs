@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using ExcelToEnumerable;
 using App.Core;
+using ExcelToEnumerable;
 
 namespace App.File.ExcelToEnumerable
 {

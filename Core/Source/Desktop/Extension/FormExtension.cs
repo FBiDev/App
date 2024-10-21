@@ -9,8 +9,7 @@ namespace App.Core.Desktop
     {
         public static IEnumerable<T> GetControls<T>(this Control c)
         {
-            var controls = c.Controls.OfType<T>().
-                   Concat(c.Controls.OfType<Control>().SelectMany(x => x.GetControls<T>()));
+            var controls = c.Controls.OfType<T>().Concat(c.Controls.OfType<Control>().SelectMany(x => x.GetControls<T>()));
             return controls;
         }
 
@@ -23,9 +22,13 @@ namespace App.Core.Desktop
         public static void InvokeIfRequired(this Control control, MethodInvoker action)
         {
             if (control.InvokeRequired)
+            {
                 control.Invoke(action);
+            }
             else
+            {
                 action();
+            }
         }
 
         public static Form GetOpenedForm(this Form source, string title)

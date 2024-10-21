@@ -36,6 +36,7 @@ namespace App.Core
             {
                 return dt.ToString("yyyy-MM-dd_HH-mm");
             }
+
             return "NULL";
         }
 
@@ -44,9 +45,13 @@ namespace App.Core
             if (dt != null && dt.HasValue && dt > DateTime.MinValue)
             {
                 if (dbType == DbType.Date)
+                {
                     return dt.Value.ToString("yyyy-MM-dd");
+                }
+
                 return dt.Value.ToString("yyyy-MM-dd HH:mm:ss");
             }
+
             return "NULL";
         }
 
@@ -54,7 +59,10 @@ namespace App.Core
         {
             var result = ToDB(dt);
             if (result != "NULL")
+            {
                 return "'" + result + "'";
+            }
+
             return result;
         }
     }

@@ -7,6 +7,44 @@ namespace App.Core.Desktop
 {
     public class ListBind<T> : BindingList<T>
     {
+        private bool isSortedValue;
+
+        private ListSortDirection sortDirectionValue;
+
+        private PropertyDescriptor sortPropertyValue;
+
+        public ListBind()
+        {
+        }
+
+        public ListBind(IList<T> list)
+        {
+            foreach (object item in list)
+            {
+                Add((T)item);
+            }
+        }
+
+        protected override PropertyDescriptor SortPropertyCore
+        {
+            get { return sortPropertyValue; }
+        }
+
+        protected override ListSortDirection SortDirectionCore
+        {
+            get { return sortDirectionValue; }
+        }
+
+        protected override bool SupportsSortingCore
+        {
+            get { return true; }
+        }
+
+        protected override bool IsSortedCore
+        {
+            get { return isSortedValue; }
+        }
+
         public void SyncList(ListSynced<T> otherList)
         {
             otherList.ListChanged += (sender, e) =>
@@ -21,22 +59,12 @@ namespace App.Core.Desktop
             };
         }
 
-        bool isSortedValue;
-        ListSortDirection sortDirectionValue;
-        PropertyDescriptor sortPropertyValue;
-
-        public ListBind() { }
-
-        public ListBind(IList<T> list)
-        {
-            foreach (object o in list)
-                Add((T)o);
-        }
-
         public void AddRange(IEnumerable<T> itemsToAdd)
         {
             foreach (T item in itemsToAdd)
+            {
                 Add(item);
+            }
         }
 
         protected override void ApplySortCore(PropertyDescriptor prop, ListSortDirection direction)
@@ -48,7 +76,9 @@ namespace App.Core.Desktop
                 var underlyingType = Nullable.GetUnderlyingType(prop.PropertyType);
 
                 if (underlyingType != null)
+                {
                     interfaceType = underlyingType.GetInterface("IComparable");
+                }
             }
 
             if (interfaceType != null)
@@ -83,26 +113,6 @@ namespace App.Core.Desktop
                     ". This" + prop.PropertyType +
                     " does not implement IComparable");
             }
-        }
-
-        protected override PropertyDescriptor SortPropertyCore
-        {
-            get { return sortPropertyValue; }
-        }
-
-        protected override ListSortDirection SortDirectionCore
-        {
-            get { return sortDirectionValue; }
-        }
-
-        protected override bool SupportsSortingCore
-        {
-            get { return true; }
-        }
-
-        protected override bool IsSortedCore
-        {
-            get { return isSortedValue; }
         }
     }
 }

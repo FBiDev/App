@@ -6,6 +6,27 @@ namespace App.Core.Desktop
 {
     public partial class FlatLabel : Label
     {
+        private LabelType _foreColorType;
+        private string savedString;
+
+        public FlatLabel()
+        {
+            InitializeComponent();
+
+            UseMnemonic = false;
+
+            TextAlign = ContentAlignment.MiddleLeft;
+            Font = new Font(new FontFamily("Segoe UI"), 9, FontStyle.Regular);
+            ForeColor = Color.Black;
+            BackColor = Color.Transparent;
+
+            AutoSize = false;
+
+            MinimumSize = new Size(48, 24);
+            Size = new Size(66, 24);
+            Padding = new Padding(0, 0, 0, 1);
+        }
+
         [DefaultValue(false)]
         public new bool UseMnemonic
         {
@@ -62,14 +83,17 @@ namespace App.Core.Desktop
             set { base.ForeColor = value; }
         }
 
-        LabelType _ForeColorType;
         [DefaultValue(typeof(LabelType), "normal")]
         public LabelType ForeColorType
         {
-            get { return _ForeColorType; }
+            get
+            {
+                return _foreColorType;
+            }
+
             set
             {
-                _ForeColorType = value;
+                _foreColorType = value;
                 ThemeBase.CheckControlTheme(this);
             }
         }
@@ -81,46 +105,29 @@ namespace App.Core.Desktop
             set { base.BackColor = value; }
         }
 
-        public FlatLabel()
-        {
-            InitializeComponent();
-
-            UseMnemonic = false;
-
-            TextAlign = ContentAlignment.MiddleLeft;
-            Font = new Font(new FontFamily("Segoe UI"), 9, FontStyle.Regular);
-            ForeColor = Color.Black;
-            BackColor = Color.Transparent;
-
-            AutoSize = false;
-
-            MinimumSize = new Size(48, 24);
-            Size = new Size(66, 24);
-            Padding = new Padding(0, 0, 0, 1);
-        }
-
         public override string ToString()
         {
             return Name;
         }
 
-        readonly int WM_LBUTTONDBLCLK = 0x203;
-        string sSaved;
-
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
 
-            if (m.Msg == WM_LBUTTONDBLCLK)
+            if (m.Msg == WM.LBUTTONDBLCLK)
             {
                 this.InvokeIfRequired(() =>
                 {
-                    sSaved = ClipboardSafe.GetText();
+                    savedString = ClipboardSafe.GetText();
 
-                    if (!string.IsNullOrEmpty(sSaved))
-                        ClipboardSafe.SetText(sSaved);
+                    if (!string.IsNullOrEmpty(savedString))
+                    {
+                        ClipboardSafe.SetText(savedString);
+                    }
                     else
+                    {
                         ClipboardSafe.Clear();
+                    }
                 });
             }
         }

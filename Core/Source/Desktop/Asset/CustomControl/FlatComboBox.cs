@@ -9,6 +9,46 @@ namespace App.Core.Desktop
 {
     public partial class FlatComboBox : UserControl
     {
+        private Color _borderColor = Color.FromArgb(213, 223, 229);
+        private Color _borderColorFocus = Color.FromArgb(108, 132, 199);
+        private Color _backgroundColor = Color.White;
+        private Color _itemBackColorFocus = Color.FromArgb(108, 132, 199);
+        private Color _itemTextColor = Color.FromArgb(47, 47, 47);
+        private Color _itemTextColorFocus = Color.White;
+        private Color _labelTextColor = Color.FromArgb(108, 132, 199);
+
+        public FlatComboBox()
+        {
+            InitializeComponent();
+
+            pnlBg.Click += BackgroundPanel_Click;
+            lblSubtitle.Click += BackgroundPanel_Click;
+            picDrop.Click += BackgroundPanel_Click;
+
+            Combo.GotFocus += Combo_GotFocus;
+            Combo.LostFocus += Combo_LostFocus;
+            Combo.DrawItem += Combo_DrawItem;
+            Combo.DropDown += Combo_DropDown;
+            Combo.DropDownClosed += Combo_DropDownClosed;
+            Combo.MouseWheel += Combo_MouseWheel;
+            Combo.SelectedIndexChanged += Combo_SelectedIndexChanged;
+            Combo.SelectionChangeCommitted += Combo_SelectionChangeCommitted;
+            Combo.KeyDown += Combo_KeyDown;
+
+            Cursor = Cursors.Hand;
+            Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            Size = new Size(206, 34);
+            MaximumSize = new Size(1500, 34);
+            MinimumSize = new Size(64, 34);
+            Margin = new Padding(2);
+
+            Combo.Sorted = false;
+        }
+
+        public event EventHandler SelectedIndexChanged;
+
+        public event EventHandler SelectionChangeCommitted;
+
         #region Defaults
         [DefaultValue(typeof(Padding), "2, 2, 2, 2")]
         public new Padding Margin
@@ -47,69 +87,103 @@ namespace App.Core.Desktop
         #endregion
 
         #region Properties
-        protected Color _BorderColor = Color.FromArgb(213, 223, 229);
         [Category("_Colors"), DefaultValue(typeof(Color), "213, 223, 229")]
-        public Color BorderColor { get { return _BorderColor; } set { _BorderColor = value; } }
+        public Color BorderColor
+        {
+            get { return _borderColor; }
+            set { _borderColor = value; }
+        }
 
-        protected Color _BorderColorFocus = Color.FromArgb(108, 132, 199);
         [Category("_Colors"), DefaultValue(typeof(Color), "108, 132, 199")]
-        public Color BorderColorFocus { get { return _BorderColorFocus; } set { _BorderColorFocus = value; } }
+        public Color BorderColorFocus
+        {
+            get { return _borderColorFocus; }
+            set { _borderColorFocus = value; }
+        }
 
-        protected Color _BackgroundColor = Color.White;
         [Category("_Colors"), DefaultValue(typeof(Color), "White")]
-        public Color BackgroundColor { get { return _BackgroundColor; } set { _BackgroundColor = value; } }
+        public Color BackgroundColor
+        {
+            get { return _backgroundColor; }
+            set { _backgroundColor = value; }
+        }
 
-        protected Color _ItemBackColorFocus = Color.FromArgb(108, 132, 199);
         [Category("_Colors"), DefaultValue(typeof(Color), "108, 132, 199")]
-        public Color ItemBackColorFocus { get { return _ItemBackColorFocus; } set { _ItemBackColorFocus = value; } }
+        public Color ItemBackColorFocus
+        {
+            get { return _itemBackColorFocus; }
+            set { _itemBackColorFocus = value; }
+        }
 
-        protected Color _ItemTextColor = Color.FromArgb(47, 47, 47);
         [Category("_Colors"), DefaultValue(typeof(Color), "47, 47, 47")]
-        public Color ItemTextColor { get { return _ItemTextColor; } set { _ItemTextColor = value; } }
+        public Color ItemTextColor
+        {
+            get { return _itemTextColor; }
+            set { _itemTextColor = value; }
+        }
 
-        protected Color _ItemTextColorFocus = Color.White;
         [Category("_Colors"), DefaultValue(typeof(Color), "White")]
-        public Color ItemTextColorFocus { get { return _ItemTextColorFocus; } set { _ItemTextColorFocus = value; } }
+        public Color ItemTextColorFocus
+        {
+            get { return _itemTextColorFocus; }
+            set { _itemTextColorFocus = value; }
+        }
 
-        protected Color _LabelTextColor = Color.FromArgb(108, 132, 199);
         [Category("_Colors"), DefaultValue(typeof(Color), "108, 132, 199")]
-        public Color LabelTextColor { get { return _LabelTextColor; } set { _LabelTextColor = value; } }
+        public Color LabelTextColor
+        {
+            get { return _labelTextColor; }
+            set { _labelTextColor = value; }
+        }
 
         [Category("_Colors")]
-        public string LabelText { get { return lblSubtitle.Text; } set { lblSubtitle.Text = value; } }
+        public string LabelText
+        {
+            get { return lblSubtitle.Text; }
+            set { lblSubtitle.Text = value; }
+        }
         #endregion
 
         #region ComboBox
-        public FlatComboBoxNew Combo { get { return cboFlat; } }
-        public new string Text { get { return cboFlat.Text; } set { cboFlat.Text = value; } }
+        public FlatComboBoxNew Combo
+        {
+            get { return MainCombo; }
+        }
 
-        public event EventHandler SelectedIndexChanged;
-        public event EventHandler SelectionChangeCommitted;
+        public new string Text
+        {
+            get { return MainCombo.Text; }
+            set { MainCombo.Text = value; }
+        }
 
         [DefaultValue("")]
         public string DisplayMember
         {
-            get { return cboFlat.DisplayMember; }
-            set { cboFlat.DisplayMember = value; }
+            get { return MainCombo.DisplayMember; }
+            set { MainCombo.DisplayMember = value; }
         }
 
         [DefaultValue("")]
         public string ValueMember
         {
-            get { return cboFlat.ValueMember; }
-            set { cboFlat.ValueMember = value; }
+            get { return MainCombo.ValueMember; }
+            set { MainCombo.ValueMember = value; }
         }
 
         [DefaultValue(null)]
         public object DataSource
         {
-            get { return cboFlat.DataSource; }
+            get
+            {
+                return MainCombo.DataSource;
+            }
+
             set
             {
-                cboFlat.BindingContext = new BindingContext();
-                cboFlat.DataSource = null;
-                cboFlat.Items.Clear();
-                cboFlat.DataSource = value;
+                MainCombo.BindingContext = new BindingContext();
+                MainCombo.DataSource = null;
+                MainCombo.Items.Clear();
+                MainCombo.DataSource = value;
                 ResetIndex();
             }
         }
@@ -117,46 +191,91 @@ namespace App.Core.Desktop
         [DefaultValue(-1)]
         public int SelectedIndex
         {
-            get { return cboFlat.SelectedIndex; }
+            get
+            {
+                return MainCombo.SelectedIndex;
+            }
+
             set
             {
-                if (cboFlat.Items.Count > 0 && value <= cboFlat.Items.Count)
-                    cboFlat.SelectedIndex = value;
+                if (MainCombo.Items.Count > 0 && value <= MainCombo.Items.Count)
+                {
+                    MainCombo.SelectedIndex = value;
+                }
             }
         }
 
         [DefaultValue("")]
         public object SelectedValue
         {
-            get { if (cboFlat.SelectedValue.NotNull()) { return cboFlat.SelectedValue; } return string.Empty; }
+            get
+            {
+                if (MainCombo.SelectedValue.NotNull())
+                {
+                    return MainCombo.SelectedValue;
+                }
+
+                return string.Empty;
+            }
+
             set
             {
-                if (value.NotNull() && !value.ToString().Equals(string.Empty)) { cboFlat.SelectedValue = value; }
-                else { ResetIndex(); }
+                if (value.NotNull() && !value.ToString().Equals(string.Empty))
+                {
+                    MainCombo.SelectedValue = value;
+                }
+                else
+                {
+                    ResetIndex();
+                }
             }
         }
 
         [DefaultValue("")]
         public string SelectedText
         {
-            get { if (cboFlat.SelectedValue.NotNull()) { return cboFlat.Text; } return string.Empty; }
+            get
+            {
+                if (MainCombo.SelectedValue.NotNull())
+                {
+                    return MainCombo.Text;
+                }
+
+                return string.Empty;
+            }
+
             set
             {
-                if (value.NotNull() && !value.Equals(string.Empty)) { SelectedIndex = cboFlat.FindStringExact(value); }
-                else { ResetIndex(); }
+                if (value.NotNull() && !value.Equals(string.Empty))
+                {
+                    SelectedIndex = MainCombo.FindStringExact(value);
+                }
+                else
+                {
+                    ResetIndex();
+                }
             }
         }
 
-        public int SelectedValueInt { get { return Cast.ToInt(cboFlat.SelectedValue); } }
+        public int SelectedValueInt
+        {
+            get { return Cast.ToInt(MainCombo.SelectedValue); }
+        }
 
         [DefaultValue(null)]
-        public object SelectedItem { get { return cboFlat.SelectedItem; } set { cboFlat.SelectedItem = value; } }
-
-        public T SelectedObject<T>() where T : new() { return Cast.ToObject<T>(cboFlat.SelectedItem); }
+        public object SelectedItem
+        {
+            get { return MainCombo.SelectedItem; }
+            set { MainCombo.SelectedItem = value; }
+        }
 
         public new bool Enabled
         {
-            get { return Combo.Enabled; }
+            get
+            {
+                return Combo.Enabled;
+            }
+
             set
             {
                 Combo.Enabled = value;
@@ -166,42 +285,11 @@ namespace App.Core.Desktop
             }
         }
 
-        protected void ChangeCursor()
+        public T SelectedObject<T>() where T : new()
         {
-            if (TabStop)
-                Cursor = Cursors.Hand;
-            else
-                Cursor = Cursors.No;
+            return Cast.ToObject<T>(MainCombo.SelectedItem);
         }
         #endregion
-
-        public FlatComboBox()
-        {
-            InitializeComponent();
-
-            pnlBg.Click += PnlBg_Click;
-            lblSubtitle.Click += PnlBg_Click;
-            picDrop.Click += PnlBg_Click;
-
-            Combo.GotFocus += Combo_GotFocus;
-            Combo.LostFocus += Combo_LostFocus;
-            Combo.DrawItem += Combo_DrawItem;
-            Combo.DropDown += Combo_DropDown;
-            Combo.DropDownClosed += Combo_DropDownClosed;
-            Combo.MouseWheel += Combo_MouseWheel;
-            Combo.SelectedIndexChanged += Combo_SelectedIndexChanged;
-            Combo.SelectionChangeCommitted += Combo_SelectionChangeCommitted;
-            Combo.KeyDown += Combo_KeyDown;
-
-            Cursor = Cursors.Hand;
-            Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right);
-            Size = new Size(206, 34);
-            MaximumSize = new Size(1500, 34);
-            MinimumSize = new Size(64, 34);
-            Margin = new Padding(2);
-
-            Combo.Sorted = false;
-        }
 
         public override string ToString()
         {
@@ -219,18 +307,6 @@ namespace App.Core.Desktop
 
             Combo.BackColor = BackgroundColor;
             Combo.ForeColor = ItemTextColor;
-        }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            ResetColors();
-        }
-
-        void PnlBg_Click(object sender, EventArgs e)
-        {
-            if (Enabled == false) return;
-            Combo.Focus();
-            Combo.DroppedDown = true;
         }
 
         public void Reload<T>(ListBind<T> listSource)
@@ -254,15 +330,43 @@ namespace App.Core.Desktop
             Combo.ResetIndex();
         }
 
-        void Combo_KeyDown(object sender, KeyEventArgs e)
+        protected override void OnHandleCreated(EventArgs e)
         {
-            if (e.KeyData == Keys.Space)
+            ResetColors();
+        }
+
+        protected void ChangeCursor()
+        {
+            if (TabStop)
             {
-                PnlBg_Click(null, null);
+                Cursor = Cursors.Hand;
+            }
+            else
+            {
+                Cursor = Cursors.No;
             }
         }
 
-        void Combo_SelectedIndexChanged(object sender, EventArgs e)
+        private void BackgroundPanel_Click(object sender, EventArgs e)
+        {
+            if (Enabled == false)
+            {
+                return;
+            }
+
+            Combo.Focus();
+            Combo.DroppedDown = true;
+        }
+
+        private void Combo_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Space)
+            {
+                BackgroundPanel_Click(null, null);
+            }
+        }
+
+        private void Combo_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (SelectedIndexChanged.NotNull())
             {
@@ -270,7 +374,7 @@ namespace App.Core.Desktop
             }
         }
 
-        void Combo_SelectionChangeCommitted(object sender, EventArgs e)
+        private void Combo_SelectionChangeCommitted(object sender, EventArgs e)
         {
             if (SelectionChangeCommitted.NotNull())
             {
@@ -278,34 +382,41 @@ namespace App.Core.Desktop
             }
         }
 
-        void Combo_GotFocus(object sender, EventArgs e)
+        private void Combo_GotFocus(object sender, EventArgs e)
         {
             pnlBorder.BackColor = BorderColorFocus;
             picDrop.BackgroundImage = Resources.img_drop_arrow_focus;
         }
 
-        void Combo_LostFocus(object sender, EventArgs e)
+        private void Combo_LostFocus(object sender, EventArgs e)
         {
             pnlBorder.BackColor = BorderColor;
             picDrop.BackgroundImage = Resources.img_drop_arrow;
         }
 
-        void Combo_MouseWheel(object sender, MouseEventArgs e)
+        private void Combo_MouseWheel(object sender, MouseEventArgs e)
         {
             ((HandledMouseEventArgs)e).Handled = false;
         }
 
-        void Combo_DropDown(object sender, EventArgs e) { }
-
-        void Combo_DropDownClosed(object sender, EventArgs e) { }
-
-        void Combo_DrawItem(object sender, DrawItemEventArgs e)
+        private void Combo_DropDown(object sender, EventArgs e)
         {
-            if (e.Index == -1) { return; }
+        }
 
-            //BackgroundColor
-            //var combo = sender as ComboBox;
-            //combo.BackColor = Color.BlanchedAlmond;
+        private void Combo_DropDownClosed(object sender, EventArgs e)
+        {
+        }
+
+        private void Combo_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index == -1)
+            {
+                return;
+            }
+
+            ////BackgroundColor
+            ////var combo = sender as ComboBox;
+            ////combo.BackColor = Color.BlanchedAlmond;
 
             var textColorNormal = new SolidBrush(ItemTextColor);
             var textColorFocus = new SolidBrush(ItemTextColorFocus);
@@ -314,45 +425,50 @@ namespace App.Core.Desktop
 
             var backColorNormal = new SolidBrush(BackgroundColor);
             var backColorFocus = new SolidBrush(ItemBackColorFocus);
-            //Color.BlueViolet
+            ////Color.BlueViolet
 
-            //int DrawYCenter = (int)Math.Floor((double)((((Combo.ItemHeight - 1) - (int)Combo.Font.Size) / 2) - 3));
-            //int DrawY = DrawYCenter;
+            ////int DrawYCenter = (int)Math.Floor((double)((((Combo.ItemHeight - 1) - (int)Combo.Font.Size) / 2) - 3));
+            ////int DrawY = DrawYCenter;
 
             e.Graphics.FillRectangle(backColorFocus, e.Bounds);
 
             if (Combo.DroppedDown)
             {
-                //e.DrawBackground();
+                // e.DrawBackground();
 
-                //user mouse is hovering over this drop-down item
+                // user mouse is hovering over this drop-down item
                 if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
                 {
-                    //ItemSelected
+                    // ItemSelected
                     fontColor = textColorFocus;
-                    //BackColorSelected
+
+                    // BackColorSelected
                     e.Graphics.FillRectangle(backColorFocus, e.Bounds);
                 }
                 else
                 {
-                    //ItemNotSelected
-                    //BackgroundColor
+                    // ItemNotSelected
+                    // BackgroundColor
                     e.Graphics.FillRectangle(backColorNormal, e.Bounds);
                 }
             }
             else
             {
-                //DropDownClosed
+                // DropDownClosed
                 e.Graphics.FillRectangle(backColorNormal, e.Bounds);
             }
 
             // draw text strings
-            //e.Graphics.DrawString(Combo.GetItemText(Combo.Items[e.Index]), e.Font, fontColor, new Point(e.Bounds.X + 5, e.Bounds.Y));
-            //Better Color Render
+            // e.Graphics.DrawString(Combo.GetItemText(Combo.Items[e.Index]), e.Font, fontColor, new Point(e.Bounds.X + 5, e.Bounds.Y));
+            // Better Color Render
             TextRenderer.DrawText(
-                e.Graphics, Combo.GetItemText(Combo.Items[e.Index]),
-                e.Font, new Point(e.Bounds.X + 4, e.Bounds.Y + 1),
-                fontColor.Color, Color.Transparent, TextFormatFlags.TextBoxControl);
+                e.Graphics,
+                Combo.GetItemText(Combo.Items[e.Index]),
+                e.Font,
+                new Point(e.Bounds.X + 4, e.Bounds.Y + 1),
+                fontColor.Color,
+                Color.Transparent,
+                TextFormatFlags.TextBoxControl);
 
             if (Enabled == false)
             {

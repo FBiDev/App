@@ -20,19 +20,27 @@ namespace App.Core
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
             foreach (T element in source)
+            {
                 action(element);
+            }
         }
 
         public static T First<T>(this List<T> list) where T : class, new()
         {
-            if (list.Count == 0) { return new T(); }
+            if (list.Count == 0)
+            {
+                return new T();
+            }
 
             return list[0];
         }
 
         public static T FirstOrNew<T>(this List<T> list) where T : class, new()
         {
-            if (list.Count == 0) { return new T(); }
+            if (list.Count == 0)
+            {
+                return new T();
+            }
 
             return list[0];
         }
@@ -45,7 +53,10 @@ namespace App.Core
             {
                 list.RemoveAt(oldIndex);
 
-                if (newIndex > oldIndex) newIndex--;
+                if (newIndex > oldIndex)
+                {
+                    newIndex--;
+                }
 
                 list.Insert(newIndex, item);
             }
@@ -79,8 +90,11 @@ namespace App.Core
                 .SelectMany(i => regex.Matches(selector(i)).Cast<Match>()
                     .Select(digitChunk => (int?)digitChunk.Value.Length)).Max() ?? 0;
 
-            return items.OrderBy(i => regex.Replace(selector(i),
-                match => match.Value.PadLeft(maxDigits, '0')), stringComparer ?? StringComparer.CurrentCulture);
+            return items.OrderBy(
+                i => regex.Replace(
+                    selector(i),
+                    match => match.Value.PadLeft(maxDigits, '0')),
+                stringComparer ?? StringComparer.CurrentCulture);
         }
     }
 }

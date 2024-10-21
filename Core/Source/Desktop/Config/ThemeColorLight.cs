@@ -6,10 +6,25 @@ namespace App.Core.Desktop
 {
     public class ThemeColorLight : ThemeColor
     {
-        public override void WindowForm(Form f) { ThemeBase.SetWindowDark(f.Handle, 0); }
-        public override void MainBaseForm(MainBaseForm f) { f.BackColor = Colors.RGB(244, 244, 244); }
-        public override void ContentBaseForm(ContentBaseForm f) { f.BackColor = Colors.RGB(244, 244, 244); }
-        public override void Form(Form f) { f.BackColor = Colors.RGB(244, 244, 244); }
+        public override void WindowForm(Form f)
+        {
+            ThemeBase.SetWindowDark(f.Handle, 0);
+        }
+
+        public override void MainBaseForm(MainBaseForm f)
+        {
+            f.BackColor = Colors.RGB(244, 244, 244);
+        }
+
+        public override void ContentBaseForm(ContentBaseForm f)
+        {
+            f.BackColor = Colors.RGB(244, 244, 244);
+        }
+
+        public override void Form(Form f)
+        {
+            f.BackColor = Colors.RGB(244, 244, 244);
+        }
 
         public override void FlatPanel(FlatPanel c)
         {
@@ -18,11 +33,16 @@ namespace App.Core.Desktop
 
             switch (c.BackColorType)
             {
-                case PanelType.transparent: c.BackColor = Color.Transparent; break;
-                case PanelType.control: c.BackColor = Colors.RGB(240, 240, 240); break;
-                case PanelType.controlLight: c.BackColor = Colors.RGB(244, 244, 244); break;
-                case PanelType.controlDark: c.BackColor = Colors.RGB(230, 230, 230); break;
-                case PanelType.white: c.BackColor = Colors.RGB(252, 252, 252); break;
+                case PanelType.transparent: c.BackColor = Color.Transparent;
+                    break;
+                case PanelType.control: c.BackColor = Colors.RGB(240, 240, 240);
+                    break;
+                case PanelType.controlLight: c.BackColor = Colors.RGB(244, 244, 244);
+                    break;
+                case PanelType.controlDark: c.BackColor = Colors.RGB(230, 230, 230);
+                    break;
+                case PanelType.white: c.BackColor = Colors.RGB(252, 252, 252);
+                    break;
             }
         }
 
@@ -32,9 +52,12 @@ namespace App.Core.Desktop
 
             switch (c.ForeColorType)
             {
-                case LabelType.primary: c.ForeColor = Colors.RGB(100, 149, 237); break;
-                case LabelType.success: c.ForeColor = Colors.RGB(0, 128, 0); break;
-                case LabelType.danger: c.ForeColor = Color.Firebrick; break;
+                case LabelType.primary: c.ForeColor = Colors.RGB(100, 149, 237);
+                    break;
+                case LabelType.success: c.ForeColor = Colors.RGB(0, 128, 0);
+                    break;
+                case LabelType.danger: c.ForeColor = Color.Firebrick;
+                    break;
             }
         }
 
@@ -82,7 +105,7 @@ namespace App.Core.Desktop
             c.BorderColor = Colors.RGB(213, 223, 229);
             c.PlaceholderColor = Colors.RGB(178, 178, 178);
 
-            c.btnAction_SetImage(Resources.img_calendar_dark);
+            c.ActionButton_SetImage(Resources.img_calendar_dark);
         }
 
         public override void FlatComboBox(FlatComboBox c)

@@ -6,6 +6,13 @@ namespace App.Cohab
 {
     public class Usuario
     {
+        private static readonly UsuarioDao DAO = new UsuarioDao();
+
+        public Usuario()
+        {
+            Login = Nome = Apelido = Ramal = Matricula = string.Empty;
+        }
+
         #region " _Propriedades "
         public string Login { get; set; }
 
@@ -35,25 +42,15 @@ namespace App.Cohab
 
         [Display(AutoGenerateField = false)]
         public string Notes { get; set; }
-
-        static readonly UsuarioDao DAO = new UsuarioDao();
-        #endregion
-
-        #region " _Construtor "
-        public Usuario()
-        {
-            Login = Nome = Apelido = Ramal = Matricula = string.Empty;
-        }
-
-        public override string ToString()
-        {
-            return Nome;
-        }
         #endregion
 
         public static async Task<List<Usuario>> Pesquisar(Usuario obj)
         {
-            if (obj == null) obj = new Usuario { };
+            if (obj == null)
+            {
+                obj = new Usuario { };
+            }
+
             return await DAO.Pesquisar(obj);
         }
 
@@ -85,6 +82,11 @@ namespace App.Cohab
         public static async Task<List<Usuario>> ListarPorMatricula(string matricula, string login = null)
         {
             return await DAO.ListarPorMatricula(matricula, login);
+        }
+
+        public override string ToString()
+        {
+            return Nome;
         }
     }
 }

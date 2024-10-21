@@ -6,41 +6,40 @@ namespace App.Cohab
 {
     public class Options
     {
-        #region Options
+        #region Fields
         [JsonIgnore]
-        public static bool Loaded;
+        public readonly string ProductionDatabase = "COHAB-BD.COHABCT.COM.BR";
+        [JsonIgnore]
+        public readonly string DeveloperDatabase = @"COHAB-DSV.COHABCT.COM.BR\SQLENTERPRISE";
+        [JsonIgnore]
+        public readonly string DatabaseUsername = "mherman";
+        [JsonIgnore]
+        public readonly string DatabasePassword = "mherman";
+        [JsonIgnore]
+        public readonly string DatabaseCOHAB = "DB_COHAB";
+        [JsonIgnore]
+        private DatabaseMode databaseMode = DatabaseMode.Producao;
         #endregion
 
-        #region System
+        #region Properties
         [JsonIgnore]
-        public string DatabaseProd = "COHAB-BD.COHABCT.COM.BR";
-        [JsonIgnore]
-        public string DatabaseDev = @"COHAB-DSV.COHABCT.COM.BR\SQLENTERPRISE";
-        [JsonIgnore]
-        public string DatabaseUsername = "mherman";
-        [JsonIgnore]
-        public string DatabasePassword = "mherman";
-        [JsonIgnore]
-        public DatabaseMode DatabaseMode = DatabaseMode.Producao;
-
-        [JsonIgnore]
-        public string Database_COHAB = "DB_COHAB";
+        public static bool IsLoaded { get; private set; }
 
         [JsonConverter(JsonType.Boolean)]
-        public bool DatabaseDevMode
+        public bool IsDeveloperDatabase
         {
-            get { return Convert.ToBoolean(DatabaseMode); }
-            set { DatabaseMode = (DatabaseMode)value.ToInt(); }
+            get { return Convert.ToBoolean(databaseMode); }
+            set { databaseMode = (DatabaseMode)value.ToInt(); }
         }
+        #endregion
 
-        public bool ToggleDatabaseDevMode()
+        public bool ToggleDeveloperDatabaseMode()
         {
-            DatabaseDevMode = !DatabaseDevMode;
+            IsDeveloperDatabase = !IsDeveloperDatabase;
 
             BancoCOHAB.Reload();
 
             return BancoCOHAB.Loaded;
         }
-        #endregion
     }
 }

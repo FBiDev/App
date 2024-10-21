@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using App.Cohab.Properties;
 using App.Core;
 using App.Core.Desktop;
-using App.Cohab.Properties;
 
 namespace App.Cohab
 {
@@ -23,17 +23,8 @@ namespace App.Cohab
                     Nome = row.Value<string>("Sistema_Nome")
                 });
             }
-            return list;
-        }
-        #endregion
 
-        #region " _Parameters "
-        List<SqlParameter> GetFilters(Sistema obj)
-        {
-            return new List<SqlParameter>
-            {
-                new SqlParameter("@Nome", obj.Nome)
-            };
+            return list;
         }
         #endregion
 
@@ -79,6 +70,16 @@ namespace App.Cohab
             };
 
             return Carregar<List<Sistema>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
+        }
+        #endregion
+
+        #region " _Parameters "
+        private List<SqlParameter> GetFilters(Sistema obj)
+        {
+            return new List<SqlParameter>
+            {
+                new SqlParameter("@Nome", obj.Nome)
+            };
         }
         #endregion
     }

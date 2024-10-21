@@ -6,11 +6,25 @@ namespace App.Core.Desktop
 {
     public partial class FormBase : Form
     {
-        protected bool _statusBar;
+        private bool _statusBar;
+
+        public FormBase()
+        {
+            InitializeComponent();
+            ResizeRedraw = true;
+            StatusBar = true;
+
+            DoubleBuffered = true;
+        }
+
+        public static Icon Ico { get; set; }
 
         public bool StatusBar
         {
-            get { return _statusBar; }
+            get
+            {
+                return _statusBar;
+            }
 
             set
             {
@@ -24,24 +38,15 @@ namespace App.Core.Desktop
             }
         }
 
-        public FormBase()
-        {
-            InitializeComponent();
-            ResizeRedraw = true;
-            StatusBar = true;
-
-            DoubleBuffered = true;
-        }
-
         public void Init(Form frm)
         {
             if (Ico is Icon)
+            {
                 Icon = Ico;
+            }
 
             ThemeBase.CheckTheme(frm);
         }
-
-        public static Icon Ico { get; set; }
 
         protected override void OnHandleCreated(EventArgs e)
         {

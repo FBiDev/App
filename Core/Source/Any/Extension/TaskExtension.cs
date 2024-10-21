@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace App.Core
 {
-    static class TaskExtension
+    internal static class TaskExtension
     {
 #pragma warning disable
         // Asynchronous methods should return a Task instead of void

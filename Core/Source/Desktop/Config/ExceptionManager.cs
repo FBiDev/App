@@ -21,7 +21,7 @@ namespace App.Core.Desktop
             }
             else if (exProc.OleDb)
             {
-                //+ errorLineBreak + ErrorDb.Message
+                // + errorLineBreak + ErrorDb.Message
                 MessageBox.Show(exProc.Message + customMessage, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else if (!exProc.ExternalDll)
@@ -29,8 +29,8 @@ namespace App.Core.Desktop
                 MessageBox.Show(exProc.Message + customMessage, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ClipboardSafe.SetText(exProc.Message + customMessage);
 
-                //MessageBox.Show(CustomMessage + errorLineBreak + Error.Message + errorLineBreak + Error.StackTrace, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //throw new Exception(CustomMessage + errorLineBreak + Error.Message);
+                // MessageBox.Show(CustomMessage + errorLineBreak + Error.Message + errorLineBreak + Error.StackTrace, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // throw new Exception(CustomMessage + errorLineBreak + Error.Message);
             }
         }
     }

@@ -5,11 +5,11 @@ namespace App.Data.SQLite
 {
     public class SQLite
     {
-        public int DefaultTimeout { get; set; }
-
         public SQLite()
         {
         }
+
+        public int DefaultTimeout { get; set; }
 
         public DbConnection Connection()
         {

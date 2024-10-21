@@ -9,14 +9,18 @@ namespace App.Core
 {
     public static class XmlManager
     {
-        static string xmlFile;
-        static string xmlData;
+        private static string xmlFile;
+        private static string xmlData;
 
         public static bool Load(string file, bool baseDirectory = true)
         {
             try
             {
-                if (baseDirectory) { xmlFile = AppDomain.CurrentDomain.BaseDirectory + "\\" + file; }
+                if (baseDirectory)
+                {
+                    xmlFile = AppDomain.CurrentDomain.BaseDirectory + "\\" + file;
+                }
+
                 xmlData = File.ReadAllText(xmlFile);
                 xmlData = Regex.Replace(xmlData, ">FALSE<", ">0<", RegexOptions.IgnoreCase);
                 xmlData = Regex.Replace(xmlData, ">TRUE<", ">1<", RegexOptions.IgnoreCase);
@@ -34,14 +38,20 @@ namespace App.Core
             using (var sr = new StringReader(xmlData))
             {
                 var ser = new XmlSerializer(typeof(T));
-                try { return (T)ser.Deserialize(sr); }
-                catch (InvalidOperationException) { return null; }
+                try
+                {
+                    return (T)ser.Deserialize(sr);
+                }
+                catch (InvalidOperationException)
+                {
+                    return null;
+                }
             }
         }
 
-        public static string Serialize<T>(T ObjectToSerialize)
+        public static string Serialize<T>(T obj)
         {
-            var xmlSerializer = new XmlSerializer(ObjectToSerialize.GetType());
+            var xmlSerializer = new XmlSerializer(obj.GetType());
 
             var emptyNamespaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
             var settings = new XmlWriterSettings
@@ -54,7 +64,7 @@ namespace App.Core
             using (var textWriter = new StringWriterUTF8())
             using (var writer = XmlWriter.Create(textWriter, settings))
             {
-                xmlSerializer.Serialize(writer, ObjectToSerialize, emptyNamespaces);
+                xmlSerializer.Serialize(writer, obj, emptyNamespaces);
                 return textWriter.ToString();
             }
         }

@@ -14,66 +14,23 @@ namespace App.Core.Desktop
     /// </summary>
     public class FlatPictureBox : PictureBox
     {
-        readonly IContainer components;
-        readonly ContextMenuStrip mnuPicture;
-        readonly ToolStripMenuItem mniCopyImage;
-        readonly ToolStripMenuItem mniRemoveImage;
+        private readonly IContainer components;
+        private readonly ContextMenuStrip mnuPicture;
+        private readonly ToolStripMenuItem mniCopyImage;
+        private readonly ToolStripMenuItem mniRemoveImage;
 
-        [DefaultValue(false)]
-        public bool AutoScale { get; set; }
+        // DragDrop
+        private Image newImage;
+        private bool movedImage;
 
-        [Browsable(true)]
-        public override bool AllowDrop { get { return base.AllowDrop; } set { base.AllowDrop = value; } }
+        private string dropFilePath;
+        private bool isValidDropFile;
+        private Thread getDropImageThread;
 
-        public new Image Image
-        {
-            get { return base.Image; }
-            set
-            {
-                base.Image = value;
+        private bool isValidDragImage;
+        private Thread getDragImageThread;
 
-                if (value is Image)
-                {
-                    if (AutoScale)
-                        this.ScaleTo(value);
-
-                    ContextMenuStrip = mnuPicture;
-                    mniRemoveImage.Visible = AllowDrop;
-                }
-                else
-                {
-                    ContextMenuStrip = null;
-                }
-            }
-        }
-
-        Align AlignValue { get; set; }
-
-        [DefaultValue(typeof(Align), "None")]
-        public Align Align
-        {
-            get { return AlignValue; }
-            set
-            {
-                AlignValue = value;
-
-                if (Parent is Control)
-                    this.AlignBox();
-            }
-        }
-
-        //DragDrop
-        bool IsValidDropFile;
-        public string DropFilePath;
-        Image NewImage;
-        Thread getDropImageThread;
-
-        bool IsValidDragImage;
-        Thread getDragImageThread;
-
-        bool MovedImage;
-
-        Dictionary<ImageFormats, string> filterMap = new Dictionary<ImageFormats, string>
+        private Dictionary<ImageFormats, string> filterMap = new Dictionary<ImageFormats, string>
         {
             { ImageFormats.Jpg, ".jpg" },
             { ImageFormats.Jpeg, ".jpeg" },
@@ -82,24 +39,12 @@ namespace App.Core.Desktop
             { ImageFormats.Gif, ".gif" }
         };
 
-        [Browsable(false)]
-        public ImageFormats Filter { get; set; }
-
-        bool GetFilter(ImageFormats value, string ext)
-        {
-            foreach (var kvp in filterMap)
-            {
-                if ((value & kvp.Key) == kvp.Key && ext == kvp.Value)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        private Align _align;
+        private InterpolationMode interpolation = InterpolationMode.NearestNeighbor;
 
         public FlatPictureBox()
         {
-            //SubMenu
+            // SubMenu
             components = new Container();
             SizeChanged += OnSizeChanged;
             ParentChanged += OnParentChanged;
@@ -107,7 +52,7 @@ namespace App.Core.Desktop
             DragDrop += OnDragDrop;
             MouseDown += OnMouseDown;
 
-            Filter = (ImageFormats.Jpg | ImageFormats.Jpeg | ImageFormats.Png);
+            Filter = ImageFormats.Jpg | ImageFormats.Jpeg | ImageFormats.Png;
 
             mniCopyImage = new ToolStripMenuItem
             {
@@ -131,17 +76,137 @@ namespace App.Core.Desktop
             };
 
             mnuPicture.SuspendLayout();
-            mnuPicture.Items.AddRange(new ToolStripItem[]{
+            mnuPicture.Items.AddRange(new ToolStripItem[]
+            {
                 mniCopyImage,
                 mniRemoveImage
             });
             mnuPicture.ResumeLayout(false);
 
             mniCopyImage.MouseDown += MniCopyImage_MouseDown;
-            mniRemoveImage.MouseDown += mniRemoveImage_MouseDown;
+            mniRemoveImage.MouseDown += RemoveImageMenuItem_MouseDown;
         }
 
-        void OnParentChanged(object sender, EventArgs e)
+        [DefaultValue(false)]
+        public bool AutoScale { get; set; }
+
+        [Browsable(true)]
+        public override bool AllowDrop
+        {
+            get { return base.AllowDrop; }
+            set { base.AllowDrop = value; }
+        }
+
+        [Browsable(false)]
+        public ImageFormats Filter { get; set; }
+
+        public new Image Image
+        {
+            get
+            {
+                return base.Image;
+            }
+
+            set
+            {
+                base.Image = value;
+
+                if (value is Image)
+                {
+                    if (AutoScale)
+                    {
+                        this.ScaleTo(value);
+                    }
+
+                    ContextMenuStrip = mnuPicture;
+                    mniRemoveImage.Visible = AllowDrop;
+                }
+                else
+                {
+                    ContextMenuStrip = null;
+                }
+            }
+        }
+
+        [DefaultValue(typeof(Align), "None")]
+        public Align Align
+        {
+            get
+            {
+                return _align;
+            }
+
+            set
+            {
+                _align = value;
+
+                if (Parent is Control)
+                {
+                    this.AlignBox();
+                }
+            }
+        }
+
+        #region Interpolation Property
+        [DefaultValue(typeof(InterpolationMode), "NearestNeighbor"),
+        Description("The interpolation used to render the image.")]
+        public InterpolationMode Interpolation
+        {
+            get
+            {
+                return interpolation;
+            }
+
+            set
+            {
+                if (value == InterpolationMode.Invalid)
+                {
+                    throw new ArgumentException("\"Invalid\" is not a valid value."); // (Duh!)
+                }
+
+                interpolation = value;
+                Invalidate(); // Image should be redrawn when a different interpolation is selected
+            }
+        }
+        #endregion
+
+        protected override void OnPaint(PaintEventArgs pe)
+        {
+            // Before the PictureBox renders the image, we modify the
+            // graphics object to change the interpolation.
+
+            // Set the selected interpolation.
+            pe.Graphics.InterpolationMode = interpolation;
+
+            // Certain interpolation modes (such as nearest neighbor) need
+            // to be offset by half a pixel to render correctly.
+            if (interpolation == InterpolationMode.NearestNeighbor)
+            {
+                pe.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
+            }
+            else
+            {
+                pe.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            }
+
+            // Allow the PictureBox to draw.
+            base.OnPaint(pe);
+        }
+
+        private bool GetFilter(ImageFormats value, string ext)
+        {
+            foreach (var kvp in filterMap)
+            {
+                if ((value & kvp.Key) == kvp.Key && ext == kvp.Value)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void OnParentChanged(object sender, EventArgs e)
         {
             if (Parent is Control)
             {
@@ -150,7 +215,7 @@ namespace App.Core.Desktop
             }
         }
 
-        void OnSizeChanged(object sender, EventArgs e)
+        private void OnSizeChanged(object sender, EventArgs e)
         {
             if (Parent is Control)
             {
@@ -158,93 +223,61 @@ namespace App.Core.Desktop
             }
         }
 
-        void OnMouseDown(object sender, MouseEventArgs e)
+        private void OnMouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left || Image == null) return;
+            if (e.Button != MouseButtons.Left || Image == null)
+            {
+                return;
+            }
 
             var effect = DoDragDrop(Image, DragDropEffects.Move);
 
-            if (effect != DragDropEffects.None && MovedImage)
+            if (effect != DragDropEffects.None && movedImage)
+            {
                 Image = null;
+            }
         }
 
-        void MniCopyImage_MouseDown(object sender, MouseEventArgs e)
+        private void MniCopyImage_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left) return;
+            if (e.Button != MouseButtons.Left)
+            {
+                return;
+            }
+
             ClipboardSafe.SetImage(Image);
         }
 
-        void mniRemoveImage_MouseDown(object sender, MouseEventArgs e)
+        private void RemoveImageMenuItem_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left) return;
+            if (e.Button != MouseButtons.Left)
+            {
+                return;
+            }
+
             Image = null;
         }
 
-        #region Interpolation Property
-        /// <summary>Backing Field</summary>
-        InterpolationMode interpolation = InterpolationMode.NearestNeighbor;
-
-        /// <summary>
-        /// The interpolation used to render the image.
-        /// </summary>
-        [DefaultValue(typeof(InterpolationMode), "NearestNeighbor"),
-        Description("The interpolation used to render the image.")]
-        public InterpolationMode Interpolation
-        {
-            get { return interpolation; }
-            set
-            {
-                if (value == InterpolationMode.Invalid)
-                    throw new ArgumentException("\"Invalid\" is not a valid value."); // (Duh!)
-
-                interpolation = value;
-                Invalidate(); // Image should be redrawn when a different interpolation is selected
-            }
-        }
-        #endregion
-
-        /// <summary>
-        /// Overridden to modify rendering behavior.
-        /// </summary>
-        /// <param name="pe">Painting event args.</param>
-        protected override void OnPaint(PaintEventArgs pe)
-        {
-            // Before the PictureBox renders the image, we modify the
-            // graphics object to change the interpolation.
-
-            // Set the selected interpolation.
-            pe.Graphics.InterpolationMode = interpolation;
-            // Certain interpolation modes (such as nearest neighbor) need
-            // to be offset by half a pixel to render correctly.
-            if (interpolation == InterpolationMode.NearestNeighbor)
-                pe.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
-            else
-                pe.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-            // Allow the PictureBox to draw.
-            base.OnPaint(pe);
-        }
-
-        void OnDragEnter(object sender, DragEventArgs e)
+        private void OnDragEnter(object sender, DragEventArgs e)
         {
             string filename;
-            IsValidDropFile = GetDropFilename(out filename, e);
+            isValidDropFile = GetDropFilename(out filename, e);
 
-            if (IsValidDropFile)
+            if (isValidDropFile)
             {
-                MovedImage = true;
-                DropFilePath = filename;
+                movedImage = true;
+                dropFilePath = filename;
                 getDropImageThread = new Thread(new ThreadStart(LoadDroppedImage));
                 getDropImageThread.Start();
                 e.Effect = DragDropEffects.Copy;
                 return;
             }
 
-            IsValidDragImage = GetDragImage(out NewImage, e);
+            isValidDragImage = GetDragImage(out newImage, e);
 
-            if (IsValidDragImage)
+            if (isValidDragImage)
             {
-                MovedImage = true;
+                movedImage = true;
                 getDragImageThread = new Thread(new ThreadStart(LoadDragImage));
                 getDragImageThread.Start();
                 e.Effect = DragDropEffects.Move;
@@ -254,11 +287,14 @@ namespace App.Core.Desktop
             e.Effect = DragDropEffects.None;
         }
 
-        void OnDragDrop(object sender, DragEventArgs e)
+        private void OnDragDrop(object sender, DragEventArgs e)
         {
-            if (!IsValidDropFile && !IsValidDragImage) return;
+            if (!isValidDropFile && !isValidDragImage)
+            {
+                return;
+            }
 
-            if (IsValidDropFile)
+            if (isValidDropFile)
             {
                 while (getDropImageThread.IsAlive)
                 {
@@ -267,7 +303,7 @@ namespace App.Core.Desktop
                 }
             }
 
-            if (IsValidDragImage)
+            if (isValidDragImage)
             {
                 while (getDragImageThread.IsAlive)
                 {
@@ -276,55 +312,70 @@ namespace App.Core.Desktop
                 }
             }
 
-            if (NewImage.Size.Width <= Width && NewImage.Size.Height <= Height)
+            if (newImage.Size.Width <= Width && newImage.Size.Height <= Height)
+            {
                 Interpolation = InterpolationMode.NearestNeighbor;
+            }
             else
+            {
                 Interpolation = InterpolationMode.HighQualityBicubic;
+            }
 
-            MovedImage = false;
-            Image = NewImage;
+            movedImage = false;
+            Image = newImage;
         }
 
-        bool GetDragImage(out Image dragImage, DragEventArgs e)
+        private bool GetDragImage(out Image dragImage, DragEventArgs e)
         {
             dragImage = default(Bitmap);
             if ((e.AllowedEffect & DragDropEffects.Move) == DragDropEffects.Move)
             {
                 var dataDrag = e.Data.GetData(DataFormats.Bitmap) as Bitmap;
-                if (dataDrag == null) return false;
+                if (dataDrag == null)
+                {
+                    return false;
+                }
 
                 dragImage = dataDrag;
                 return true;
             }
+
             return false;
         }
 
-        bool GetDropFilename(out string filename, DragEventArgs e)
+        private bool GetDropFilename(out string filename, DragEventArgs e)
         {
             filename = string.Empty;
             if ((e.AllowedEffect & DragDropEffects.Copy) == DragDropEffects.Copy)
             {
                 var dataDrop = e.Data.GetData(DataFormats.FileDrop) as Array;
 
-                if (dataDrop == null) return false;
+                if (dataDrop == null)
+                {
+                    return false;
+                }
 
                 if ((dataDrop.Length == 1) && (dataDrop.GetValue(0) is string))
                 {
                     filename = ((string[])dataDrop)[0];
                     var ext = Path.GetExtension(filename).ToLower();
+
                     if (GetFilter(Filter, ext))
+                    {
                         return true;
+                    }
                 }
             }
+
             return false;
         }
 
-        void LoadDroppedImage()
+        private void LoadDroppedImage()
         {
-            NewImage = BitmapExtension.SuperFastLoad(DropFilePath);
+            newImage = BitmapExtension.SuperFastLoad(dropFilePath);
         }
 
-        void LoadDragImage()
+        private void LoadDragImage()
         {
         }
     }

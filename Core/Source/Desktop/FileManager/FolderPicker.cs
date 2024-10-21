@@ -4,8 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-//using System.Windows;
-//using System.Windows.Interop;
+
+// using System.Windows;
+// using System.Windows.Interop;
 /* refs:
  * PresentationCore
  * PresentationFramework
@@ -17,134 +18,60 @@ namespace App.Core.Desktop
 {
     public class FolderPicker
     {
-        readonly List<string> _resultPaths = new List<string>();
-        readonly List<string> _resultNames = new List<string>();
+        ////#pragma warning disable IDE1006 // Naming Styles
+        private const int CANCELED = unchecked((int)0x800704C7);
+        ////#pragma warning restore IDE1006 // Naming Styles
 
-        public IReadOnlyList<string> ResultPaths { get { return _resultPaths; } }
-        public IReadOnlyList<string> ResultNames { get { return _resultNames; } }
-        public string ResultPath { get { return ResultPaths.LastOrDefault(); } }
-        public string ResultName { get { return ResultNames.LastOrDefault(); } }
-        public virtual string InputPath { get; set; }
-        public virtual bool ForceFileSystem { get; set; }
-        public virtual bool Multiselect { get; set; }
-        public virtual string Title { get; set; }
-        public virtual string OkButtonLabel { get; set; }
-        public virtual string FileNameLabel { get; set; }
+        private readonly List<string> _resultPaths = new List<string>();
 
-        protected virtual int SetOptions(int options)
+        private readonly List<string> _resultNames = new List<string>();
+
+        ////#pragma warning disable CA1712 // Do not prefix enum values with type name
+        private enum SIGDN : uint
         {
-            if (ForceFileSystem)
-            {
-                options |= (int)FOS.FOS_FORCEFILESYSTEM;
-            }
-
-            if (Multiselect)
-            {
-                options |= (int)FOS.FOS_ALLOWMULTISELECT;
-            }
-            return options;
+            SIGDN_DESKTOPABSOLUTEEDITING = 0x8004c000,
+            SIGDN_DESKTOPABSOLUTEPARSING = 0x80028000,
+            SIGDN_FILESYSPATH = 0x80058000,
+            SIGDN_NORMALDISPLAY = 0,
+            SIGDN_PARENTRELATIVE = 0x80080001,
+            SIGDN_PARENTRELATIVEEDITING = 0x80031001,
+            SIGDN_PARENTRELATIVEFORADDRESSBAR = 0x8007c001,
+            SIGDN_PARENTRELATIVEPARSING = 0x80018001,
+            SIGDN_URL = 0x80068000
         }
 
-        // for WPF support
-        //public bool? ShowDialog(Window owner = null, bool throwOnError = false)
-        //{
-        //    if (Application.Current != null)
-        //        owner = owner ?? Application.Current.MainWindow;
-        //    return ShowDialog(owner != null ? new WindowInteropHelper(owner).Handle : IntPtr.Zero, throwOnError);
-        //}
-
-        // for all .NET
-        public virtual bool? ShowDialog(IntPtr owner = default(IntPtr), bool throwOnError = false)
+        [Flags]
+        private enum FOS
         {
-            var dialog = (IFileOpenDialog)new FileOpenDialog();
-            if (!string.IsNullOrEmpty(InputPath))
-            {
-                IShellItem item;
-                if (CheckHr(SHCreateItemFromParsingName(InputPath, null, typeof(IShellItem).GUID, out item), throwOnError) != 0)
-                    return null;
-
-                dialog.SetFolder(item);
-            }
-
-            var options = FOS.FOS_PICKFOLDERS;
-            options = (FOS)SetOptions((int)options);
-            dialog.SetOptions(options);
-
-            if (Title != null)
-            {
-                dialog.SetTitle(Title);
-            }
-
-            if (OkButtonLabel != null)
-            {
-                dialog.SetOkButtonLabel(OkButtonLabel);
-            }
-
-            if (FileNameLabel != null)
-            {
-                dialog.SetFileName(FileNameLabel);
-            }
-
-            if (owner == IntPtr.Zero)
-            {
-                owner = Process.GetCurrentProcess().MainWindowHandle;
-                if (owner == IntPtr.Zero)
-                {
-                    owner = GetDesktopWindow();
-                }
-            }
-
-            var hr = dialog.Show(owner);
-            if (hr == ERROR_CANCELLED)
-                return null;
-
-            if (CheckHr(hr, throwOnError) != 0)
-                return null;
-
-            IShellItemArray items;
-            if (CheckHr(dialog.GetResults(out items), throwOnError) != 0)
-                return null;
-
-            int count;
-            items.GetCount(out count);
-            for (var i = 0; i < count; i++)
-            {
-                IShellItem item;
-                items.GetItemAt(i, out item);
-                string path;
-                CheckHr(item.GetDisplayName(SIGDN.SIGDN_DESKTOPABSOLUTEPARSING, out path), throwOnError);
-                string name;
-                CheckHr(item.GetDisplayName(SIGDN.SIGDN_DESKTOPABSOLUTEEDITING, out name), throwOnError);
-                if (path != null || name != null)
-                {
-                    _resultPaths.Add(path);
-                    _resultNames.Add(name);
-                }
-            }
-            return true;
+            FOS_OVERWRITEPROMPT = 0x2,
+            FOS_STRICTFILETYPES = 0x4,
+            FOS_NOCHANGEDIR = 0x8,
+            FOS_PICKFOLDERS = 0x20,
+            FOS_FORCEFILESYSTEM = 0x40,
+            FOS_ALLNONSTORAGEITEMS = 0x80,
+            FOS_NOVALIDATE = 0x100,
+            FOS_ALLOWMULTISELECT = 0x200,
+            FOS_PATHMUSTEXIST = 0x800,
+            FOS_FILEMUSTEXIST = 0x1000,
+            FOS_CREATEPROMPT = 0x2000,
+            FOS_SHAREAWARE = 0x4000,
+            FOS_NOREADONLYRETURN = 0x8000,
+            FOS_NOTESTFILECREATE = 0x10000,
+            FOS_HIDEMRUPLACES = 0x20000,
+            FOS_HIDEPINNEDPLACES = 0x40000,
+            FOS_NODEREFERENCELINKS = 0x100000,
+            FOS_OKBUTTONNEEDSINTERACTION = 0x200000,
+            FOS_DONTADDTORECENT = 0x2000000,
+            FOS_FORCESHOWHIDDEN = 0x10000000,
+            FOS_DEFAULTNOMINIMODE = 0x20000000,
+            FOS_FORCEPREVIEWPANEON = 0x40000000,
+            FOS_SUPPORTSTREAMABLEITEMS = unchecked((int)0x80000000)
         }
 
-        static int CheckHr(int hr, bool throwOnError)
-        {
-            if (hr != 0 && throwOnError) Marshal.ThrowExceptionForHR(hr);
-            return hr;
-        }
-
-        [DllImport("shell32")]
-        static extern int SHCreateItemFromParsingName([MarshalAs(UnmanagedType.LPWStr)] string pszPath, IBindCtx pbc, [MarshalAs(UnmanagedType.LPStruct)] Guid riid, out IShellItem ppv);
-
-        [DllImport("user32")]
-        static extern IntPtr GetDesktopWindow();
-
-        //#pragma warning disable IDE1006 // Naming Styles
-        const int ERROR_CANCELLED = unchecked((int)0x800704C7);
-        //#pragma warning restore IDE1006 // Naming Styles
-
-        [ComImport, Guid("DC1C5A9C-E88A-4dde-A5A1-60F82A20AEF7")] // CLSID_FileOpenDialog
-        class FileOpenDialog { }
+        ////#pragma warning restore CA1712 // Do not prefix enum values with type name
 
         [ComImport, Guid("d57c7288-d4ad-4768-be02-9d969532d960"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        interface IFileOpenDialog
+        private interface IFileOpenDialog
         {
             [PreserveSig]
             int Show(IntPtr parent); // IModalWindow
@@ -201,7 +128,7 @@ namespace App.Core.Desktop
         }
 
         [ComImport, Guid("43826D1E-E718-42EE-BC55-A1E261C37BFE"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        interface IShellItem
+        private interface IShellItem
         {
             [PreserveSig]
             int BindToHandler(); // not fully defined
@@ -216,7 +143,7 @@ namespace App.Core.Desktop
         }
 
         [ComImport, Guid("b63ea76d-1f85-456f-a19c-48159efa858b"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        interface IShellItemArray
+        private interface IShellItemArray
         {
             [PreserveSig]
             int BindToHandler();  // not fully defined
@@ -234,47 +161,162 @@ namespace App.Core.Desktop
             int EnumItems();  // not fully defined
         }
 
-        //#pragma warning disable CA1712 // Do not prefix enum values with type name
-        enum SIGDN : uint
+        public IReadOnlyList<string> ResultPaths
         {
-            SIGDN_DESKTOPABSOLUTEEDITING = 0x8004c000,
-            SIGDN_DESKTOPABSOLUTEPARSING = 0x80028000,
-            SIGDN_FILESYSPATH = 0x80058000,
-            SIGDN_NORMALDISPLAY = 0,
-            SIGDN_PARENTRELATIVE = 0x80080001,
-            SIGDN_PARENTRELATIVEEDITING = 0x80031001,
-            SIGDN_PARENTRELATIVEFORADDRESSBAR = 0x8007c001,
-            SIGDN_PARENTRELATIVEPARSING = 0x80018001,
-            SIGDN_URL = 0x80068000
+            get { return _resultPaths; }
         }
 
-        [Flags]
-        enum FOS
+        public IReadOnlyList<string> ResultNames
         {
-            FOS_OVERWRITEPROMPT = 0x2,
-            FOS_STRICTFILETYPES = 0x4,
-            FOS_NOCHANGEDIR = 0x8,
-            FOS_PICKFOLDERS = 0x20,
-            FOS_FORCEFILESYSTEM = 0x40,
-            FOS_ALLNONSTORAGEITEMS = 0x80,
-            FOS_NOVALIDATE = 0x100,
-            FOS_ALLOWMULTISELECT = 0x200,
-            FOS_PATHMUSTEXIST = 0x800,
-            FOS_FILEMUSTEXIST = 0x1000,
-            FOS_CREATEPROMPT = 0x2000,
-            FOS_SHAREAWARE = 0x4000,
-            FOS_NOREADONLYRETURN = 0x8000,
-            FOS_NOTESTFILECREATE = 0x10000,
-            FOS_HIDEMRUPLACES = 0x20000,
-            FOS_HIDEPINNEDPLACES = 0x40000,
-            FOS_NODEREFERENCELINKS = 0x100000,
-            FOS_OKBUTTONNEEDSINTERACTION = 0x200000,
-            FOS_DONTADDTORECENT = 0x2000000,
-            FOS_FORCESHOWHIDDEN = 0x10000000,
-            FOS_DEFAULTNOMINIMODE = 0x20000000,
-            FOS_FORCEPREVIEWPANEON = 0x40000000,
-            FOS_SUPPORTSTREAMABLEITEMS = unchecked((int)0x80000000)
+            get { return _resultNames; }
         }
-        //#pragma warning restore CA1712 // Do not prefix enum values with type name
+
+        public string ResultPath
+        {
+            get { return ResultPaths.LastOrDefault(); }
+        }
+
+        public string ResultName
+        {
+            get { return ResultNames.LastOrDefault(); }
+        }
+
+        public virtual string InputPath { get; set; }
+
+        public virtual bool ForceFileSystem { get; set; }
+
+        public virtual bool Multiselect { get; set; }
+
+        public virtual string Title { get; set; }
+
+        public virtual string OkButtonLabel { get; set; }
+
+        public virtual string FileNameLabel { get; set; }
+
+        // for WPF support
+        // public bool? ShowDialog(Window owner = null, bool throwOnError = false)
+        // {
+        //    if (Application.Current != null)
+        //        owner = owner ?? Application.Current.MainWindow;
+        //    return ShowDialog(owner != null ? new WindowInteropHelper(owner).Handle : IntPtr.Zero, throwOnError);
+        // }
+
+        // for all .NET
+        public virtual bool? ShowDialog(IntPtr owner = default(IntPtr), bool throwOnError = false)
+        {
+            var dialog = (IFileOpenDialog)new FileOpenDialog();
+
+            if (!string.IsNullOrEmpty(InputPath))
+            {
+                IShellItem item;
+                if (CheckHr(SHCreateItemFromParsingName(InputPath, null, typeof(IShellItem).GUID, out item), throwOnError) != 0)
+                {
+                    return null;
+                }
+
+                dialog.SetFolder(item);
+            }
+
+            var options = FOS.FOS_PICKFOLDERS;
+            options = (FOS)SetOptions((int)options);
+            dialog.SetOptions(options);
+
+            if (Title != null)
+            {
+                dialog.SetTitle(Title);
+            }
+
+            if (OkButtonLabel != null)
+            {
+                dialog.SetOkButtonLabel(OkButtonLabel);
+            }
+
+            if (FileNameLabel != null)
+            {
+                dialog.SetFileName(FileNameLabel);
+            }
+
+            if (owner == IntPtr.Zero)
+            {
+                owner = Process.GetCurrentProcess().MainWindowHandle;
+                if (owner == IntPtr.Zero)
+                {
+                    owner = GetDesktopWindow();
+                }
+            }
+
+            var hr = dialog.Show(owner);
+
+            if (hr == CANCELED)
+            {
+                return null;
+            }
+
+            if (CheckHr(hr, throwOnError) != 0)
+            {
+                return null;
+            }
+
+            IShellItemArray items;
+            if (CheckHr(dialog.GetResults(out items), throwOnError) != 0)
+            {
+                return null;
+            }
+
+            int count;
+            items.GetCount(out count);
+            for (var i = 0; i < count; i++)
+            {
+                IShellItem item;
+                items.GetItemAt(i, out item);
+                string path;
+                CheckHr(item.GetDisplayName(SIGDN.SIGDN_DESKTOPABSOLUTEPARSING, out path), throwOnError);
+                string name;
+                CheckHr(item.GetDisplayName(SIGDN.SIGDN_DESKTOPABSOLUTEEDITING, out name), throwOnError);
+                if (path != null || name != null)
+                {
+                    _resultPaths.Add(path);
+                    _resultNames.Add(name);
+                }
+            }
+
+            return true;
+        }
+
+        protected virtual int SetOptions(int options)
+        {
+            if (ForceFileSystem)
+            {
+                options |= (int)FOS.FOS_FORCEFILESYSTEM;
+            }
+
+            if (Multiselect)
+            {
+                options |= (int)FOS.FOS_ALLOWMULTISELECT;
+            }
+
+            return options;
+        }
+
+        private static int CheckHr(int hr, bool throwOnError)
+        {
+            if (hr != 0 && throwOnError)
+            {
+                Marshal.ThrowExceptionForHR(hr);
+            }
+
+            return hr;
+        }
+
+        [DllImport("shell32")]
+        private static extern int SHCreateItemFromParsingName([MarshalAs(UnmanagedType.LPWStr)] string pszPath, IBindCtx pbc, [MarshalAs(UnmanagedType.LPStruct)] Guid riid, out IShellItem ppv);
+
+        [DllImport("user32")]
+        private static extern IntPtr GetDesktopWindow();
+
+        [ComImport, Guid("DC1C5A9C-E88A-4dde-A5A1-60F82A20AEF7")] // CLSID_FileOpenDialog
+        private class FileOpenDialog
+        {
+        }
     }
 }
