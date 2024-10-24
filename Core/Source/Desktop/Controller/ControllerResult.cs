@@ -5,31 +5,36 @@ namespace App.Core.Desktop
 {
     public class ControllerResult
     {
-        public bool Sucess { get; set; }
-        public string SucessTitle { get; set; }
+        private string _successMessage;
 
-        string sucMessage;
-        public string SucessMessage
+        public ControllerResult()
+        {
+            SuccessMessage = ErrorMessage = string.Empty;
+        }
+
+        public bool Success { get; set; }
+
+        public string SuccessTitle { get; set; }
+
+        public string SuccessMessage
         {
             get
             {
-                return sucMessage;
+                return _successMessage;
             }
+
             set
             {
-                sucMessage = value;
-                Sucess = string.IsNullOrWhiteSpace(value) == false;
+                _successMessage = value;
+                Success = string.IsNullOrWhiteSpace(value) == false;
             }
         }
 
         public string ErrorMessage { get; set; }
-        public dynamic Object { get; set; }
-        public List<dynamic> List { get; set; }
 
-        public ControllerResult()
-        {
-            SucessMessage = ErrorMessage = string.Empty;
-        }
+        public dynamic Object { get; set; }
+
+        public List<dynamic> List { get; set; }
 
         public List<T> GetList<T>()
         {

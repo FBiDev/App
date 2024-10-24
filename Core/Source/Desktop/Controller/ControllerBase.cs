@@ -23,19 +23,19 @@ namespace App.Core.Desktop
             FormManager.ResetControls(AlertLabel);
         }
 
-        protected void SucessBox(ControllerResult res)
+        protected void SuccessBox(ControllerResult res)
         {
-            if (res.Sucess)
+            if (res.Success)
             {
-                ShowBox.Info(res.SucessMessage, res.SucessTitle);
+                ShowBox.Info(res.SuccessMessage, res.SuccessTitle);
             }
         }
 
-        protected void SucessFailBox(ControllerResult res)
+        protected void SuccessFailBox(ControllerResult res)
         {
-            if (res.Sucess)
+            if (res.Success)
             {
-                ShowBox.Info(res.SucessMessage, res.SucessTitle);
+                ShowBox.Info(res.SuccessMessage, res.SuccessTitle);
             }
             else
             {

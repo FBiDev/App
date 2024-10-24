@@ -28,8 +28,11 @@ namespace App.Core.Desktop
         {
             // The given collection may not be null.
             if (collection == null)
+            {
                 return;
-            //throw new ArgumentNullException("collection");
+            }
+
+            // throw new ArgumentNullException("collection");
 
             // Remember the current setting for RaiseListChangedEvents
             // (if it was already deactivated, we shouldn't activate it after adding!).
@@ -41,17 +44,20 @@ namespace App.Core.Desktop
                 bindingList.RaiseListChangedEvents = false;
 
                 foreach (var value in collection)
+                {
                     bindingList.Add(value);
+                }
             }
-
-            // Restore the old setting for RaiseListChangedEvents (even if there was an exception),
-            // and fire the ListChanged-event once (if RaiseListChangedEvents is activated).
             finally
             {
+                // Restore the old setting for RaiseListChangedEvents (even if there was an exception),
+                // and fire the ListChanged-event once (if RaiseListChangedEvents is activated).
                 bindingList.RaiseListChangedEvents = oldRaiseEventsValue;
 
                 if (bindingList.RaiseListChangedEvents)
+                {
                     bindingList.ResetBindings();
+                }
             }
         }
     }

@@ -25,7 +25,7 @@ namespace App.Core.Desktop
                     RedirectStandardOutput = true,
                     FileName = "cmd.exe",
                     Arguments = "/C " + exeCmd
-                    //WorkingDirectory = ""
+                    ////WorkingDirectory = ""
                 }
             };
 
@@ -41,7 +41,7 @@ namespace App.Core.Desktop
 
         public static void ExecuteProcess(string fileName, string folderPath, string folderBase = "")
         {
-            var procArray = Process.GetProcessesByName(fileName.Replace(".exe", ""));
+            var procArray = Process.GetProcessesByName(fileName.Replace(".exe", string.Empty));
             if (procArray.Length == 0)
             {
                 var proc = new Process();
@@ -49,10 +49,10 @@ namespace App.Core.Desktop
                 proc.StartInfo.WorkingDirectory = Path.Combine(folderBase, folderPath);
                 proc.StartInfo.FileName = Path.Combine(folderBase, folderPath, fileName);
 
-                //var folderExists = Directory.Exists(proc.StartInfo.WorkingDirectory);
-                //var fileExists = File.Exists(proc.StartInfo.FileName);
+                ////var folderExists = Directory.Exists(proc.StartInfo.WorkingDirectory);
+                ////var fileExists = File.Exists(proc.StartInfo.FileName);
 
-                proc.StartInfo.Arguments = "";
+                proc.StartInfo.Arguments = string.Empty;
                 proc.StartInfo.UseShellExecute = false;
                 proc.StartInfo.RedirectStandardOutput = false;
                 proc.Start();

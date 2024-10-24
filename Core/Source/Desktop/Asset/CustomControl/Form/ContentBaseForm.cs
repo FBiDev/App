@@ -8,29 +8,26 @@ namespace App.Core.Desktop
 {
     public partial class ContentBaseForm : Form
     {
-        [DefaultValue(typeof(AutoScaleMode), "None")]
-        public new AutoScaleMode AutoScaleMode
-        {
-            get { return base.AutoScaleMode; }
-            set { base.AutoScaleMode = value; }
-        }
+        private bool _firstLoad = true;
 
-        public Size SizeOriginal;
-        public bool isDesignMode = true;
-
-        bool _firstLoad = true;
-        //public event EventHandler FirstLoad;
-        public event EventVoid FinalLoadOnce;
-        public event EventTaskAsync FinalLoadOnceAsync;
+        // Fix_Flickering_Controls
+        private bool enableFormLevelDoubleBuffering = true;
+        private int originalExStyle = -1;
 
         public ContentBaseForm()
         {
             InitializeComponent();
 
+            IsDesignMode = true;
+
             HandleCreated += (sender, e) =>
             {
                 Init();
-                if (isDesignMode) return;
+
+                if (IsDesignMode)
+                {
+                    return;
+                }
 
                 ResizeBegin += (s, ev) => { TurnOffFormLevelDoubleBuffering(); };
                 ResizeEnd += (s, ev) => { TurnOnFormLevelDoubleBuffering(); };
@@ -40,17 +37,86 @@ namespace App.Core.Desktop
             Shown += (sender, e) =>
             {
                 foreach (Control control in Controls)
+                {
                     control.Enter += Control_Enter;
+                }
 
-                isDesignMode = DesignMode;
-                if (isDesignMode) return;
+                IsDesignMode = DesignMode;
 
-                //ThemeBase.CheckTheme(this);
+                if (IsDesignMode)
+                {
+                    return;
+                }
+
+                // ThemeBase.CheckTheme(this);
             };
 
             Resize += OnResize;
 
             TopLevel = false;
+        }
+
+        public event EventVoid FinalLoadOnce;
+
+        public event EventTaskAsync FinalLoadOnceAsync;
+
+        ////public event EventHandler FirstLoad;
+
+        [DefaultValue(typeof(AutoScaleMode), "None")]
+        public new AutoScaleMode AutoScaleMode
+        {
+            get { return base.AutoScaleMode; }
+            set { base.AutoScaleMode = value; }
+        }
+
+        public bool IsDesignMode { get; set; }
+
+        public Size SizeOriginal { get; set; }
+
+        #region Fix_Flickering_Controls
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                if (originalExStyle == -1)
+                {
+                    originalExStyle = base.CreateParams.ExStyle;
+                }
+
+                CreateParams cp = base.CreateParams;
+                if (enableFormLevelDoubleBuffering && DesignMode == false)
+                {
+                    cp.ExStyle |= 0x02000000;   // WS_EX_COMPOSITED
+                }
+                else
+                {
+                    cp.ExStyle = originalExStyle;
+                }
+
+                return cp;
+            }
+        }
+        #endregion
+
+        public void OnResize(object sender, EventArgs e)
+        {
+            var tableLayouts = Controls.OfType<FlatTable>();
+            foreach (var tbl in tableLayouts)
+            {
+                if (tbl.FillOnFormResize == false)
+                {
+                    continue;
+                }
+
+                if (Height >= tbl.SizeOriginal.Height)
+                {
+                    tbl.Dock = DockStyle.Fill;
+                }
+                else if (Height < tbl.SizeOriginal.Height)
+                {
+                    tbl.Dock = DockStyle.Top;
+                }
+            }
         }
 
         public void FinalLoadOnShow()
@@ -60,14 +126,18 @@ namespace App.Core.Desktop
                 _firstLoad = false;
 
                 if (FinalLoadOnce.NotNull())
+                {
                     FinalLoadOnce();
+                }
 
                 if (FinalLoadOnceAsync.NotNull())
+                {
                     FinalLoadOnceAsync().TryAwait();
+                }
             }
         }
 
-        void Init()
+        private void Init()
         {
             SizeOriginal = Size;
 
@@ -81,60 +151,25 @@ namespace App.Core.Desktop
                 x.TabIndex = tabIndex;
                 tabIndex++;
             });
-            //KeyPreview = true;
+
+            // KeyPreview = true;
         }
 
-        void Control_Enter(object sender, EventArgs e)
+        private void Control_Enter(object sender, EventArgs e)
         {
             ScrollControlIntoView((Control)sender);
         }
 
-        public void OnResize(object sender, EventArgs e)
-        {
-            var tableLayouts = Controls.OfType<FlatTable>();
-            foreach (var tbl in tableLayouts)
-            {
-                if (tbl.FillOnFormResize == false) continue;
-
-                if (Height >= tbl.SizeOriginal.Height)
-                    tbl.Dock = DockStyle.Fill;
-                else if (Height < tbl.SizeOriginal.Height)
-                    tbl.Dock = DockStyle.Top;
-            }
-        }
-
-        #region Fix_Flickering_Controls
-        bool enableFormLevelDoubleBuffering = true;
-        int originalExStyle = -1;
-
-        void TurnOnFormLevelDoubleBuffering()
+        private void TurnOnFormLevelDoubleBuffering()
         {
             enableFormLevelDoubleBuffering = true;
             UpdateStyles();
         }
 
-        void TurnOffFormLevelDoubleBuffering()
+        private void TurnOffFormLevelDoubleBuffering()
         {
             enableFormLevelDoubleBuffering = false;
             UpdateStyles();
         }
-
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                if (originalExStyle == -1)
-                    originalExStyle = base.CreateParams.ExStyle;
-
-                CreateParams cp = base.CreateParams;
-                if (enableFormLevelDoubleBuffering && DesignMode == false)
-                    cp.ExStyle |= 0x02000000;   // WS_EX_COMPOSITED
-                else
-                    cp.ExStyle = originalExStyle;
-
-                return cp;
-            }
-        }
-        #endregion
     }
 }

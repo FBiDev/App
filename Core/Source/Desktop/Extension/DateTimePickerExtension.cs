@@ -27,8 +27,7 @@ namespace App.Core.Desktop
                 return true;
             }
 
-            MessageBox.Show("Insira uma data válida, entre 1753 e 9998", "",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Insira uma data válida, entre 1753 e 9998", string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
             return false;
         }
     }

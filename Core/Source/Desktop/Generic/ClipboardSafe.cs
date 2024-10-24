@@ -6,13 +6,6 @@ namespace App.Core.Desktop
 {
     public static class ClipboardSafe
     {
-        static void StartThread(Thread thread)
-        {
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            thread.Join();
-        }
-
         public static string GetText()
         {
             var text = string.Empty;
@@ -39,6 +32,13 @@ namespace App.Core.Desktop
         {
             var thread = new Thread(Clipboard.Clear);
             StartThread(thread);
+        }
+
+        private static void StartThread(Thread thread)
+        {
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            thread.Join();
         }
     }
 }

@@ -10,6 +10,47 @@ namespace App.Core.Desktop
 {
     public partial class DataGridBase : DataGridView
     {
+        // Paint
+        private readonly Pen resizePen = new Pen(Colors.RGB(86, 86, 86), 1) { DashStyle = DashStyle.Dot };
+        private readonly Pen reorderPenRec = new Pen(Colors.RGB(172, 172, 172), 1) { DashStyle = DashStyle.Dot };
+        private readonly Pen reorderPenDiv = new Pen(SystemColors.ControlDark, 3) { DashStyle = DashStyle.Solid };
+
+        // ImageColumns
+        private readonly string boolColumnSufix = "Bol";
+        private readonly Bitmap imgtrue = Resources.img_true_ico;
+        private readonly Bitmap imgfalse = Resources.img_false_ico;
+
+        // Reorder Column Rectangle
+        private int selectedColumnIndex = -1;
+        private Rectangle selectedColumnPos;
+        private Point selectedColumnClickPos;
+        private bool divider;
+
+        // Fix Default Value on ColumnHeadersHeightSizeModeChanged
+        private bool firstChange = true;
+
+        private string defaultColumn = string.Empty;
+        private ListSortDirection defaultColumnDirection;
+        private string lastSortedColumn;
+        private List<string> booleanColumns = new List<string>();
+
+        public DataGridBase()
+        {
+            InitializeComponent();
+
+            SetStyles();
+
+            ColumnHeaderMouseClick += Dg_ColumnHeaderMouseClick;
+            ColumnHeadersHeightSizeModeChanged += Dg_ColumnHeadersHeightSizeModeChanged;
+            Sorted += Dg_OnSorted;
+            DataSourceChanged += Dg_DataSourceChanged;
+
+            CellMouseDown += DataGridBase_CellMouseDown;
+            CellMouseUp += DataGridBase_CellMouseUp;
+
+            DoubleBuffered = true;
+        }
+
         #region Defaults
         [DefaultValue(false)]
         public new bool AllowUserToAddRows
@@ -138,40 +179,106 @@ namespace App.Core.Desktop
         }
         #endregion
 
-        string DefaultColumn = string.Empty;
-        ListSortDirection DefaultColumnDirection;
-        List<string> BooleanColumns = new List<string>();
+        [Browsable(false)]
+        public Color ColorBackground
+        {
+            get { return BackgroundColor; }
+            set { BackgroundColor = value; }
+        }
 
-        string LastSortedColumn;
+        [Browsable(false)]
+        public Color ColorGrid
+        {
+            get { return GridColor; }
+            set { GridColor = value; }
+        }
 
         [Browsable(false)]
-        public Color ColorBackground { get { return BackgroundColor; } set { BackgroundColor = value; } }
+        public Color ColorRow
+        {
+            get { return DefaultCellStyle.BackColor; }
+            set { DefaultCellStyle.BackColor = value; }
+        }
+
         [Browsable(false)]
-        public Color ColorGrid { get { return GridColor; } set { GridColor = value; } }
+        public Color ColorRowAlternate
+        {
+            get { return AlternatingRowsDefaultCellStyle.BackColor; }
+            set { AlternatingRowsDefaultCellStyle.BackColor = value; }
+        }
+
         [Browsable(false)]
-        public Color ColorRow { get { return DefaultCellStyle.BackColor; } set { DefaultCellStyle.BackColor = value; } }
-        [Browsable(false)]
-        public Color ColorRowAlternate { get { return AlternatingRowsDefaultCellStyle.BackColor; } set { AlternatingRowsDefaultCellStyle.BackColor = value; } }
-        [Browsable(false)]
-        public Color ColorRowSelection { get { return DefaultCellStyle.SelectionBackColor; } set { DefaultCellStyle.SelectionBackColor = value; } }
+        public Color ColorRowSelection
+        {
+            get { return DefaultCellStyle.SelectionBackColor; }
+            set { DefaultCellStyle.SelectionBackColor = value; }
+        }
+
         [Browsable(false)]
         public Color ColorRowMouseHover { get; set; }
-        [Browsable(false)]
-        public Color ColorFontRow { get { return DefaultCellStyle.ForeColor; } set { DefaultCellStyle.ForeColor = value; } }
-        [Browsable(false)]
-        public Color ColorFontRowSelection { get { return DefaultCellStyle.SelectionForeColor; } set { DefaultCellStyle.SelectionForeColor = value; } }
 
-        protected Color ColorRowHeader { get { return RowHeadersDefaultCellStyle.BackColor; } set { RowHeadersDefaultCellStyle.BackColor = value; } }
-        protected Color ColorRowHeaderSelection { get { return RowHeadersDefaultCellStyle.SelectionBackColor; } set { RowHeadersDefaultCellStyle.SelectionBackColor = value; } }
-        protected Color ColorFontRowHeader { get { return RowHeadersDefaultCellStyle.ForeColor; } set { RowHeadersDefaultCellStyle.ForeColor = value; } }
-        protected Color ColorFontRowHeaderSelection { get { return RowHeadersDefaultCellStyle.SelectionForeColor; } set { RowHeadersDefaultCellStyle.SelectionForeColor = value; } }
-
-        public Color ColorColumnHeader { get { return ColumnHeadersDefaultCellStyle.BackColor; } set { ColumnHeadersDefaultCellStyle.BackColor = value; } }
         [Browsable(false)]
-        public Color ColorColumnSelection { get { return ColumnHeadersDefaultCellStyle.SelectionBackColor; } set { ColumnHeadersDefaultCellStyle.SelectionBackColor = value; } }
+        public Color ColorFontRow
+        {
+            get { return DefaultCellStyle.ForeColor; }
+            set { DefaultCellStyle.ForeColor = value; }
+        }
 
-        protected Color ColorFontColumnHeader { get { return ColumnHeadersDefaultCellStyle.ForeColor; } set { ColumnHeadersDefaultCellStyle.ForeColor = value; } }
-        protected Color ColorFontColumnSelection { get { return ColumnHeadersDefaultCellStyle.SelectionForeColor; } set { ColumnHeadersDefaultCellStyle.SelectionForeColor = value; } }
+        [Browsable(false)]
+        public Color ColorFontRowSelection
+        {
+            get { return DefaultCellStyle.SelectionForeColor; }
+            set { DefaultCellStyle.SelectionForeColor = value; }
+        }
+
+        protected Color ColorRowHeader
+        {
+            get { return RowHeadersDefaultCellStyle.BackColor; }
+            set { RowHeadersDefaultCellStyle.BackColor = value; }
+        }
+
+        protected Color ColorRowHeaderSelection
+        {
+            get { return RowHeadersDefaultCellStyle.SelectionBackColor; }
+            set { RowHeadersDefaultCellStyle.SelectionBackColor = value; }
+        }
+
+        protected Color ColorFontRowHeader
+        {
+            get { return RowHeadersDefaultCellStyle.ForeColor; }
+            set { RowHeadersDefaultCellStyle.ForeColor = value; }
+        }
+
+        protected Color ColorFontRowHeaderSelection
+        {
+            get { return RowHeadersDefaultCellStyle.SelectionForeColor; }
+            set { RowHeadersDefaultCellStyle.SelectionForeColor = value; }
+        }
+
+        public Color ColorColumnHeader
+        {
+            get { return ColumnHeadersDefaultCellStyle.BackColor; }
+            set { ColumnHeadersDefaultCellStyle.BackColor = value; }
+        }
+
+        [Browsable(false)]
+        public Color ColorColumnSelection
+        {
+            get { return ColumnHeadersDefaultCellStyle.SelectionBackColor; }
+            set { ColumnHeadersDefaultCellStyle.SelectionBackColor = value; }
+        }
+
+        protected Color ColorFontColumnHeader
+        {
+            get { return ColumnHeadersDefaultCellStyle.ForeColor; }
+            set { ColumnHeadersDefaultCellStyle.ForeColor = value; }
+        }
+
+        protected Color ColorFontColumnSelection
+        {
+            get { return ColumnHeadersDefaultCellStyle.SelectionForeColor; }
+            set { ColumnHeadersDefaultCellStyle.SelectionForeColor = value; }
+        }
 
         [Browsable(false)]
         public Color ColorColumnHeaderMouseHover { get; set; }
@@ -180,53 +287,37 @@ namespace App.Core.Desktop
         [Browsable(false)]
         public Color ColorColumnHeaderReorderDiv { get; set; }
 
-        public DataGridBase()
+        private void DataGridBase_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
-            InitializeComponent();
+            if (e.RowIndex != -1)
+            {
+                return;
+            }
 
-            SetStyles();
-
-            ColumnHeaderMouseClick += Dg_ColumnHeaderMouseClick;
-            ColumnHeadersHeightSizeModeChanged += Dg_ColumnHeadersHeightSizeModeChanged;
-            Sorted += Dg_OnSorted;
-            DataSourceChanged += Dg_DataSourceChanged;
-
-            CellMouseDown += DataGridBase_CellMouseDown;
-            CellMouseUp += DataGridBase_CellMouseUp;
-
-            DoubleBuffered = true;
+            selectedColumnIndex = -1;
+            selectedColumnPos = default(Rectangle);
+            selectedColumnClickPos = default(Point);
+            divider = false;
         }
 
-        void DataGridBase_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
+        private void DataGridBase_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.RowIndex != -1) return;
+            if (e.RowIndex != -1)
+            {
+                return;
+            }
 
-            SelectedColumnIndex = -1;
-            SelectedColumnPos = default(Rectangle);
-            SelectedColumnClickPos = default(Point);
-            Divider = false;
-        }
+            selectedColumnIndex = e.ColumnIndex;
+            selectedColumnPos = GetCellDisplayRectangle(selectedColumnIndex, -1, false);
+            selectedColumnClickPos = PointToClient(Cursor.Position);
 
-        int SelectedColumnIndex = -1;
-        Rectangle SelectedColumnPos;
-        Point SelectedColumnClickPos;
-        bool Divider;
-
-        void DataGridBase_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (e.RowIndex != -1) return;
-
-            SelectedColumnIndex = e.ColumnIndex;
-            SelectedColumnPos = GetCellDisplayRectangle(SelectedColumnIndex, -1, false);
-            SelectedColumnClickPos = PointToClient(Cursor.Position);
-
-            Divider = e.X <= 5 || e.X >= (SelectedColumnPos.Width - 5);
+            divider = e.X <= 5 || e.X >= (selectedColumnPos.Width - 5);
         }
 
         protected void SetStyles()
         {
-            //MAIN
-            Anchor = (((AnchorStyles.Top | AnchorStyles.Bottom) | AnchorStyles.Left) | AnchorStyles.Right);
+            // MAIN
+            Anchor = ((AnchorStyles.Top | AnchorStyles.Bottom) | AnchorStyles.Left) | AnchorStyles.Right;
 
             CausesValidation = false;
 
@@ -237,7 +328,7 @@ namespace App.Core.Desktop
             BackgroundColor = ColorBackground;
             BorderStyle = BorderStyle.None;
             GridColor = ColorGrid;
-            //Margin = new System.Windows.Forms.Padding(0);
+            ////Margin = new System.Windows.Forms.Padding(0);
             MultiSelect = false;
             SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             ReadOnly = true;
@@ -248,15 +339,15 @@ namespace App.Core.Desktop
             AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
             AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
 
-            //ROWS
+            // ROWS
             RowTemplate.Height = 30;
             RowTemplate.Resizable = DataGridViewTriState.False;
 
-            //Alternate Rows
+            // Alternate Rows
             AlternatingRowsDefaultCellStyle.BackColor = ColorRowAlternate;
 
-            //ROWS_HEADERS
-            var RowHeadersStyle = new DataGridViewCellStyle
+            // ROWS_HEADERS
+            var rowHeadersStyle = new DataGridViewCellStyle
             {
                 Alignment = DataGridViewContentAlignment.MiddleLeft,
                 BackColor = ColorRowHeader,
@@ -266,14 +357,14 @@ namespace App.Core.Desktop
                 SelectionForeColor = ColorFontRowHeaderSelection,
                 WrapMode = DataGridViewTriState.True
             };
-            RowHeadersDefaultCellStyle = RowHeadersStyle;
+            RowHeadersDefaultCellStyle = rowHeadersStyle;
 
             RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             RowHeadersVisible = false;
 
-            //CELLS
-            var CellStyle = new DataGridViewCellStyle
+            // CELLS
+            var cellStyle = new DataGridViewCellStyle
             {
                 Alignment = DataGridViewContentAlignment.MiddleLeft,
                 BackColor = ColorRow,
@@ -284,11 +375,11 @@ namespace App.Core.Desktop
                 WrapMode = DataGridViewTriState.False
             };
 
-            DefaultCellStyle = CellStyle;
+            DefaultCellStyle = cellStyle;
             CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
 
-            //COLUMNS
-            var ColumnHeadersStyle = new DataGridViewCellStyle
+            // COLUMNS
+            var columnHeadersStyle = new DataGridViewCellStyle
             {
                 BackColor = ColorColumnHeader,
                 Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0),
@@ -298,47 +389,54 @@ namespace App.Core.Desktop
                 WrapMode = DataGridViewTriState.True
             };
 
-            ColumnHeadersDefaultCellStyle = ColumnHeadersStyle;
+            ColumnHeadersDefaultCellStyle = columnHeadersStyle;
             ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             ColumnHeadersHeight = 30;
         }
 
-        //public void Reload()
-        //{
-        //    Refresh();
-        //    SortDefaultColumn();
-        //}
+        ////public void Reload()
+        ////{
+        ////    Refresh();
+        ////    SortDefaultColumn();
+        ////}
 
         public void AddColumnInvisible<T>(string name, string headerText = "", string propertyName = "")
         {
-            AddColumn<T>(name, headerText, propertyName, "", ColumnAlign.NotSet, null, false);
+            AddColumn<T>(name, headerText, propertyName, string.Empty, ColumnAlign.NotSet, null, false);
         }
 
         public void AddColumn<T>(string name, string headerText = "", string propertyName = "", string format = "", ColumnAlign align = 0, int? index = null, bool visible = true, int width = 100)
         {
             var c = new DataGridViewColumn();
 
-            Type _Type = typeof(T);
+            Type _type = typeof(T);
 
-            switch (_Type.Name)
+            switch (_type.Name)
             {
                 case "String":
                     c = new DataGridViewTextBoxColumn { CellTemplate = new DataGridViewTextBoxCell() };
-                    //c.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
-                    if (width != 0) { c.Width = width; }
-                    //c.AutoSizeMode = ColumnAutoSizeMode;
+                    ////c.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+                    if (width != 0)
+                    {
+                        c.Width = width;
+                    }
+                    ////c.AutoSizeMode = ColumnAutoSizeMode;
                     c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
                     c.DefaultCellStyle.Alignment = align == 0 ? DataGridViewContentAlignment.MiddleLeft : (DataGridViewContentAlignment)align;
-                    c.DefaultCellStyle.Format = string.IsNullOrEmpty(format) ? "" : format;
+                    c.DefaultCellStyle.Format = string.IsNullOrEmpty(format) ? string.Empty : format;
                     break;
                 case "Int32":
                     c = new DataGridViewTextBoxColumn { CellTemplate = new DataGridViewTextBoxCell() };
-                    //c.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
-                    if (width != 0) { c.Width = width; }
+                    ////c.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+                    if (width != 0)
+                    {
+                        c.Width = width;
+                    }
+
                     c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.Alignment = align == 0 ? DataGridViewContentAlignment.MiddleRight : (DataGridViewContentAlignment)align;
-                    c.DefaultCellStyle.Format = string.IsNullOrEmpty(format) ? "" : format;
+                    c.DefaultCellStyle.Format = string.IsNullOrEmpty(format) ? string.Empty : format;
                     c.DefaultCellStyle.NullValue = null;
                     break;
                 case "Single":
@@ -368,8 +466,16 @@ namespace App.Core.Desktop
                     break;
                 case "DateTime":
                     c = new DataGridViewTextBoxColumn { CellTemplate = new DataGridViewTextBoxCell() };
-                    //c.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
-                    if (width != 100) { c.Width = width; } else { c.Width = 110; }
+                    ////c.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+                    if (width != 100)
+                    {
+                        c.Width = width;
+                    }
+                    else
+                    {
+                        c.Width = 110;
+                    }
+
                     c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.Format = "d";
@@ -382,19 +488,23 @@ namespace App.Core.Desktop
                         AutoSizeMode = DataGridViewAutoSizeColumnMode.None,
                         Resizable = DataGridViewTriState.False
                     };
-                    if (width != 100) { c.Width = width; }
+                    if (width != 100)
+                    {
+                        c.Width = width;
+                    }
+
                     c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     break;
             }
 
-            //c.ValueType = _Type;
+            ////c.ValueType = _Type;
             c.Name = name;
             c.HeaderText = string.IsNullOrEmpty(headerText) ? name : headerText;
             c.DataPropertyName = string.IsNullOrEmpty(propertyName) ? name : propertyName;
 
-            //AutoSizeMode All Cells in Bitmap have poor performance
-            //c.AutoSizeMode = ColumnAutoSizeMode;
+            ////AutoSizeMode All Cells in Bitmap have poor performance
+            ////c.AutoSizeMode = ColumnAutoSizeMode;
 
             c.Visible = visible;
             c.SortMode = DataGridViewColumnSortMode.Automatic;
@@ -416,8 +526,6 @@ namespace App.Core.Desktop
             }
         }
 
-        //Fix Default Values
-        bool firstChange = true;
         protected void Dg_ColumnHeadersHeightSizeModeChanged(object sender, EventArgs e)
         {
             if (firstChange)
@@ -453,7 +561,7 @@ namespace App.Core.Desktop
             Invalidate();
         }
 
-        void ResetColumnHeaderColor()
+        private void ResetColumnHeaderColor()
         {
             foreach (DataGridViewColumn column in Columns)
             {
@@ -466,14 +574,17 @@ namespace App.Core.Desktop
         }
 
         #region Paint
-        readonly Pen resizePen = new Pen(Colors.RGB(86, 86, 86), 1) { DashStyle = DashStyle.Dot };
-        readonly Pen reorderPenRec = new Pen(Colors.RGB(172, 172, 172), 1) { DashStyle = DashStyle.Dot };
-        readonly Pen reorderPenDiv = new Pen(SystemColors.ControlDark, 3) { DashStyle = DashStyle.Solid };
+        private bool InColumnResize
+        {
+            get { return (MouseButtons == MouseButtons.Left) && (Cursor == Cursors.SizeWE); }
+        }
 
-        bool InColumnResize { get { return (MouseButtons == MouseButtons.Left) && (Cursor == Cursors.SizeWE); } }
-        bool InColumnReorder { get { return (MouseButtons == MouseButtons.Left) && (Cursor == Cursors.Default); } }
+        private bool InColumnReorder
+        {
+            get { return (MouseButtons == MouseButtons.Left) && (Cursor == Cursors.Default); }
+        }
 
-        //AdjustImageQuality
+        // AdjustImageQuality
         protected override void OnCellPainting(DataGridViewCellPaintingEventArgs e)
         {
             base.OnCellPainting(e);
@@ -498,12 +609,12 @@ namespace App.Core.Desktop
                 if (image.Width > cellSize.Width - padding || image.Height > cellSize.Height - padding)
                 {
                     e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    //e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                    ////e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 }
                 else
                 {
                     e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-                    //e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
+                    ////e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
                 }
             }
         }
@@ -512,8 +623,8 @@ namespace App.Core.Desktop
         {
             base.OnPaint(e);
 
-            //Vertical Line Resize Column
-            if (InColumnResize && Divider)
+            // Vertical Line Resize Column
+            if (InColumnResize && divider)
             {
                 var xPoint = PointToClient(new Point(Cursor.Position.X, Cursor.Position.Y)).X;
                 var yStart = ColumnHeadersHeight;
@@ -523,58 +634,79 @@ namespace App.Core.Desktop
                 e.Graphics.DrawLine(resizePen, xPoint, yStart + 1, xPoint, yEnd - 1);
                 e.Graphics.DrawLine(resizePen, xPoint + 1, yStart, xPoint + 1, yEnd);
             }
-
-            else if (AllowUserToOrderColumns && InColumnReorder && SelectedColumnIndex > -1)
+            else if (AllowUserToOrderColumns && InColumnReorder && selectedColumnIndex > -1)
             {
                 var mousePos = PointToClient(Cursor.Position);
                 var mousePos2 = PointToClient(MousePosition);
-                if (mousePos != SelectedColumnClickPos)
+                if (mousePos != selectedColumnClickPos)
                 {
                     int columnHoverIndex = HitTest(mousePos.X, mousePos.Y).ColumnIndex;
                     int rowHoverIndex = HitTest(mousePos.X, mousePos.Y).RowIndex;
 
                     if (columnHoverIndex < 0 || rowHoverIndex > -1)
+                    {
                         return;
+                    }
 
-                    //Rectangle Reorder Column
-                    var mousePosDiference = mousePos.X - SelectedColumnClickPos.X;
-                    e.Graphics.DrawRectangle(reorderPenRec, SelectedColumnPos.X + mousePosDiference, SelectedColumnPos.Y, SelectedColumnPos.Width - 1, SelectedColumnPos.Height - 1);
-                    e.Graphics.DrawRectangle(reorderPenRec, SelectedColumnPos.X + mousePosDiference + 1, SelectedColumnPos.Y + 1, SelectedColumnPos.Width - 3, SelectedColumnPos.Height - 3);
-                    e.Graphics.DrawRectangle(reorderPenRec, SelectedColumnPos.X + mousePosDiference + 2, SelectedColumnPos.Y + 2, SelectedColumnPos.Width - 5, SelectedColumnPos.Height - 5);
+                    // Rectangle Reorder Column
+                    var mousePosDiference = mousePos.X - selectedColumnClickPos.X;
+                    e.Graphics.DrawRectangle(reorderPenRec, selectedColumnPos.X + mousePosDiference, selectedColumnPos.Y, selectedColumnPos.Width - 1, selectedColumnPos.Height - 1);
+                    e.Graphics.DrawRectangle(reorderPenRec, selectedColumnPos.X + mousePosDiference + 1, selectedColumnPos.Y + 1, selectedColumnPos.Width - 3, selectedColumnPos.Height - 3);
+                    e.Graphics.DrawRectangle(reorderPenRec, selectedColumnPos.X + mousePosDiference + 2, selectedColumnPos.Y + 2, selectedColumnPos.Width - 5, selectedColumnPos.Height - 5);
 
-                    //Column Divider Draw
+                    // Column Divider Draw
                     var hoverColumn = Columns[columnHoverIndex];
                     var hoverColumnPos = GetCellDisplayRectangle(columnHoverIndex, -1, false);
                     var hoverColumnPosFinal = new Point(hoverColumnPos.X + hoverColumnPos.Width - 1, hoverColumnPos.Y + hoverColumnPos.Height - 1);
 
-                    if (SelectedColumnIndex == columnHoverIndex) return;
+                    if (selectedColumnIndex == columnHoverIndex)
+                    {
+                        return;
+                    }
 
                     if (mousePos.X - hoverColumnPos.X > (hoverColumn.Width / 2))
                     {
-                        if (hoverColumnPosFinal.X == SelectedColumnPos.X - 1) return;
+                        if (hoverColumnPosFinal.X == selectedColumnPos.X - 1)
+                        {
+                            return;
+                        }
 
                         if (hoverColumnPosFinal.X + 1 == Width)
+                        {
                             e.Graphics.DrawLine(reorderPenDiv, new Point(hoverColumnPosFinal.X - 1, hoverColumnPos.Y), new Point(hoverColumnPosFinal.X - 1, hoverColumnPos.Height));
+                        }
                         else
+                        {
                             e.Graphics.DrawLine(reorderPenDiv, new Point(hoverColumnPosFinal.X, hoverColumnPos.Y), new Point(hoverColumnPosFinal.X, hoverColumnPos.Height));
+                        }
                     }
                     else if (mousePos.X - hoverColumnPos.X < (hoverColumn.Width / 2))
                     {
-                        if (hoverColumnPos.X == SelectedColumnPos.X + SelectedColumnPos.Width) return;
+                        if (hoverColumnPos.X == selectedColumnPos.X + selectedColumnPos.Width)
+                        {
+                            return;
+                        }
 
                         if (hoverColumnPos.X == 0)
+                        {
                             e.Graphics.DrawLine(reorderPenDiv, new Point(hoverColumnPos.X + 1, hoverColumnPos.Y), new Point(hoverColumnPos.X + 1, hoverColumnPos.Height));
+                        }
                         else
+                        {
                             e.Graphics.DrawLine(reorderPenDiv, new Point(hoverColumnPos.X - 1, hoverColumnPos.Y), new Point(hoverColumnPos.X - 1, hoverColumnPos.Height));
+                        }
                     }
                 }
             }
         }
 
-        //MouseMove ChangeColor
+        // MouseMove ChangeColor
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (InColumnResize) { Invalidate(); }
+            if (InColumnResize)
+            {
+                Invalidate();
+            }
 
             base.OnMouseMove(e);
 
@@ -599,26 +731,26 @@ namespace App.Core.Desktop
             }
         }
 
-        //ChangeRowColorBackToNormal
+        // ChangeRowColorBackToNormal
         protected override void OnRowPostPaint(DataGridViewRowPostPaintEventArgs e)
         {
             base.OnRowPostPaint(e);
 
             if (RectangleToScreen(e.RowBounds).Contains(MousePosition))
             {
-                //row.DefaultCellStyle.BackColor = ColorRowMouseHover;
-                //row.DefaultCellStyle.SelectionBackColor = ColorRowMouseHover;
+                ////row.DefaultCellStyle.BackColor = ColorRowMouseHover;
+                ////row.DefaultCellStyle.SelectionBackColor = ColorRowMouseHover;
 
-                //Color c = Color.FromArgb(50, Color.Blue);
-                //using (var b = new SolidBrush(RowMouseHoverColor))
-                //using (var p = new Pen(RowMouseHoverColor))
-                //{
-                //    var r = e.RowBounds;
-                //    r.Width -= 1;
-                //    r.Height -= 1;
-                //    e.Graphics.FillRectangle(b, r);
-                //    e.Graphics.DrawRectangle(p, r);
-                //}
+                ////Color c = Color.FromArgb(50, Color.Blue);
+                ////using (var b = new SolidBrush(RowMouseHoverColor))
+                ////using (var p = new Pen(RowMouseHoverColor))
+                ////{
+                ////    var r = e.RowBounds;
+                ////    r.Width -= 1;
+                ////    r.Height -= 1;
+                ////    e.Graphics.FillRectangle(b, r);
+                ////    e.Graphics.DrawRectangle(p, r);
+                ////}
             }
             else
             {
@@ -638,11 +770,11 @@ namespace App.Core.Desktop
 
         public void RefreshCellsForeColor(string columnId, string valueId, string columnName, bool change, Color? c = null)
         {
-            foreach (DataGridViewRow Row in Rows)
+            foreach (DataGridViewRow row in Rows)
             {
-                if (Row.Cells[columnId].Value.ToString() == valueId)
+                if (row.Cells[columnId].Value.ToString() == valueId)
                 {
-                    ChangeCellForeColor(Row.Cells[columnName], change, c);
+                    ChangeCellForeColor(row.Cells[columnName], change, c);
                 }
             }
         }
@@ -651,7 +783,10 @@ namespace App.Core.Desktop
         {
             Color color = Color.Red;
 
-            if (c != null) { color = (Color)c; }
+            if (c != null)
+            {
+                color = (Color)c;
+            }
 
             if (!change)
             {
@@ -667,11 +802,11 @@ namespace App.Core.Desktop
         #endregion
 
         #region SortColumns
-        //public void ReSort()
-        //{
-        //    this.Sort(this.Columns[LastSortedColumn], LastSortedColumnDirection);
-        //    this.Refresh();
-        //}
+        ////public void ReSort()
+        ////{
+        ////    this.Sort(this.Columns[LastSortedColumn], LastSortedColumnDirection);
+        ////    this.Refresh();
+        ////}
 
         protected void Dg_OnSorted(object sender, EventArgs e)
         {
@@ -680,33 +815,33 @@ namespace App.Core.Desktop
 
         protected void Dg_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            LastSortedColumn = Columns[e.ColumnIndex].Name;
+            lastSortedColumn = Columns[e.ColumnIndex].Name;
 
             SortImageColumns(sender, e);
         }
 
         public void OrderBy(string columnName, bool ascending = true)
         {
-            DefaultColumn = columnName;
-            DefaultColumnDirection = ascending ? ListSortDirection.Ascending : ListSortDirection.Descending;
+            defaultColumn = columnName;
+            defaultColumnDirection = ascending ? ListSortDirection.Ascending : ListSortDirection.Descending;
 
-            LastSortedColumn = DefaultColumn;
+            lastSortedColumn = defaultColumn;
         }
 
         public void SortDefaultColumn(bool lastSortedDirection = false)
         {
-            if (Columns.Contains(DefaultColumn))
+            if (Columns.Contains(defaultColumn))
             {
                 if (!lastSortedDirection)
                 {
-                    Sort(Columns[DefaultColumn], DefaultColumnDirection);
+                    Sort(Columns[defaultColumn], defaultColumnDirection);
                 }
                 else
                 {
-                    //Maintain sort direction after refresh
-                    if (Columns[LastSortedColumn] is DataGridViewImageColumn)
+                    // Maintain sort direction after refresh
+                    if (Columns[lastSortedColumn] is DataGridViewImageColumn)
                     {
-                        var a = new DataGridViewCellMouseEventArgs(Columns[LastSortedColumn].Index, 0, 0, 0, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
+                        var a = new DataGridViewCellMouseEventArgs(Columns[lastSortedColumn].Index, 0, 0, 0, new MouseEventArgs(MouseButtons.Left, 1, 0, 0, 0));
                         SortImageColumns(null, a);
                         SortImageColumns(null, a);
                     }
@@ -714,11 +849,11 @@ namespace App.Core.Desktop
                     {
                         if (SortOrder == SortOrder.Descending)
                         {
-                            Sort(Columns[LastSortedColumn], ListSortDirection.Descending);
+                            Sort(Columns[lastSortedColumn], ListSortDirection.Descending);
                         }
                         else
                         {
-                            Sort(Columns[LastSortedColumn], ListSortDirection.Ascending);
+                            Sort(Columns[lastSortedColumn], ListSortDirection.Ascending);
                         }
                     }
                 }
@@ -743,7 +878,7 @@ namespace App.Core.Desktop
             }
         }
 
-        void SortColumn(DataGridViewColumn sortColumn, DataGridViewColumn clickedColumn, DataGridViewCellMouseEventArgs e)
+        private void SortColumn(DataGridViewColumn sortColumn, DataGridViewColumn clickedColumn, DataGridViewCellMouseEventArgs e)
         {
             DataGridView dgv = clickedColumn.DataGridView;
 
@@ -764,33 +899,25 @@ namespace App.Core.Desktop
         #endregion
 
         #region ImageColumns
-        protected void Dg_DataSourceChanged(object sender, EventArgs e)
-        {
-            if (AutoGenerateColumns == false)
-                SetBooleanColumns(GetBooleanColumns());
-            SortDefaultColumn();
-        }
-
-        readonly string boolColumnSufix = "Bol";
         public void SetBooleanColumns(List<string> boolColumns)
         {
-            BooleanColumns = boolColumns;
+            booleanColumns = boolColumns;
 
-            foreach (string columnName in BooleanColumns)
+            foreach (string columnName in booleanColumns)
             {
-                //Disable old Column
+                // Disable old Column
                 if (Columns.Contains(columnName))
                 {
                     string newColumnName = columnName + boolColumnSufix;
 
-                    //Add Image Columns
+                    // Add Image Columns
                     if (Columns.Contains(newColumnName))
                     {
                         int index = Columns[newColumnName].Index;
                         Columns.RemoveAt(index);
                     }
 
-                    AddColumn<Bitmap>(newColumnName, columnName, "", "", ColumnAlign.NotSet, Columns[columnName].Index, true, 65);
+                    AddColumn<Bitmap>(newColumnName, columnName, string.Empty, string.Empty, ColumnAlign.NotSet, Columns[columnName].Index, true, 65);
 
                     Columns[columnName].Visible = false;
                 }
@@ -799,22 +926,22 @@ namespace App.Core.Desktop
 
         public void AddBooleanColumn(string columnName)
         {
-            BooleanColumns.Add(columnName);
+            booleanColumns.Add(columnName);
         }
 
         public List<string> GetBooleanColumns()
         {
-            return BooleanColumns;
+            return booleanColumns;
         }
-
-        readonly Bitmap imgtrue = Resources.img_true_ico;
-        readonly Bitmap imgfalse = Resources.img_false_ico;
 
         public void LoadBooleanImages()
         {
             var booleanColumns = GetBooleanColumns();
 
-            if (booleanColumns == null) { return; }
+            if (booleanColumns == null)
+            {
+                return;
+            }
 
             var imgtruePerformatic = imgtrue.Clone32bpp();
             var imgfalsePerformatic = imgfalse.Clone32bpp();
@@ -834,21 +961,31 @@ namespace App.Core.Desktop
 
         public void RefreshRows()
         {
-            //SortDefaultColumn(true);
+            ////SortDefaultColumn(true);
             LoadBooleanImages();
             Refresh();
         }
 
-        //public void RefreshBooleanImage(string column, string cellValue, string booleanColumn, bool value)
-        //{
-        //    foreach (DataGridViewRow Row in this.Rows)
-        //    {
-        //        if (Row.Cells[column].Value.ToString() == cellValue)
-        //        {
-        //            Row.Cells[booleanColumn + boolColumnSufix].Value = (value == true) ? imgtrue : imgfalse;
-        //        }
-        //    }
-        //}
+        protected void Dg_DataSourceChanged(object sender, EventArgs e)
+        {
+            if (AutoGenerateColumns == false)
+            {
+                SetBooleanColumns(GetBooleanColumns());
+            }
+
+            SortDefaultColumn();
+        }
+
+        ////public void RefreshBooleanImage(string column, string cellValue, string booleanColumn, bool value)
+        ////{
+        ////    foreach (DataGridViewRow Row in this.Rows)
+        ////    {
+        ////        if (Row.Cells[column].Value.ToString() == cellValue)
+        ////        {
+        ////            Row.Cells[booleanColumn + boolColumnSufix].Value = (value == true) ? imgtrue : imgfalse;
+        ////        }
+        ////    }
+        ////}
         #endregion
     }
 }

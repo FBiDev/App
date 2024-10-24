@@ -1,21 +1,32 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Net;
 
 namespace App.Core.Desktop
 {
     public static class Browser
     {
-        public static int MaxConnections { get { return ServicePointManager.DefaultConnectionLimit; } }
+        private static readonly Random RandInt = new Random();
+
+        public static int MaxConnections
+        {
+            get { return ServicePointManager.DefaultConnectionLimit; }
+        }
+
         public static bool UseProxy { get; set; }
+
         public static WebProxy DefaultProxy { get; set; }
 
         public static WebProxy Proxy
         {
             get
             {
-                if (UseProxy == false) { return new WebProxy(); }
+                if (UseProxy == false)
+                {
+                    return new WebProxy();
+                }
+
                 return DefaultProxy;
             }
         }
@@ -28,11 +39,10 @@ namespace App.Core.Desktop
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             ServicePointManager.DefaultConnectionLimit = 128;
 
-            //var j = Json.DeserializeObject<object>("{\"LoadJsonDLL\":1}");
+            // var j = Json.DeserializeObject<object>("{\"LoadJsonDLL\":1}");
         }
 
-        static readonly Random rand = new Random();
-        public async static Task<string> DownloadString(string url, bool addRandomNumber = false)
+        public static async Task<string> DownloadString(string url, bool addRandomNumber = false)
         {
             return await Task.Run(async () =>
             {
@@ -41,8 +51,8 @@ namespace App.Core.Desktop
                 using (var client = new WebClientExtend())
                 {
                     url = addRandomNumber ? url +=
-                          (url.IndexOf("?", StringComparison.Ordinal) < 0 ? "?" : "&") + "random=" + rand.Next()
-                        : (url);
+                          (url.IndexOf("?", StringComparison.Ordinal) < 0 ? "?" : "&") + "random=" + RandInt.Next()
+                        : url;
 
                     data = await client.DownloadString(url);
 
@@ -50,7 +60,8 @@ namespace App.Core.Desktop
                     {
                         MessageBox.Show(client.ErrorMessage);
                     }
-                    //if (client.HeaderValue("X-Cache") != "HIT") { var a = 1; }
+
+                    // if (client.HeaderValue("X-Cache") != "HIT") { var a = 1; }
                 }
 
                 return data;

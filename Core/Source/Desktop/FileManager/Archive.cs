@@ -12,14 +12,18 @@ namespace App.Core.Desktop
     {
         public static string LastUpdate(string fileName)
         {
-            if (File.Exists(fileName)) { return File.GetLastWriteTime(fileName).ToString(); }
-            return "";
+            if (File.Exists(fileName))
+            {
+                return File.GetLastWriteTime(fileName).ToString();
+            }
+
+            return string.Empty;
         }
 
         public static string RelativePath(string fileName)
         {
             var info = new FileInfo(fileName);
-            string path = ".\\" + info.DirectoryName.Replace(AppDomain.CurrentDomain.BaseDirectory, "") + "\\";
+            string path = ".\\" + info.DirectoryName.Replace(AppDomain.CurrentDomain.BaseDirectory, string.Empty) + "\\";
             return path;
         }
 
@@ -37,15 +41,15 @@ namespace App.Core.Desktop
             {
                 using (FileStream fs = new FileStream(f, FileMode.Open, FileAccess.Read))
                 {
-                    //var crc32 = BitConverter.ToString(CRC32.Create().ComputeHash(fs));
-                    //fs.Position = 0;
+                    // var crc32 = BitConverter.ToString(CRC32.Create().ComputeHash(fs));
+                    // fs.Position = 0;
                     var md5 = BitConverter.ToString(MD5.Create().ComputeHash(fs));
 
                     return new
                     {
                         FileName = f,
                         MD5 = md5,
-                        //FileHash = sha1,
+                        ////FileHash = sha1,
                     };
                 }
             });
@@ -74,8 +78,16 @@ namespace App.Core.Desktop
             double unitSize = _bytes < 1024 ? _bytes :
                 _bytes < 1048576 ? _bytes / 1024 : _bytes / 1024 / 1024;
 
-            if (unitSize < 10) { return (Math.Floor(unitSize * 100) / 100).ToString("n2") + " " + unitSimbol; }
-            if (unitSize < 100) { return (Math.Floor(unitSize * 10) / 10).ToString("n1") + " " + unitSimbol; }
+            if (unitSize < 10)
+            {
+                return (Math.Floor(unitSize * 100) / 100).ToString("n2") + " " + unitSimbol;
+            }
+
+            if (unitSize < 100)
+            {
+                return (Math.Floor(unitSize * 10) / 10).ToString("n1") + " " + unitSimbol;
+            }
+
             return Math.Floor(unitSize) + " " + unitSimbol;
         }
 
@@ -90,14 +102,14 @@ namespace App.Core.Desktop
             }
             catch (IOException)
             {
-                //the file is unavailable because it is:
-                //still being written to
-                //or being processed by another thread
-                //or does not exist (has already been processed)
+                // the file is unavailable because it is:
+                // still being written to
+                // or being processed by another thread
+                // or does not exist (has already been processed)
                 return true;
             }
 
-            //file is not locked
+            // file is not locked
             return false;
         }
     }

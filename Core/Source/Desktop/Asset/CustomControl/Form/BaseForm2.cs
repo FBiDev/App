@@ -18,24 +18,12 @@ namespace App.Core.Desktop
             Resize += FormBase_Resize;
         }
 
-        void FormBase_Load(object sender, EventArgs e) { }
-
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            ResizeMargins();
-        }
-
-        void FormBase_Resize(object sender, EventArgs e)
-        {
-            ResizeMargins();
-        }
-
         public void ResizeMargins()
         {
             pnlBorder1.Location = new Point(1, 1);
             pnlBorder1.Size = new Size(
                 ClientSize.Width - (pnlBorder1.Location.X * 2),
-                (ClientSize.Height) - (pnlBorder1.Location.Y * 2));
+                ClientSize.Height - (pnlBorder1.Location.Y * 2));
 
             pnlBorder2.Location = new Point(1, 1);
             pnlBorder2.Size = new Size(
@@ -53,7 +41,21 @@ namespace App.Core.Desktop
                 pnlContent.Height - (pnlMargin.Location.Y * 2));
 
             lblCenter.Location = new Point(6, 0);
-            lblCenter.Size = new Size(pnlContent.Width / 2 - 6, 6);
+            lblCenter.Size = new Size((pnlContent.Width / 2) - 6, 6);
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            ResizeMargins();
+        }
+
+        private void FormBase_Load(object sender, EventArgs e)
+        {
+        }
+
+        private void FormBase_Resize(object sender, EventArgs e)
+        {
+            ResizeMargins();
         }
     }
 }
