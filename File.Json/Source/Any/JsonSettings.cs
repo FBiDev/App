@@ -10,6 +10,7 @@ namespace App.File
             {
                 ContractResolver = new JsonContractResolver()
             };
+
             return settings;
         }
     }

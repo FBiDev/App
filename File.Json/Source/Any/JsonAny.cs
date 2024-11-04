@@ -11,6 +11,7 @@ namespace App.File
     {
         private static readonly string DllName = "Newtonsoft.Json";
         private static readonly string DllFile = DllName + ".dll";
+        private static readonly string EmptyJson = string.Empty;
 
         private static Assembly assembly;
 
@@ -20,57 +21,75 @@ namespace App.File
         private static MethodInfo serializeObjectMethod;
         private static MethodInfo deserializeObjectMethod;
 
-        public static T DeserializeObject<T>(string value) where T : class
+        public static T DeserializeObject<T>(string value)
         {
             if (LoadAssembly() == false)
             {
-                return null;
+                return default(T);
             }
 
             deserializeObjectMethod = jsonClass.GetMethods()
-                    .FirstOrDefault(m => m.Name == "DeserializeObject" && m.IsGenericMethod).MakeGenericMethod(typeof(T));
+                .FirstOrDefault(m =>
+                {
+                    return m.Name == "DeserializeObject"
+                        && m.IsGenericMethod
+                        && m.GetParameters().Any(p => p.ParameterType == serializerSettings);
+                }).MakeGenericMethod(typeof(T));
 
-            var result = deserializeObjectMethod.Invoke(null, new object[] { value });
+            var settings = JsonSettings.Get();
+            var result = deserializeObjectMethod.Invoke(null, new object[] { value, settings });
+
+            if (result == null)
+            {
+                result = Activator.CreateInstance<T>();
+            }
 
             return (T)result;
         }
 
         public static string SerializeObject(object value, bool indented = true)
         {
-            if (LoadAssembly() == false)
+            if (LoadAssembly() == false || value == null)
             {
-                return null;
+                return EmptyJson;
             }
 
             var formatting = Enum.ToObject(enumFormatting, indented.ToInt());
             var settings = JsonSettings.Get();
             var result = (string)serializeObjectMethod.Invoke(null, new object[] { value, formatting, settings });
 
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                return EmptyJson;
+            }
+
             return result;
         }
 
-        public static bool Load<T>(T obj, string path) where T : class
+        public static bool Load<T>(T obj, string path)
         {
-            T result = null;
-
-            if (System.IO.File.Exists(path))
+            if (string.IsNullOrWhiteSpace(path) || System.IO.File.Exists(path) == false || obj == null)
             {
-                var jsonData = System.IO.File.ReadAllText(path);
-                result = DeserializeObject<T>(jsonData);
-
-                if (result != null)
-                {
-                    obj.CloneProperties(result);
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            var jsonData = System.IO.File.ReadAllText(path);
+
+            T result = DeserializeObject<T>(jsonData);
+
+            obj.CloneProperties(result);
+
+            return true;
         }
 
         public static bool Save(object value, string path, bool indented = true, bool backslashReplace = false)
         {
             var jsonData = SerializeObject(value, indented);
+
+            if (jsonData == EmptyJson || string.IsNullOrWhiteSpace(path))
+            {
+                return false;
+            }
 
             if (backslashReplace)
             {

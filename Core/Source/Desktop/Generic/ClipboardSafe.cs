@@ -18,6 +18,11 @@ namespace App.Core.Desktop
 
         public static void SetText(string text)
         {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
             var thread = new Thread(() => Clipboard.SetText(text));
             StartThread(thread);
         }

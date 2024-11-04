@@ -7,25 +7,40 @@ using Newtonsoft.Json.Serialization;
 
 namespace App.File
 {
-    internal class JsonContractResolver : DefaultContractResolver
+    public class JsonContractResolver : DefaultContractResolver
     {
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             JsonProperty property = base.CreateProperty(member, memberSerialization);
 
+            // Handle JsonIgnoreAttribute
             if (member.GetCustomAttributes(true).Any(attr => attr.GetType() == typeof(JsonIgnoreAttribute)))
             {
                 property.ShouldSerialize = instance => false;
+                property.ShouldDeserialize = instance => false;
+                return property;
             }
-            else
-            {
-                var attribute = member.GetCustomAttributes(true).OfType<JsonConverterAttribute>().FirstOrDefault();
 
-                if (attribute != null)
-                {
-                    var converter = (JsonConverter)Activator.CreateInstance(attribute.ConverterType);
-                    property.Converter = converter;
-                }
+            // Handle JsonPropertyAttribute
+            var jsonPropertyAttribute = member.GetCustomAttributes(true)
+                .OfType<JsonPropertyAttribute>()
+                .FirstOrDefault();
+
+            if (jsonPropertyAttribute != null)
+            {
+                // Set the property name based on JsonPropertyAttribute
+                property.PropertyName = jsonPropertyAttribute.PropertyName ?? property.PropertyName;
+                property.Required = (Newtonsoft.Json.Required)jsonPropertyAttribute.Required; // Handle required properties
+                property.DefaultValue = jsonPropertyAttribute.DefaultValue; // Handle default values
+            }
+
+            // Handle JsonConverterAttribute
+            var converterAttribute = member.GetCustomAttributes(true).OfType<JsonConverterAttribute>().FirstOrDefault();
+
+            if (converterAttribute != null)
+            {
+                var converter = (JsonConverter)Activator.CreateInstance(converterAttribute.ConverterType);
+                property.Converter = converter;
             }
 
             return property;

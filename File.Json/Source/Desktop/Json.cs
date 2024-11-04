@@ -5,10 +5,41 @@ namespace App.File.Desktop
 {
     public static class Json
     {
-        public static T DeserializeObject<T>(string value) where T : class, new()
+        public static string SerializeObject<T>(T value, bool indented = true)
         {
             try
             {
+                return JsonAny.SerializeObject(value, indented);
+            }
+            catch (Exception ex)
+            {
+                ExceptionManager.Resolve(ex);
+            }
+
+            return string.Empty;
+        }
+
+        public static T DeserializeObject<T>(string value)
+        {
+            try
+            {
+                if (typeof(T) == typeof(JToken))
+                {
+                    var obj = new JToken();
+
+                    Newtonsoft.Json.Linq.JToken token = JsonAny.DeserializeObject<Newtonsoft.Json.Linq.JToken>(value);
+
+                    if (token != null)
+                    {
+                        foreach (Newtonsoft.Json.Linq.JProperty item in token)
+                        {
+                            obj.Add(new JProperty(item.Name, item.Value));
+                        }
+                    }
+
+                    return (T)(object)obj;
+                }
+
                 return JsonAny.DeserializeObject<T>(value);
             }
             catch (Exception ex)
@@ -16,10 +47,10 @@ namespace App.File.Desktop
                 ExceptionManager.Resolve(ex);
             }
 
-            return new T();
+            return default(T);
         }
 
-        public static bool Load<T>(T obj, string path) where T : class
+        public static bool Load<T>(T obj, string path)
         {
             try
             {

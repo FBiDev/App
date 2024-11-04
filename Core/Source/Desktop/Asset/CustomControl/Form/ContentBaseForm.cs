@@ -51,6 +51,17 @@ namespace App.Core.Desktop
                 // ThemeBase.CheckTheme(this);
             };
 
+            ParentChanged += (s, e) =>
+            {
+                if (Parent != null)
+                {
+                    this.GetControls<FlatDataGrid>().ForEach(d =>
+                    {
+                        d.RefreshRows();
+                    });
+                }
+            };
+
             Resize += OnResize;
 
             TopLevel = false;

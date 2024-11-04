@@ -16,9 +16,12 @@ namespace App.Core.Desktop
         private readonly Pen reorderPenDiv = new Pen(SystemColors.ControlDark, 3) { DashStyle = DashStyle.Solid };
 
         // ImageColumns
+        private static readonly Bitmap Imgtrue = Resources.img_true_ico;
+        private static readonly Bitmap Imgfalse = Resources.img_false_ico;
+
         private readonly string boolColumnSufix = "Bol";
-        private readonly Bitmap imgtrue = Resources.img_true_ico;
-        private readonly Bitmap imgfalse = Resources.img_false_ico;
+        private Bitmap imgtruePerformatic = Imgtrue.Clone32bpp();
+        private Bitmap imgfalsePerformatic = Imgfalse.Clone32bpp();
 
         // Reorder Column Rectangle
         private int selectedColumnIndex = -1;
@@ -942,9 +945,6 @@ namespace App.Core.Desktop
             {
                 return;
             }
-
-            var imgtruePerformatic = imgtrue.Clone32bpp();
-            var imgfalsePerformatic = imgfalse.Clone32bpp();
 
             foreach (DataGridViewRow row in Rows)
             {

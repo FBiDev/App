@@ -1,11 +1,11 @@
 ﻿using System;
-using App.Core;
 
 namespace App.File
 {
     public enum JsonType
     {
-        Boolean
+        Boolean,
+        Date
     }
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Class | AttributeTargets.Struct)]
@@ -20,6 +20,9 @@ namespace App.File
             {
                 case JsonType.Boolean:
                     ConverterType = typeof(BoolConverter);
+                    break;
+                case JsonType.Date:
+                    ConverterType = typeof(DateConverter);
                     break;
             }
         }
