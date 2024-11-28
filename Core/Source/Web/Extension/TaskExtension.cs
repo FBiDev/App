@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace App.Core.Desktop
+namespace App.Core.Web
 {
     internal static class TaskExtension
     {
@@ -20,8 +19,7 @@ namespace App.Core.Desktop
                 var stackCalls = ObjectManager.GetStackTrace(ex);
                 var errorMessage = exceptionMessage + stackCalls;
 
-                MessageBox.Show(errorMessage, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                ClipboardSafe.SetText(errorMessage);
+                throw;
             }
         }
     }

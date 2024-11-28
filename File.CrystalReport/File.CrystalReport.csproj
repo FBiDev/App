@@ -7,7 +7,7 @@
     <ProjectGuid>{C9F5DAB0-987B-4722-BA3F-C05301D46280}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>App.File</RootNamespace>
+    <RootNamespace>App.File.CrystalReport</RootNamespace>
     <AssemblyName>App.File.CrystalReport</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -91,9 +91,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\Asset\Script\Postbuild.bat" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -111,7 +108,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(ProjectDir)Source\Asset\Script\Postbuild.bat"</PostBuildEvent>
+    <PostBuildEvent>call "$(SolutionDir)Assembly\build_script\PostDllToBin.bat" ^
+$(ProjectName), $(SolutionDir), $(TargetDir), $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

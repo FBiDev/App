@@ -7,7 +7,7 @@
     <ProjectGuid>{E44598BE-0969-4825-A9A1-A0B766A87547}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>App.File</RootNamespace>
+    <RootNamespace>App.File.Json</RootNamespace>
     <AssemblyName>App.File.Json</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -50,26 +50,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\Any\BoolConverter.cs" />
-    <Compile Include="Source\Any\DateConverter.cs" />
-    <Compile Include="Source\Any\JProperty.cs" />
-    <Compile Include="Source\Any\JsonExtension.cs" />
-    <Compile Include="Source\Any\JsonPropertyAttribute.cs" />
-    <Compile Include="Source\Any\JToken.cs" />
-    <Compile Include="Source\Desktop\Json.cs" />
-    <Compile Include="Source\Any\JsonAny.cs" />
-    <Compile Include="Source\Any\JsonContractResolver.cs" />
-    <Compile Include="Source\Any\JsonConverterAttribute.cs" />
-    <Compile Include="Source\Any\JsonIgnoreAttribute.cs" />
-    <Compile Include="Source\Any\JsonSettings.cs" />
+    <Compile Include="Source\Model\BoolConverter.cs" />
+    <Compile Include="Source\Model\DateConverter.cs" />
+    <Compile Include="Source\Model\JProperty.cs" />
+    <Compile Include="Source\Model\JsonExtension.cs" />
+    <Compile Include="Source\Model\JsonPropertyAttribute.cs" />
+    <Compile Include="Source\Model\JToken.cs" />
+    <Compile Include="Source\Model\Json.cs" />
+    <Compile Include="Source\Model\JsonAny.cs" />
+    <Compile Include="Source\Model\JsonContractResolver.cs" />
+    <Compile Include="Source\Model\JsonConverterAttribute.cs" />
+    <Compile Include="Source\Model\JsonIgnoreAttribute.cs" />
+    <Compile Include="Source\Model\JsonSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Source\Asset\Script\Postbuild.bat" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(ProjectDir)Source\Asset\Script\Postbuild.bat"</PostBuildEvent>
+    <PostBuildEvent>call "$(SolutionDir)Assembly\build_script\PostDllToBin.bat" ^
+$(ProjectName), $(SolutionDir), $(TargetDir), $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

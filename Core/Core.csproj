@@ -54,6 +54,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Source\Any\Config\AppEnums.cs" />
+    <Compile Include="Source\Any\Config\AppType.cs" />
+    <Compile Include="Source\Any\Config\ExceptionManager.cs" />
     <Compile Include="Source\Any\Config\ExceptionProcessed.cs" />
     <Compile Include="Source\Any\Config\StringValues.cs" />
     <Compile Include="Source\Any\FileManager\HexFile.cs" />
@@ -70,7 +72,7 @@
       <DependentUpon>FlatCheckedList.cs</DependentUpon>
     </Compile>
     <Compile Include="Source\Desktop\Config\DB.cs" />
-    <Compile Include="Source\Any\Config\ExceptionManager.cs" />
+    <Compile Include="Source\Any\Config\ExceptionManagerAny.cs" />
     <Compile Include="Source\Any\Config\LanguageManager.cs" />
     <Compile Include="Source\Any\Database\DatabaseDao.cs" />
     <Compile Include="Source\Any\Database\DatabaseManager.cs" />
@@ -310,6 +312,7 @@
     <Compile Include="Source\Web\Extension\EnumExtensionWeb.cs" />
     <Compile Include="Source\Web\Extension\GridViewExtension.cs" />
     <Compile Include="Source\Web\Extension\StringExtensionWeb.cs" />
+    <Compile Include="Source\Web\Extension\TaskExtension.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -385,8 +388,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <None Include="Source\Any\Asset\Script\Postbuild.bat" />
-    <None Include="Source\Any\Asset\Script\Prebuild.bat" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Source\Any\Asset\Icon\ico_debug.ico" />
@@ -401,10 +402,12 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(ProjectDir)Source\Any\Asset\Script\Postbuild.bat"  $(ConfigurationName)</PostBuildEvent>
+    <PostBuildEvent>call "$(SolutionDir)Assembly\build_script\PostDllToBin.bat" ^
+$(ProjectName), $(SolutionDir), $(TargetDir), $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>call "$(ProjectDir)Source\Any\Asset\Script\Prebuild.bat"</PreBuildEvent>
+    <PreBuildEvent>call "$(SolutionDir)Assembly\build_script\PrePurgeBin.bat" ^
+$(ProjectName), $(SolutionDir), $(TargetDir)</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

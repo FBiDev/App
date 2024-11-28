@@ -4,20 +4,17 @@ using System.Threading.Tasks;
 
 namespace App.Core
 {
-    internal static class TaskExtension
+    public static class TaskExtension
     {
-#pragma warning disable
-        // Asynchronous methods should return a Task instead of void
-        public static async void TryAwait(this Task task)
-#pragma warning restore
+        public static void TryAwait(this Task task)
         {
-            try
+            if (AppType.IsDesktop)
             {
-                await task;
+                Desktop.TaskExtension.TryAwait(task);
             }
-            catch (Exception)
+            else
             {
-                throw;
+                Web.TaskExtension.TryAwait(task);
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using App.Core;
-using App.File;
+using App.File.Json;
 
 namespace App.Cohab
 {

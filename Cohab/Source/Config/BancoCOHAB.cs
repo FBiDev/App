@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using App.Core;
-using App.Core.Desktop;
 using DbConnection = System.Data.SqlClient;
 
 namespace App.Cohab

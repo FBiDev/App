@@ -86,12 +86,10 @@
     <Content Include="Source\Asset\Sql\Usuario\sql_UsuarioVerificarAcesso.sql" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <None Include="Source\Asset\Script\Postbuild.bat" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(ProjectDir)Source\Asset\Script\Postbuild.bat"</PostBuildEvent>
+    <PostBuildEvent>call "$(SolutionDir)Assembly\build_script\PostDllToBin.bat" ^
+$(ProjectName), $(SolutionDir), $(TargetDir), $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

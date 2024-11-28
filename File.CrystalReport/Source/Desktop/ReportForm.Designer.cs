@@ -54,7 +54,7 @@ namespace App.File.CrystalReport.Desktop
             // LoaderPicture
             // 
             this.LoaderPicture.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.LoaderPicture.Image = global::App.File.Properties.Resources.LoaderPicture;
+            this.LoaderPicture.Image = global::App.File.CrystalReport.Properties.Resources.LoaderPicture;
             this.LoaderPicture.Location = new System.Drawing.Point(490, 190);
             this.LoaderPicture.Name = "LoaderPicture";
             this.LoaderPicture.Size = new System.Drawing.Size(48, 48);

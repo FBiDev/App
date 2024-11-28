@@ -4,11 +4,11 @@ using System.Windows.Forms;
 
 namespace App.Core.Desktop
 {
-    public static class ExceptionManager
+    internal static class ExceptionManager
     {
-        public static void Resolve(Exception ex, string customMessage = "")
+        public static string Resolve(Exception ex, string customMessage = "")
         {
-            var exProc = Core.ExceptionManager.Process(ex);
+            var exProc = Core.ExceptionManagerAny.Process(ex);
 
             if (exProc.HasLink)
             {
@@ -32,6 +32,8 @@ namespace App.Core.Desktop
                 // MessageBox.Show(CustomMessage + errorLineBreak + Error.Message + errorLineBreak + Error.StackTrace, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 // throw new Exception(CustomMessage + errorLineBreak + Error.Message);
             }
+
+            return exProc.Message;
         }
     }
 }

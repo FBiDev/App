@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
+using System.Web;
 using System.Windows.Forms;
 
 namespace App.Core.Desktop
