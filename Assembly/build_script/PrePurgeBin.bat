@@ -10,14 +10,14 @@ set "TargetDir=%3"
 
 echo ===============================================================================
 echo    Project      ::     %ProjectName%
-echo    Begin-event  ::     %EventType% -^> %EventName%
+echo    Event        ::     Begin %EventType% -^> %EventName%
 echo ===============================================================================
 
 robocopy "%TargetDir% " "%SolutionDir%Bin " /PURGE
 
 echo ===============================================================================
 echo    Project      ::     %ProjectName%
-echo    End-event    ::     %EventType% -^> %EventName%
+echo    Event        ::     End %EventType% -^> %EventName%
 echo    Result       ::     ExitCode: %errorlevel%
 echo ===============================================================================
 echo:

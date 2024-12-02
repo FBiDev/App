@@ -227,10 +227,15 @@ namespace App.Core
             {
                 var lastcmd = cmdList.Last();
 
-                if (timer.Stopped || lastcmd.Connection.State == ConnectionState.Closed)
+                if (timer.Stopped || lastcmd.Connection == null || lastcmd.Connection.State == ConnectionState.Closed)
                 {
                     cmdList.Remove(lastcmd);
-                    lastcmd.Connection.Dispose();
+                    
+                    if (lastcmd.Connection is IDbConnection)
+                    {
+                        lastcmd.Connection.Dispose();
+                    }
+
                     lastcmd.Dispose();
 
                     timer.Restart();

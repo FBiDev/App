@@ -12,9 +12,6 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.ContainerPattern">
             <summary>A pattern used to match <a href="https://en.wikipedia.org/wiki/List_of_file_signatures">magic bytes</a> in an image file header.</summary>
-            <param name="Offset">Number of bytes to skip from the start of the file before attempting pattern match.</param>
-            <param name="Pattern">A byte pattern to match at the given <paramref name="Offset" />.</param>
-            <param name="Mask">A mask to apply to image bytes (using binary <see langword="&amp;" />) before matching against the <paramref name="Pattern" />.</param>
             <remarks>The total length described by (<paramref name="Offset" /> + <paramref name="Pattern" />.Length) should not be more than 16 bytes.</remarks>
         </member>
         <member name="M:PhotoSauce.MagicScaler.ContainerPattern.#ctor(System.Int32,System.Byte[],System.Byte[])">
@@ -35,12 +32,9 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.CodecInfo">
             <summary>Describes an image codec.</summary>
-            <param name="Name">The friendly name of the codec.</param>
-            <param name="MimeTypes">A list of <a href="https://en.wikipedia.org/wiki/Media_type">MIME types</a> supported by the codec.</param>
-            <param name="FileExtensions">A list of file extensions supported by the codec.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.CodecInfo.#ctor(System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String})">
-            <summary>The friendly name of the codec.</summary>
+            <summary>Describes an image codec.</summary>
             <param name="Name">The friendly name of the codec.</param>
             <param name="MimeTypes">A list of <a href="https://en.wikipedia.org/wiki/Media_type">MIME types</a> supported by the codec.</param>
             <param name="FileExtensions">A list of file extensions supported by the codec.</param>
@@ -56,15 +50,9 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.DecoderInfo">
             <summary>Describes an image codec.</summary>
-            <param name="Name">The friendly name of the codec.</param>
-            <param name="MimeTypes">A list of <a href="https://en.wikipedia.org/wiki/Media_type">MIME types</a> supported by the codec.</param>
-            <param name="FileExtensions">A list of file extensions supported by the codec.</param>
-            <param name="Patterns">A list of "magic byte" patterns that may match files this decoder can read.</param>
-            <param name="DefaultOptions">Default codec options to be used for this decoder in the absence of per-instance overrides.</param>
-            <param name="Factory">A delegate capable of creating an instance of this decoder over a given <see cref="T:System.IO.Stream" /> data source.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.DecoderInfo.#ctor(System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{PhotoSauce.MagicScaler.ContainerPattern},PhotoSauce.MagicScaler.IDecoderOptions,System.Func{System.IO.Stream,PhotoSauce.MagicScaler.IDecoderOptions,PhotoSauce.MagicScaler.IImageContainer})">
-            <summary>The friendly name of the codec.</summary>
+            <summary>Describes an image codec.</summary>
             <param name="Name">The friendly name of the codec.</param>
             <param name="MimeTypes">A list of <a href="https://en.wikipedia.org/wiki/Media_type">MIME types</a> supported by the codec.</param>
             <param name="FileExtensions">A list of file extensions supported by the codec.</param>
@@ -83,24 +71,15 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.EncoderInfo">
             <summary>Describes an image codec.</summary>
-            <param name="Name">The friendly name of the codec.</param>
-            <param name="MimeTypes">A list of <a href="https://en.wikipedia.org/wiki/Media_type">MIME types</a> supported by the codec.</param>
-            <param name="FileExtensions">A list of file extensions supported by the codec.</param>
-            <param name="PixelFormats">A list of the pixel format GUIDs supported by this encoder.</param>
-            <param name="DefaultOptions">Default codec options to be used for this encoder in the absence of per-instance overrides.</param>
-            <param name="Factory">A delegate capable of creating an instance of this encoder to write to a given <see cref="T:System.IO.Stream" /> data source.</param>
-            <param name="SupportsMultiFrame">True if the codec supports transparency, otherwise false.</param>
-            <param name="SupportsAnimation">True if the codec supports animation sequences, otherwise false.</param>
-            <param name="SupportsColorProfile">True if the codec supports ICC color profiles, otherwise false.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.EncoderInfo.#ctor(System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Guid},PhotoSauce.MagicScaler.IEncoderOptions,System.Func{System.IO.Stream,PhotoSauce.MagicScaler.IEncoderOptions,PhotoSauce.MagicScaler.IImageEncoder},System.Boolean,System.Boolean,System.Boolean)">
-            <summary>The friendly name of the codec.</summary>
+            <summary>Describes an image codec.</summary>
             <param name="Name">The friendly name of the codec.</param>
             <param name="MimeTypes">A list of <a href="https://en.wikipedia.org/wiki/Media_type">MIME types</a> supported by the codec.</param>
             <param name="FileExtensions">A list of file extensions supported by the codec.</param>
             <param name="PixelFormats">A list of the pixel format GUIDs supported by this encoder.</param>
             <param name="DefaultOptions">Default codec options to be used for this encoder in the absence of per-instance overrides.</param>
-            <param name="Factory">A delegate capable of creating an instance of this encoder to write to a given <see cref="T:System.IO.Stream" /> data source.</param>
+            <param name="Factory">A delegate capable of creating an instance of this encoder to write to a given <see cref="T:System.IO.Stream" /> data target.</param>
             <param name="SupportsMultiFrame">True if the codec supports transparency, otherwise false.</param>
             <param name="SupportsAnimation">True if the codec supports animation sequences, otherwise false.</param>
             <param name="SupportsColorProfile">True if the codec supports ICC color profiles, otherwise false.</param>
@@ -112,7 +91,7 @@
             <summary>Default codec options to be used for this encoder in the absence of per-instance overrides.</summary>
         </member>
         <member name="P:PhotoSauce.MagicScaler.EncoderInfo.Factory">
-            <summary>A delegate capable of creating an instance of this encoder to write to a given <see cref="T:System.IO.Stream" /> data source.</summary>
+            <summary>A delegate capable of creating an instance of this encoder to write to a given <see cref="T:System.IO.Stream" /> data target.</summary>
         </member>
         <member name="P:PhotoSauce.MagicScaler.EncoderInfo.SupportsMultiFrame">
             <summary>True if the codec supports transparency, otherwise false.</summary>
@@ -122,6 +101,37 @@
         </member>
         <member name="P:PhotoSauce.MagicScaler.EncoderInfo.SupportsColorProfile">
             <summary>True if the codec supports ICC color profiles, otherwise false.</summary>
+        </member>
+        <member name="T:PhotoSauce.MagicScaler.PlanarEncoderInfo">
+            <summary>Describes an image codec.</summary>
+        </member>
+        <member name="M:PhotoSauce.MagicScaler.PlanarEncoderInfo.#ctor(System.String,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.Guid},PhotoSauce.MagicScaler.IEncoderOptions,System.Func{System.IO.Stream,PhotoSauce.MagicScaler.IEncoderOptions,PhotoSauce.MagicScaler.IImageEncoder},System.Boolean,System.Boolean,System.Boolean,PhotoSauce.MagicScaler.ChromaSubsampleMode[],PhotoSauce.MagicScaler.ChromaPosition,System.Numerics.Matrix4x4,System.Boolean)">
+            <summary>Describes an image codec.</summary>
+            <param name="Name">The friendly name of the codec.</param>
+            <param name="MimeTypes">A list of <a href="https://en.wikipedia.org/wiki/Media_type">MIME types</a> supported by the codec.</param>
+            <param name="FileExtensions">A list of file extensions supported by the codec.</param>
+            <param name="PixelFormats">A list of the pixel format GUIDs supported by this encoder.</param>
+            <param name="DefaultOptions">Default codec options to be used for this encoder in the absence of per-instance overrides.</param>
+            <param name="Factory">A delegate capable of creating an instance of this encoder to write to a given <see cref="T:System.IO.Stream" /> data target.</param>
+            <param name="SupportsMultiFrame">True if the codec supports transparency, otherwise false.</param>
+            <param name="SupportsAnimation">True if the codec supports animation sequences, otherwise false.</param>
+            <param name="SupportsColorProfile">True if the codec supports ICC color profiles, otherwise false.</param>
+            <param name="SubsampleModes">A list of <see cref="T:PhotoSauce.MagicScaler.ChromaSubsampleMode" />s supported by the encoder.</param>
+            <param name="ChromaPosition">The sampling position used by the encoder for subsampled chroma.</param>
+            <param name="DefaultMatrix">The default color matrix to use for RGB-&gt;YCbCr conversion.</param>
+            <param name="SupportsCustomMatrix">True if the encoder supports custom RGB-&gt;YCbCr matrices, otherwise false.</param>
+        </member>
+        <member name="P:PhotoSauce.MagicScaler.PlanarEncoderInfo.SubsampleModes">
+            <summary>A list of <see cref="T:PhotoSauce.MagicScaler.ChromaSubsampleMode" />s supported by the encoder.</summary>
+        </member>
+        <member name="P:PhotoSauce.MagicScaler.PlanarEncoderInfo.ChromaPosition">
+            <summary>The sampling position used by the encoder for subsampled chroma.</summary>
+        </member>
+        <member name="P:PhotoSauce.MagicScaler.PlanarEncoderInfo.DefaultMatrix">
+            <summary>The default color matrix to use for RGB-&gt;YCbCr conversion.</summary>
+        </member>
+        <member name="P:PhotoSauce.MagicScaler.PlanarEncoderInfo.SupportsCustomMatrix">
+            <summary>True if the encoder supports custom RGB-&gt;YCbCr matrices, otherwise false.</summary>
         </member>
         <member name="T:PhotoSauce.MagicScaler.CodecCollection">
             <summary>Represents the set of configured codecs for the processing pipeline.</summary>
@@ -190,7 +200,6 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.LossyEncoderOptions">
             <summary>Generic options for lossy encoders.</summary>
-            <param name="Quality">The desired image quality in the range of 0-100, where 1 is minimum quality and 100 is maximum quality. A value of 0 indicates quality should be set automatically.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.LossyEncoderOptions.#ctor(System.Int32)">
             <summary>Generic options for lossy encoders.</summary>
@@ -204,9 +213,6 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.JpegEncoderOptions">
             <summary>JPEG encoder options.</summary>
-            <param name="Quality">The desired image quality in the range of 0-100, where 1 is minimum quality and 100 is maximum quality. A value of 0 indicates quality should be set automatically.</param>
-            <param name="Subsample">The type of chroma subsampling to use when encoding.</param>
-            <param name="SuppressApp0">True to skip writing the JFIF APP0 metadata header, false to include it.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.JpegEncoderOptions.#ctor(System.Int32,PhotoSauce.MagicScaler.ChromaSubsampleMode,System.Boolean)">
             <summary>JPEG encoder options.</summary>
@@ -228,8 +234,6 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.PngEncoderOptions">
             <summary>True-color/greyscale PNG encoder options.</summary>
-            <param name="Filter">The <see cref="T:PhotoSauce.MagicScaler.PngFilter" /> to apply to the image before compression.</param>
-            <param name="Interlace">True to enable interlaced PNG output, otherwise false.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.PngEncoderOptions.#ctor(PhotoSauce.MagicScaler.PngFilter,System.Boolean)">
             <summary>True-color/greyscale PNG encoder options.</summary>
@@ -247,11 +251,6 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.PngIndexedEncoderOptions">
             <summary>Indexed color PNG encoder options.</summary>
-            <param name="MaxPaletteSize">The maximum number of entries in the target palette. Actual palette may have fewer entries if the image contains fewer colors.</param>
-            <param name="PredefinedPalette">The palette to use when quantizing the image.  If <see langword="null" />, a custom palette will be created from the image.</param>
-            <param name="Dither">Controls dithering when palette has fewer colors than the image.</param>
-            <param name="Filter">The <see cref="T:PhotoSauce.MagicScaler.PngFilter" /> to apply to the image before compression.</param>
-            <param name="Interlace">True to enable interlaced PNG output, otherwise false.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.PngIndexedEncoderOptions.#ctor(System.Int32,System.Int32[],PhotoSauce.MagicScaler.DitherMode,PhotoSauce.MagicScaler.PngFilter,System.Boolean)">
             <summary>Indexed color PNG encoder options.</summary>
@@ -281,9 +280,6 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.GifEncoderOptions">
             <summary>GIF encoder options.</summary>
-            <param name="MaxPaletteSize">The maximum number of entries in the target palette. Actual palette may have fewer entries if the image contains fewer colors.</param>
-            <param name="PredefinedPalette">The palette to use when quantizing the image.  If <see langword="null" />, a custom palette will be created from the image.</param>
-            <param name="Dither">Controls dithering when palette has fewer colors than the image.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.GifEncoderOptions.#ctor(System.Int32,System.Int32[],PhotoSauce.MagicScaler.DitherMode)">
             <summary>GIF encoder options.</summary>
@@ -305,7 +301,6 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.TiffEncoderOptions">
             <summary>TIFF encoder options.</summary>
-            <param name="Compression">The compression method to be used by the lossless TIFF encoder.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.TiffEncoderOptions.#ctor(PhotoSauce.MagicScaler.TiffCompression)">
             <summary>TIFF encoder options.</summary>
@@ -339,7 +334,6 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.JpegDecoderOptions">
             <summary>JPEG decoder options.</summary>
-            <param name="AllowPlanar">True to allow the decoder to expose the raw planar form of the image, false to force conversion to RGB/BGR on decode.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.JpegDecoderOptions.#ctor(System.Boolean)">
             <summary>JPEG decoder options.</summary>
@@ -353,8 +347,6 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.GifDecoderOptions">
             <summary>GIF decoder options.</summary>
-            <param name="FrameRange">The <see cref="T:System.Range" /> of frames to decode.</param>
-            <param name="UseBackgroundColor">True to honor the background color given in the container metadata, otherwise false.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.GifDecoderOptions.#ctor(System.Range,System.Boolean)">
             <summary>GIF decoder options.</summary>
@@ -372,7 +364,6 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.TiffDecoderOptions">
             <summary>TIFF decoder options.</summary>
-            <param name="FrameRange">The <see cref="T:System.Range" /> of frames to decode.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.TiffDecoderOptions.#ctor(System.Range)">
             <summary>TIFF decoder options.</summary>
@@ -386,7 +377,6 @@
         </member>
         <member name="T:PhotoSauce.MagicScaler.CameraRawDecoderOptions">
             <summary>Camera RAW decoder options.</summary>
-            <param name="UsePreview">Determines whether a preview image is used in place of the RAW frame.</param>
         </member>
         <member name="M:PhotoSauce.MagicScaler.CameraRawDecoderOptions.#ctor(PhotoSauce.MagicScaler.RawPreviewMode)">
             <summary>Camera RAW decoder options.</summary>
@@ -737,6 +727,13 @@
         <member name="T:PhotoSauce.MagicScaler.ImageFileInfo.FrameInfo">
             <summary>Represents basic information about an image frame within a container.</summary>
         </member>
+        <member name="M:PhotoSauce.MagicScaler.ImageFileInfo.FrameInfo.#ctor(System.Int32,System.Int32,System.Boolean,PhotoSauce.MagicScaler.Orientation)">
+            <summary>Represents basic information about an image frame within a container.</summary>
+            <param name="width">The width of the image frame in pixels.</param>
+            <param name="height">The height of the image frame in pixels.</param>
+            <param name="hasAlpha">True if the image frame contains transparency data, otherwise false.</param>
+            <param name="orientation">The Exif orientation associated with the image frame.</param>
+        </member>
         <member name="P:PhotoSauce.MagicScaler.ImageFileInfo.FrameInfo.Width">
             <summary>The width of the image frame in pixels.</summary>
         </member>
@@ -751,13 +748,6 @@
             The stored <a href="https://magnushoff.com/articles/jpeg-orientation/">Exif orientation</a> for the image frame.
             The <see cref="P:PhotoSauce.MagicScaler.ImageFileInfo.FrameInfo.Width" /> and <see cref="P:PhotoSauce.MagicScaler.ImageFileInfo.FrameInfo.Height" /> values reflect the corrected orientation, not the stored orientation.
             </summary>
-        </member>
-        <member name="M:PhotoSauce.MagicScaler.ImageFileInfo.FrameInfo.#ctor(System.Int32,System.Int32,System.Boolean,PhotoSauce.MagicScaler.Orientation)">
-            <summary>Constructs a new <see cref="T:PhotoSauce.MagicScaler.ImageFileInfo.FrameInfo" /> instance with the supplied values.</summary>
-            <param name="width">The width of the image frame in pixels.</param>
-            <param name="height">The height of the image frame in pixels.</param>
-            <param name="hasAlpha">True if the image frame contains transparency data, otherwise false.</param>
-            <param name="orientation">The Exif orientation associated with the image frame.</param>
         </member>
         <member name="P:PhotoSauce.MagicScaler.ImageFileInfo.FileSize">
             <summary>The size of the image container in bytes.</summary>
@@ -929,7 +919,7 @@
             <summary>Default codec options to be used for this encoder in the absence of per-instance overrides.</summary>
         </member>
         <member name="P:PhotoSauce.MagicScaler.IImageEncoderInfo.Factory">
-            <summary>A delegate capable of creating an instance of this encoder to write to a given <see cref="T:System.IO.Stream" /> data source.</summary>
+            <summary>A delegate capable of creating an instance of this encoder to write to a given <see cref="T:System.IO.Stream" /> data target.</summary>
         </member>
         <member name="P:PhotoSauce.MagicScaler.IImageEncoderInfo.SupportsMultiFrame">
             <summary>True if the codec supports transparency, otherwise false.</summary>
@@ -1375,12 +1365,34 @@
             <param name="imageInfo">The input image for which the new settings should be calculated.</param>
             <returns>The calculated settings for the input image.</returns>
         </member>
+        <member name="T:PhotoSauce.MagicScaler.Experimental.TransformFactory">
+            <summary>Contains methods for creating <see cref="T:PhotoSauce.MagicScaler.IPixelSource" /> transforms. These may be changed or removed in future releases.</summary>
+        </member>
+        <member name="M:PhotoSauce.MagicScaler.Experimental.TransformFactory.CreateConversionTransform(PhotoSauce.MagicScaler.IPixelSource,System.Guid,System.ReadOnlySpan{System.Byte},System.ReadOnlySpan{System.Byte})">
+            <summary>Creates a transform that converts an <see cref="T:PhotoSauce.MagicScaler.IPixelSource" /> to the given pixel format, optionally using the given ICC color profiles for gamma correction.</summary>
+            <param name="source">The <see cref="T:PhotoSauce.MagicScaler.IPixelSource" /> to retrieve pixels from.</param>
+            <param name="destFormat">The binary representation of the resulting pixel data.  Must be one of the values from <see cref="T:PhotoSauce.MagicScaler.PixelFormats" />.</param>
+            <param name="sourceProfile">The ICC color profile to use for the <paramref name="source" />. If empty, sRGB will be used.</param>
+            <param name="destProfile">The ICC color profile to use for the resulting pixel data. If empty, sRGB will be used.</param>
+            <returns>An <see cref="T:PhotoSauce.MagicScaler.IPixelSource" /> that provides the resulting pixel data.</returns>
+        </member>
+        <member name="M:PhotoSauce.MagicScaler.Experimental.TransformFactory.CreateScaleTransform(PhotoSauce.MagicScaler.IPixelSource,System.Int32,System.Int32,PhotoSauce.MagicScaler.InterpolationSettings)">
+            <summary>Creates a transform that resizes an <see cref="T:PhotoSauce.MagicScaler.IPixelSource" /> to the given size, optionally using a specific interpolator.</summary>
+            <param name="source">The <see cref="T:PhotoSauce.MagicScaler.IPixelSource" /> to retrieve pixels from.</param>
+            <param name="newWidth">The width of the resulting <see cref="T:PhotoSauce.MagicScaler.IPixelSource" />.</param>
+            <param name="newHeight">The height of the resulting <see cref="T:PhotoSauce.MagicScaler.IPixelSource" />.</param>
+            <param name="settings">The interpolation settings to use. If <c>default</c>, then the default high-quality scaler will be used.</param>
+            <returns>An <see cref="T:PhotoSauce.MagicScaler.IPixelSource" /> that provides the resulting pixel data.</returns>
+        </member>
         <member name="T:PhotoSauce.MagicScaler.Transforms.ColorMatrixTransform">
             <summary>Transforms an image according to coefficients in a <see cref="T:System.Numerics.Matrix4x4" />.</summary>
             <remarks>The matrix is treated as 3x4, with the 4th row used for translation.</remarks>
+            <remarks>Constructs a new <see cref="T:PhotoSauce.MagicScaler.Transforms.ColorMatrixTransform" /> using the specified <paramref name="matrix" />.</remarks>
         </member>
         <member name="M:PhotoSauce.MagicScaler.Transforms.ColorMatrixTransform.#ctor(System.Numerics.Matrix4x4)">
-            <summary>Constructs a new <see cref="T:PhotoSauce.MagicScaler.Transforms.ColorMatrixTransform" /> using the specified <paramref name="matrix" />.</summary>
+            <summary>Transforms an image according to coefficients in a <see cref="T:System.Numerics.Matrix4x4" />.</summary>
+            <remarks>The matrix is treated as 3x4, with the 4th row used for translation.</remarks>
+            <remarks>Constructs a new <see cref="T:PhotoSauce.MagicScaler.Transforms.ColorMatrixTransform" /> using the specified <paramref name="matrix" />.</remarks>
             <param name="matrix">A 4x4 matrix of coefficients.  The channel order is RGB, column-major.</param>
         </member>
         <member name="T:PhotoSauce.MagicScaler.Transforms.FormatConversionTransform">
@@ -1394,14 +1406,16 @@
             <summary>Applies a <a href="https://en.wikipedia.org/wiki/Gaussian_blur">Gaussian blur</a> to an image.</summary>
         </member>
         <member name="M:PhotoSauce.MagicScaler.Transforms.GaussianBlurTransform.#ctor(System.Double)">
-            <summary>Constructs a new <see cref="T:PhotoSauce.MagicScaler.Transforms.GaussianBlurTransform" /> with the specified <paramref name="radius" />.</summary>
+            <summary>Applies a <a href="https://en.wikipedia.org/wiki/Gaussian_blur">Gaussian blur</a> to an image.</summary>
             <param name="radius">The blur radius (sigma value).</param>
         </member>
         <member name="T:PhotoSauce.MagicScaler.Transforms.OrientationTransform">
             <summary>Transforms an image by changing its column/row order according to an <see cref="T:PhotoSauce.MagicScaler.Orientation" /> value.</summary>
+            <remarks>Creates a new transform with the specified <paramref name="orientation" /> value.</remarks>
         </member>
         <member name="M:PhotoSauce.MagicScaler.Transforms.OrientationTransform.#ctor(PhotoSauce.MagicScaler.Orientation)">
-            <summary>Creates a new transform with the specified <paramref name="orientation" /> value.</summary>
+            <summary>Transforms an image by changing its column/row order according to an <see cref="T:PhotoSauce.MagicScaler.Orientation" /> value.</summary>
+            <remarks>Creates a new transform with the specified <paramref name="orientation" /> value.</remarks>
             <param name="orientation">The <see cref="T:PhotoSauce.MagicScaler.Orientation" /> correction to apply to the image.</param>
         </member>
         <member name="T:PhotoSauce.MagicScaler.Transforms.PadTransform">
@@ -1608,6 +1622,24 @@
         </member>
         <member name="M:PhotoSauce.MagicScaler.ZonePlatePixelSource.ToString">
             <summary>Returns a string that represents the current object.</summary><returns>A string that represents the current object.</returns>
+        </member>
+        <member name="T:PhotoSauce.MagicScaler.IIccProfileSource">
+            <summary>Provides a mechanism for accessing <a href="https://en.wikipedia.org/wiki/ICC_profile">ICC color profile</a> metadata.</summary>
+        </member>
+        <member name="P:PhotoSauce.MagicScaler.IIccProfileSource.ProfileLength">
+            <summary>The length of the profile, in bytes.</summary>
+        </member>
+        <member name="M:PhotoSauce.MagicScaler.IIccProfileSource.CopyProfile(System.Span{System.Byte})">
+            <summary>Copy the profile bytes into a destination buffer.</summary>
+        </member>
+        <member name="T:PhotoSauce.MagicScaler.IExifSource">
+            <summary>Provides a mechanism for accessing <a href="https://en.wikipedia.org/wiki/Exif">Exif</a> metadata.</summary>
+        </member>
+        <member name="P:PhotoSauce.MagicScaler.IExifSource.ExifLength">
+            <summary>The length of the Exif data, in bytes.</summary>
+        </member>
+        <member name="M:PhotoSauce.MagicScaler.IExifSource.CopyExif(System.Span{System.Byte})">
+            <summary>Copy the Exif data into a destination buffer.</summary>
         </member>
         <member name="T:PhotoSauce.MagicScaler.WindowsCodecExtensions">
             <summary>Extension methods for managing registered codecs.</summary>

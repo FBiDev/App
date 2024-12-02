@@ -63,7 +63,7 @@ namespace App.Cohab
 
         public async Task<List<Usuario>> ListarCombo()
         {
-            return (await PesquisarAtivos()).Prepend(new Usuario()).ToList();
+            return (await PesquisarAtivos()).PrependNew();
         }
         #endregion
 

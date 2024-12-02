@@ -47,15 +47,15 @@ namespace App.File.CrystalReport.Desktop
             this.ReportViewer.ShowLogo = false;
             this.ReportViewer.ShowParameterPanelButton = false;
             this.ReportViewer.ShowRefreshButton = false;
-            this.ReportViewer.Size = new System.Drawing.Size(1024, 502);
+            this.ReportViewer.Size = new System.Drawing.Size(1064, 502);
             this.ReportViewer.TabIndex = 0;
-            this.ReportViewer.ToolPanelWidth = 150;
+            this.ReportViewer.ToolPanelWidth = 190;
             // 
             // LoaderPicture
             // 
             this.LoaderPicture.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.LoaderPicture.Image = global::App.File.CrystalReport.Properties.Resources.LoaderPicture;
-            this.LoaderPicture.Location = new System.Drawing.Point(490, 190);
+            this.LoaderPicture.Location = new System.Drawing.Point(510, 190);
             this.LoaderPicture.Name = "LoaderPicture";
             this.LoaderPicture.Size = new System.Drawing.Size(48, 48);
             this.LoaderPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -65,7 +65,7 @@ namespace App.File.CrystalReport.Desktop
             // ReportForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(1024, 502);
+            this.ClientSize = new System.Drawing.Size(1064, 502);
             this.Controls.Add(this.LoaderPicture);
             this.Controls.Add(this.ReportViewer);
             this.DoubleBuffered = true;

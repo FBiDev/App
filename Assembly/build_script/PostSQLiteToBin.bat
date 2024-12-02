@@ -11,7 +11,7 @@ set "ConfigurationName=%4"
 
 echo ===============================================================================
 echo    Project      ::     %ProjectName%
-echo    Begin-event  ::     %EventType% -^> %EventName%
+echo    Event        ::     Begin %EventType% -^> %EventName%
 echo ===============================================================================
 
 robocopy "%SolutionDir%Assembly\data\x86 " "%TargetDir%x86 " SQLite.Interop.dll /XO
@@ -25,7 +25,7 @@ if %ConfigurationName% == Release (
 
 echo ===============================================================================
 echo    Project      ::     %ProjectName%
-echo    End-event    ::     %EventType% -^> %EventName%
+echo    Event        ::     End %EventType% -^> %EventName%
 echo    Result       ::     ExitCode: %errorlevel%
 echo ===============================================================================
 echo:

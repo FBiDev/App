@@ -44,8 +44,8 @@ namespace App.Cohab
 
         public async Task<List<Sistema>> ListarCombo()
         {
-            var obj = new Sistema { };
-            return (await Pesquisar(obj)).Prepend(new Sistema()).ToList();
+            var obj = new Sistema();
+            return (await Pesquisar(obj)).PrependNew();
         }
 
         public async Task<List<Sistema>> ListarProprio(bool? proprio = null)

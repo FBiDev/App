@@ -25,6 +25,19 @@ namespace App.Core
             }
         }
 
+        public static List<T> PrependNew<T>(this List<T> source)
+        {
+            if (typeof(T) == typeof(string))
+            {
+                source.Insert(0, (T)(object)string.Empty);
+            }
+            else
+            {
+                source.Insert(0, Activator.CreateInstance<T>());
+            }
+            return source;
+        }
+
         public static T First<T>(this List<T> list) where T : class, new()
         {
             if (list.Count == 0)
