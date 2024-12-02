@@ -35,12 +35,6 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="App.Core">
-      <HintPath>..\Bin\App.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="App.File.Json">
-      <HintPath>..\Bin\App.File.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -82,7 +76,16 @@
     <Content Include="Source\Asset\Sql\Usuario\sql_UsuarioTrocarSenha.sql" />
     <Content Include="Source\Asset\Sql\Usuario\sql_UsuarioVerificarAcesso.sql" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{9fea3ebe-e414-4263-aac4-452a32b2a75c}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\File.Json\File.Json.csproj">
+      <Project>{e44598be-0969-4825-a9a1-a0b766a87547}</Project>
+      <Name>File.Json</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>call "$(SolutionDir)Assembly\build_script\PostDllToBin.bat" ^

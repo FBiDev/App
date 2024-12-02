@@ -35,9 +35,6 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="App.Core">
-      <HintPath>..\Bin\App.Core.dll</HintPath>
-    </Reference>
     <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Assembly\data\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
@@ -89,6 +86,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Source\Asset\Image\LoaderPicture.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{9fea3ebe-e414-4263-aac4-452a32b2a75c}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

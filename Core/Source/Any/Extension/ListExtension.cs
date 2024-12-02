@@ -35,6 +35,7 @@ namespace App.Core
             {
                 source.Insert(0, Activator.CreateInstance<T>());
             }
+
             return source;
         }
 

@@ -35,9 +35,6 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="App.Core">
-      <HintPath>..\Bin\App.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Assembly\json\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -58,6 +55,12 @@
     <Compile Include="Source\Model\JsonIgnoreAttribute.cs" />
     <Compile Include="Source\Model\JsonSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{9fea3ebe-e414-4263-aac4-452a32b2a75c}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

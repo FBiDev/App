@@ -35,9 +35,6 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="App.Core">
-      <HintPath>..\Bin\App.Core.dll</HintPath>
-    </Reference>
     <Reference Include="IndexRange">
       <HintPath>..\Assembly\system\IndexRange.dll</HintPath>
     </Reference>
@@ -59,7 +56,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Model\MagicScaler.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{9fea3ebe-e414-4263-aac4-452a32b2a75c}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>call "$(SolutionDir)Assembly\build_script\PostDllToBin.bat" ^
