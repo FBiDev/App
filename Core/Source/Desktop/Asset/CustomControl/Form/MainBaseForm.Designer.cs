@@ -29,83 +29,83 @@ namespace App.Core.Desktop
         /// </summary>
         private void InitializeComponent()
         {
-            this.pnlHead = new App.Core.Desktop.FlatPanelBG();
-            this.pnlBody = new App.Core.Desktop.FlatPanelBG();
-            this.pnlContent = new App.Core.Desktop.FlatPanel();
-            this.pnlFoot = new App.Core.Desktop.FlatPanelBG();
-            this.staStatus = new App.Core.Desktop.FlatStatusBar();
-            this.pnlHead.SuspendLayout();
-            this.pnlBody.SuspendLayout();
-            this.pnlFoot.SuspendLayout();
+            this.HeadPanel = new App.Core.Desktop.FlatPanelBG();
+            this.BodyPanel = new App.Core.Desktop.FlatPanelBG();
+            this.ContentPanel = new App.Core.Desktop.FlatPanel();
+            this.FootPanel = new App.Core.Desktop.FlatPanelBG();
+            this.MainStatusBar = new App.Core.Desktop.FlatStatusBar();
+            this.HeadPanel.SuspendLayout();
+            this.BodyPanel.SuspendLayout();
+            this.FootPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlHead
+            // HeadPanel
             // 
-            this.pnlHead.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.pnlHead.BackColorType = App.Core.Desktop.PanelType.control;
-            this.pnlHead.Controls.Add(this.pnlBody);
-            this.pnlHead.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlHead.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.pnlHead.Location = new System.Drawing.Point(0, 0);
-            this.pnlHead.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlHead.Name = "pnlHead";
-            this.pnlHead.Padding = new System.Windows.Forms.Padding(8);
-            this.pnlHead.Size = new System.Drawing.Size(480, 246);
+            this.HeadPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.HeadPanel.BackColorType = App.Core.Desktop.PanelType.control;
+            this.HeadPanel.Controls.Add(this.BodyPanel);
+            this.HeadPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.HeadPanel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.HeadPanel.Location = new System.Drawing.Point(0, 0);
+            this.HeadPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.HeadPanel.Name = "HeadPanel";
+            this.HeadPanel.Padding = new System.Windows.Forms.Padding(8);
+            this.HeadPanel.Size = new System.Drawing.Size(480, 246);
             // 
-            // pnlBody
+            // BodyPanel
             // 
-            this.pnlBody.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
-            this.pnlBody.BackColorType = App.Core.Desktop.PanelType.white;
-            this.pnlBody.BorderRound = true;
-            this.pnlBody.BorderSize = 1;
-            this.pnlBody.Controls.Add(this.pnlContent);
-            this.pnlBody.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBody.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.pnlBody.Location = new System.Drawing.Point(8, 8);
-            this.pnlBody.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlBody.Name = "pnlBody";
-            this.pnlBody.Padding = new System.Windows.Forms.Padding(5);
-            this.pnlBody.Size = new System.Drawing.Size(464, 230);
+            this.BodyPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(252)))), ((int)(((byte)(252)))), ((int)(((byte)(252)))));
+            this.BodyPanel.BackColorType = App.Core.Desktop.PanelType.white;
+            this.BodyPanel.BorderRound = true;
+            this.BodyPanel.BorderSize = 1;
+            this.BodyPanel.Controls.Add(this.ContentPanel);
+            this.BodyPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.BodyPanel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.BodyPanel.Location = new System.Drawing.Point(8, 8);
+            this.BodyPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.BodyPanel.Name = "BodyPanel";
+            this.BodyPanel.Padding = new System.Windows.Forms.Padding(5);
+            this.BodyPanel.Size = new System.Drawing.Size(464, 230);
             // 
-            // pnlContent
+            // ContentPanel
             // 
-            this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlContent.Location = new System.Drawing.Point(5, 5);
-            this.pnlContent.Name = "pnlContent";
-            this.pnlContent.Size = new System.Drawing.Size(454, 220);
+            this.ContentPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ContentPanel.Location = new System.Drawing.Point(5, 5);
+            this.ContentPanel.Name = "ContentPanel";
+            this.ContentPanel.Size = new System.Drawing.Size(454, 220);
             // 
-            // pnlFoot
+            // FootPanel
             // 
-            this.pnlFoot.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.pnlFoot.BackColorType = App.Core.Desktop.PanelType.control;
-            this.pnlFoot.Controls.Add(this.staStatus);
-            this.pnlFoot.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlFoot.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.pnlFoot.Location = new System.Drawing.Point(0, 246);
-            this.pnlFoot.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlFoot.Name = "pnlFoot";
-            this.pnlFoot.Size = new System.Drawing.Size(480, 24);
-            this.pnlFoot.TabIndex = 1;
+            this.FootPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.FootPanel.BackColorType = App.Core.Desktop.PanelType.control;
+            this.FootPanel.Controls.Add(this.MainStatusBar);
+            this.FootPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.FootPanel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.FootPanel.Location = new System.Drawing.Point(0, 246);
+            this.FootPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.FootPanel.Name = "FootPanel";
+            this.FootPanel.Size = new System.Drawing.Size(480, 24);
+            this.FootPanel.TabIndex = 1;
             // 
-            // staStatus
+            // MainStatusBar
             // 
-            this.staStatus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(145)))), ((int)(((byte)(145)))), ((int)(((byte)(145)))));
-            this.staStatus.BackColorContent = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.staStatus.BorderEnable = false;
-            this.staStatus.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.staStatus.Location = new System.Drawing.Point(0, 0);
-            this.staStatus.Movimento = App.Core.Desktop.Movimento.Nenhum;
-            this.staStatus.Name = "staStatus";
-            this.staStatus.Registros = 0;
-            this.staStatus.Size = new System.Drawing.Size(480, 24);
-            this.staStatus.TabIndex = 0;
+            this.MainStatusBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(145)))), ((int)(((byte)(145)))), ((int)(((byte)(145)))));
+            this.MainStatusBar.BackColorContent = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            this.MainStatusBar.BorderEnable = false;
+            this.MainStatusBar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainStatusBar.Location = new System.Drawing.Point(0, 0);
+            this.MainStatusBar.Movimento = App.Core.Desktop.Movimento.Nenhum;
+            this.MainStatusBar.Name = "MainStatusBar";
+            this.MainStatusBar.Registros = 0;
+            this.MainStatusBar.Size = new System.Drawing.Size(480, 24);
+            this.MainStatusBar.TabIndex = 0;
             // 
             // MainBaseForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(480, 270);
-            this.Controls.Add(this.pnlHead);
-            this.Controls.Add(this.pnlFoot);
+            this.Controls.Add(this.HeadPanel);
+            this.Controls.Add(this.FootPanel);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumSize = new System.Drawing.Size(200, 200);
@@ -113,20 +113,20 @@ namespace App.Core.Desktop
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MainBaseForm";
-            this.pnlHead.ResumeLayout(false);
-            this.pnlBody.ResumeLayout(false);
-            this.pnlFoot.ResumeLayout(false);
+            this.HeadPanel.ResumeLayout(false);
+            this.BodyPanel.ResumeLayout(false);
+            this.FootPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private FlatPanelBG pnlFoot;
-        private FlatPanelBG pnlHead;
-        private FlatPanelBG pnlBody;
-        protected FlatPanel pnlContent;
-        public FlatStatusBar staStatus;
+        private FlatPanelBG FootPanel;
+        private FlatPanelBG HeadPanel;
+        private FlatPanelBG BodyPanel;
+        protected FlatPanel ContentPanel;
+        public FlatStatusBar MainStatusBar;
 
     }
 }

@@ -5,8 +5,9 @@ namespace App.Data.SQLite
 {
     public class SQLite
     {
-        public SQLite()
+        public SQLite(int defaultTimeout = 10)
         {
+            DefaultTimeout = defaultTimeout;
         }
 
         public int DefaultTimeout { get; set; }

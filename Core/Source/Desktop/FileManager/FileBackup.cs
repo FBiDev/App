@@ -44,6 +44,7 @@ namespace App.Core.Desktop
 
             Overwrite = true;
             OriginFile = string.Empty;
+            ButtonMessage = "Copy";
         }
 
         public event Action Copied = delegate { };
@@ -60,6 +61,12 @@ namespace App.Core.Desktop
             Microsoft_Excel = 2,
             Microsoft_Word = 4
         }
+
+        public string ErrorMessage { get; set; }
+
+        public string SuccessMessage { get; set; }
+
+        public string ButtonMessage { get; set; }
 
         public Filters Filter
         {
@@ -114,11 +121,11 @@ namespace App.Core.Desktop
 
         public bool Overwrite { get; set; }
 
-        public bool CustomName { get; set; }
+        public bool CustomDestination { get; set; }
 
-        public bool MakeBackup { get; set; }
+        public bool IsBackupCopy { get; set; }
 
-        public bool Timer { get; set; }
+        public bool IsTimer { get; set; }
 
         public int TimerValue { get; set; }
 
@@ -132,6 +139,9 @@ namespace App.Core.Desktop
             set
             {
                 _TimerIsRunning = value;
+                SuccessMessage = _TimerIsRunning ? "Backup Started!" : "Backup Stopped!";
+                ButtonMessage = _TimerIsRunning ? "Backup Stop" : "Backup Start";
+
                 TimerRunningChanged();
             }
         }
@@ -159,7 +169,7 @@ namespace App.Core.Desktop
 
         public bool PickDestination()
         {
-            if (CustomName)
+            if (CustomDestination)
             {
                 DestinationDialogCustom.InitialDirectory = DestinationFolder;
 
@@ -198,6 +208,7 @@ namespace App.Core.Desktop
             do
             {
                 await timerTask.DelayStart(TimerValue);
+
                 if (timerTask.IsCanceled)
                 {
                     TimerIsRunning = false;
@@ -211,15 +222,10 @@ namespace App.Core.Desktop
 
         public bool Copy()
         {
-            if (IsInvalidInputs())
-            {
-                return false;
-            }
-
             var exist = File.Exists(DestinationPath);
             var canCopy = !exist || Overwrite;
 
-            if (Timer)
+            if (IsTimer)
             {
                 TimerIsRunning = !TimerIsRunning;
 
@@ -235,7 +241,7 @@ namespace App.Core.Desktop
                 return true;
             }
 
-            if (MakeBackup || canCopy)
+            if (IsBackupCopy || canCopy)
             {
                 return SecureCopy();
             }
@@ -245,11 +251,11 @@ namespace App.Core.Desktop
 
         public void LoadTypes(FlatComboBox cbo)
         {
-            var types = new ListBind<ListItem>
-            {
-                new ListItem { Text = "Overwrite", Value = 0 },
-                new ListItem { Text = "Backup", Value = 1 },
-                new ListItem { Text = "Timer", Value = 2 }
+            var types = new ListBind<ListItem> 
+            { 
+                new ListItem(0, "Overwrite"),
+                new ListItem(1, "Backup"),
+                new ListItem(2, "Timer")
             };
 
             cbo.DisplayMember = "Text";
@@ -307,8 +313,35 @@ namespace App.Core.Desktop
 
         private bool IsInvalidInputs()
         {
-            if (string.IsNullOrWhiteSpace(OriginPath) || string.IsNullOrWhiteSpace(DestinationPath) ||
-                OriginPath == DestinationPath || (Timer && TimerValue <= 0))
+            ErrorMessage = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(OriginPath))
+            {
+                ErrorMessage = "Origin File is empty!";
+            }
+            else if (File.Exists(OriginPath) == false)
+            {
+                ErrorMessage = "Origin File not Found!";
+            }
+            else if (string.IsNullOrWhiteSpace(DestinationPath))
+            {
+                ErrorMessage = "Destination File is empty!";
+            }
+            else if (Archive.IsLocked(DestinationPath))
+            {
+                ErrorMessage = "Destination File is open in another program!";
+            }
+            else if (OriginPath == DestinationPath)
+            {
+                ErrorMessage = "Origin and Destination Files are the same!";
+            }
+            else if (IsTimer && TimerValue <= 0)
+            {
+                TimerIsRunning = false;
+                ErrorMessage = "Timer must be greater than 0!";
+            }
+
+            if (ErrorMessage != string.Empty)
             {
                 InvalidFile();
                 return true;
@@ -319,6 +352,11 @@ namespace App.Core.Desktop
 
         private bool SecureCopy()
         {
+            if (IsInvalidInputs())
+            {
+                return false;
+            }
+
             if (File.Exists(OriginPath))
             {
                 var attr = File.GetAttributes(OriginPath);
@@ -326,7 +364,7 @@ namespace App.Core.Desktop
                 File.SetAttributes(OriginPath, attr);
             }
 
-            if (Timer || MakeBackup)
+            if (IsTimer || IsBackupCopy)
             {
                 var backupNumber = 1;
                 var fileToSave = DestinationPath;
@@ -361,6 +399,7 @@ namespace App.Core.Desktop
                 File.Copy(OriginPath, DestinationPath, Overwrite);
             }
 
+            SuccessMessage = "File Copied!";
             Copied();
             return true;
         }
@@ -381,13 +420,9 @@ namespace App.Core.Desktop
 
         private void UpdateDestinationFile()
         {
-            if (string.IsNullOrWhiteSpace(DestinationPath) == false)
+            if (CustomDestination == false)
             {
                 DestinationPath = Path.Combine(Path.GetDirectoryName(DestinationPath), OriginFile).NormalizePath();
-            }
-            else if (CustomName)
-            {
-                DestinationDialogCustom.FileName = originDialog.FileName;
             }
         }
 
@@ -398,15 +433,8 @@ namespace App.Core.Desktop
                 return;
             }
 
-            if (CustomName)
-            {
-                DestinationDialogCustom.InitialDirectory = Path.GetDirectoryName(DestinationPath);
-                DestinationDialogCustom.FileName = Path.GetFileName(DestinationPath);
-
-                DestinationFolder = Path.GetDirectoryName(DestinationPath);
-                DestinationFile = DestinationDialogCustom.FileName;
-                return;
-            }
+            DestinationDialogCustom.InitialDirectory = Path.GetDirectoryName(DestinationPath);
+            DestinationDialogCustom.FileName = Path.GetFileName(DestinationPath);
 
             DestinationFolder = Path.GetDirectoryName(DestinationPath);
             DestinationFile = Path.GetFileName(DestinationPath);
@@ -415,8 +443,9 @@ namespace App.Core.Desktop
         private void TypesComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             Overwrite = false;
-            MakeBackup = false;
-            Timer = false;
+            IsBackupCopy = false;
+            IsTimer = false;
+            ButtonMessage = "Copy";
 
             var cbo = sender as FlatComboBoxNew;
 
@@ -424,9 +453,11 @@ namespace App.Core.Desktop
             {
                 case 0: Overwrite = true;
                     break;
-                case 1: MakeBackup = true;
+                case 1: IsBackupCopy = true;
                     break;
-                case 2: Timer = true;
+                case 2:
+                    IsTimer = true;
+                    ButtonMessage = "Backup Start";
                     break;
             }
         }

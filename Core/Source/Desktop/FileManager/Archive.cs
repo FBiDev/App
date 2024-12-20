@@ -91,11 +91,16 @@ namespace App.Core.Desktop
             return Math.Floor(unitSize) + " " + unitSimbol;
         }
 
-        public static bool IsFileLocked(string fileName)
+        public static bool IsLocked(string path)
         {
             try
             {
-                using (FileStream stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.None))
+                if (File.Exists(path) == false)
+                {
+                    return false;
+                }
+
+                using (FileStream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.None))
                 {
                     stream.Close();
                 }
@@ -105,11 +110,9 @@ namespace App.Core.Desktop
                 // the file is unavailable because it is:
                 // still being written to
                 // or being processed by another thread
-                // or does not exist (has already been processed)
                 return true;
             }
 
-            // file is not locked
             return false;
         }
     }

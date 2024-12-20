@@ -1,6 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace App.Core.Desktop
@@ -15,7 +17,7 @@ namespace App.Core.Desktop
         {
             InitializeComponent();
             chkList.ItemCheck += CheckedList_ItemCheck;
-
+            chkList.MouseEnter += CheckedList_MouseEnter;
             Font = new Font("Segoe UI", 9);
             MinimumSize = new Size(58, 34);
         }
@@ -118,9 +120,27 @@ namespace App.Core.Desktop
             set { chkList.Items.AddRange(value); }
         }
 
-        public CheckedListBox.CheckedItemCollection CheckedItems
+        ////public CheckedListBox.CheckedItemCollection CheckedItems
+        ////{
+        ////    get { return chkList.CheckedItems; }
+        ////}
+
+        public object DataSource
         {
-            get { return chkList.CheckedItems; }
+            get { return chkList.DataSource; }
+            set { chkList.DataSource = value; }
+        }
+
+        public string DisplayMember
+        {
+            get { return chkList.DisplayMember; }
+            set { chkList.DisplayMember = value; }
+        }
+
+        public string ValueMember
+        {
+            get { return chkList.ValueMember; }
+            set { chkList.ValueMember = value; }
         }
 
         public void ColumnWidth(int value)
@@ -133,14 +153,67 @@ namespace App.Core.Desktop
             chkList.MultiColumn = value;
         }
 
+        public List<T> GetItems<T>()
+        {
+            return chkList.Items.Cast<T>().ToList();
+        }
+
+        public List<T> CheckedItems<T>()
+        {
+            return chkList.CheckedItems.Cast<T>().ToList();
+        }
+
+        public List<T> UnCheckedItems<T>()
+        {
+            var uncheckedItems = new List<T>();
+            var items = chkList.Items.Cast<T>().ToList();
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                if (chkList.GetItemChecked(i) == false)
+                {
+                    uncheckedItems.Add(items[i]);
+                }
+            }
+
+            return uncheckedItems;
+        }
+
+        public bool IsItemChecked(int index)
+        {
+            return chkList.GetItemChecked(index);
+        }
+
+        public bool IsItemChecked(string value)
+        {
+            if (chkList.Items == null || chkList.Items.Count == 0)
+            {
+                return false;
+            }
+
+            var checkedItems = new List<object>(chkList.CheckedItems.Cast<object>());
+
+            foreach (var item in checkedItems)
+            {
+                bool indexFound = item.ToString() == value;
+
+                if (indexFound)
+                {
+                    return true;
+                }
+
+                if (item.ToString() == "Unknown" && value == string.Empty)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void SetItemChecked(int index, bool value)
         {
             chkList.SetItemChecked(index, value);
-        }
-
-        public bool GetItemChecked(int index)
-        {
-            return chkList.GetItemChecked(index);
         }
 
         public void SetItemsChecked(bool value)
@@ -150,24 +223,6 @@ namespace App.Core.Desktop
                 chkList.SetItemChecked(i, value);
             }
         }
-
-        public bool GetItemChecked(string value)
-        {
-            if (chkList.Items != null && chkList.Items.Count > 0)
-            {
-                for (int i = 0; i < chkList.Items.Count; i++)
-                {
-                    bool indexFound = chkList.GetItemChecked(i) && chkList.Items[i].ToString() == value;
-
-                    if (indexFound)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
         #endregion
 
         public void ResetColors()
@@ -176,6 +231,11 @@ namespace App.Core.Desktop
             pnlContent.BackColor = BackgroundColor;
             chkList.BackColor = BackgroundColor;
             chkList.ForeColor = TextColor;
+        }
+
+        private void CheckedList_MouseEnter(object sender, System.EventArgs e)
+        {
+            Cursor = Cursors.Hand;
         }
 
         private void CheckedList_ItemCheck(object sender, ItemCheckEventArgs e)

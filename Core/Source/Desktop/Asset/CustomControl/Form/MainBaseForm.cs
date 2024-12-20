@@ -81,11 +81,11 @@ namespace App.Core.Desktop
             set
             {
                 _statusBarEnable = value;
-                pnlFoot.Visible = value;
-                pnlHead.Padding = new Padding
+                FootPanel.Visible = value;
+                HeadPanel.Padding = new Padding
                 {
-                    All = pnlHead.Padding.Left,
-                    Bottom = value == false ? pnlHead.Padding.Left : 8
+                    All = HeadPanel.Padding.Left,
+                    Bottom = value == false ? HeadPanel.Padding.Left : 8
                 };
             }
         }
@@ -94,8 +94,8 @@ namespace App.Core.Desktop
 
         public void SetMainFormContent(Form frm)
         {
-            pnlContent.Controls.Clear();
-            pnlContent.Controls.Add(frm);
+            ContentPanel.Controls.Clear();
+            ContentPanel.Controls.Add(frm);
 
             frm.Dock = DockStyle.Fill;
             frm.Show();
