@@ -92,13 +92,13 @@ namespace App.Core.Desktop
 
         public bool IsDesignMode { get; set; }
 
-        public void SetMainFormContent(Form frm)
+        public void SetMainContentPage(Form mainContentPage)
         {
             ContentPanel.Controls.Clear();
-            ContentPanel.Controls.Add(frm);
+            ContentPanel.Controls.Add(mainContentPage);
 
-            frm.Dock = DockStyle.Fill;
-            frm.Show();
+            mainContentPage.Dock = DockStyle.Fill;
+            mainContentPage.Show();
         }
 
         public void CenterWindow()

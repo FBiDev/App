@@ -11,7 +11,7 @@ namespace App.Core
         internal static ExceptionProcessed Process(Exception ex, string argumentString = null)
         {
             string customMessage = string.Empty;
-            string errorLineBreak = "\r\n\r\n";
+            string errorLineBreak = Environment.NewLine + Environment.NewLine;
 
             Exception exceptionError = ex;
             var exceptionType = ex.GetType();
@@ -44,11 +44,11 @@ namespace App.Core
                     }
                 }
 
-                customMessage = ex.Message + errorLineBreak + innerMessage + exceptionError.Data["Error"];
+                customMessage = ex.Message + errorLineBreak + innerMessage + exceptionError.Data["Error"] + errorLineBreak;
             }
             else if (exceptionType == typeof(TargetInvocationException))
             {
-                customMessage = ex.Message + errorLineBreak + innerMessage + exceptionError.Data["Error"];
+                customMessage = ex.Message + errorLineBreak + innerMessage + exceptionError.Data["Error"] + Environment.NewLine;
             }
             else if (exceptionType == typeof(InvalidOperationException))
             {
@@ -218,8 +218,11 @@ namespace App.Core
                 string target = "\r\nTarget   : " + exceptionError.TargetSite.Module.Name;
                 string method = "\r\nMethod : " + exceptionError.TargetSite.Name;
 
-                customMessage = "Erro inesperado não tratado";
-                customMessage += errorLineBreak + exceptionTypeString + target + method;
+                var message = innerMessage != string.Empty ? innerMessage : ex.Message;
+
+                customMessage = "Erro inesperado não tratado" + errorLineBreak;
+                customMessage += message + errorLineBreak;
+                customMessage += exceptionTypeString + target + method + errorLineBreak;
             }
 
             var processed = new ExceptionProcessed(link, linkStr, isOleDbException, externalDLL, customMessage);

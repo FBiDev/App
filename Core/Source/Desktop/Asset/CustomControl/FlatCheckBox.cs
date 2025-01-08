@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using App.Core.Properties;
 
 namespace App.Core.Desktop
 {
@@ -10,13 +11,15 @@ namespace App.Core.Desktop
         private Color _backgroundColor = Color.White;
         private Color _borderColor = Color.FromArgb(213, 223, 229);
         private Color _borderColorFocus = Color.FromArgb(108, 132, 199);
+        private bool _checkboxImage = false;
 
         public FlatCheckBox()
         {
             InitializeComponent();
 
-            CheckBox.CheckedChanged += CheckBox_CheckedChanged;
             Click += (sender, e) => BackgroundPanel_Click(null, null);
+            InnerCheckBox.CheckedChanged += CheckBox_CheckedChanged;            
+            InnerCheckBox.Click += (sender, e) => RefreshCheckboxColors();
 
             AlignControl();
         }
@@ -86,8 +89,58 @@ namespace App.Core.Desktop
         [DefaultValue(false)]
         public bool Checked
         {
-            get { return CheckBox.Checked; }
-            set { CheckBox.Checked = value; }
+            get { return InnerCheckBox.Checked; }
+            set { InnerCheckBox.Checked = value; }
+        }
+
+        [DefaultValue(CheckState.Unchecked)]
+        public CheckState CheckState
+        {
+            get { return InnerCheckBox.CheckState; }
+            set { InnerCheckBox.CheckState = value; }
+        }
+
+        [DefaultValue(false)]
+        public bool ThreeState
+        {
+            get
+            {
+                return InnerCheckBox.ThreeState;
+            }
+
+            set
+            {
+                InnerCheckBox.ThreeState = value;
+
+                if (InnerCheckBox.ThreeState == false && InnerCheckBox.CheckState == CheckState.Indeterminate)
+                {
+                    InnerCheckBox.CheckState = CheckState.Checked;
+                    RefreshCheckboxColors();
+                }
+            }
+        }
+
+        [DefaultValue(false)]
+        public bool CheckboxImage
+        {
+            get
+            {
+                return _checkboxImage;
+            }
+
+            set
+            {
+                _checkboxImage = value;
+
+                if (_checkboxImage)
+                {
+                    CheckboxAsImage();
+                }
+                else
+                {
+                    CheckboxAsBox();
+                }
+            }
         }
 
         public new bool Focused
@@ -95,7 +148,7 @@ namespace App.Core.Desktop
             get { return MainCheckBox.Focused; }
         }
 
-        private CheckBox CheckBox
+        private CheckBox InnerCheckBox
         {
             get { return MainCheckBox; }
         }
@@ -122,19 +175,82 @@ namespace App.Core.Desktop
             BorderColorLeave = BorderColor;
         }
 
+        public void RefreshCheckboxColors()
+        {
+            if (CheckboxImage)
+            {
+                InnerCheckBox.BackColor = BackgroundColor;
+                InnerCheckBox.FlatAppearance.CheckedBackColor = BackgroundColor;
+                InnerCheckBox.FlatAppearance.MouseOverBackColor = BackgroundColor;
+                InnerCheckBox.FlatAppearance.MouseDownBackColor = BackgroundColor;
+
+                if (CheckState == CheckState.Checked)
+                {
+                    InnerCheckBox.Image = Resources.img_true_ico;
+                }
+                else if (CheckState == CheckState.Unchecked)
+                {
+                    InnerCheckBox.Image = Resources.img_false_ico;
+                }
+                else
+                {
+                    InnerCheckBox.Image = Resources.img_indeterminate_ico;
+                }
+            }
+            else
+            {
+                InnerCheckBox.Image = null;
+
+                if (CheckState == CheckState.Checked)
+                {
+                    InnerCheckBox.BackColor = Color.LightGreen;
+                }
+                else if (CheckState == CheckState.Unchecked)
+                {
+                    InnerCheckBox.BackColor = Color.LightCoral;
+                }
+                else
+                {
+                    InnerCheckBox.BackColor = Color.Gray;
+                }
+            }
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+        }
+
         protected override void OnHandleCreated(EventArgs e)
         {
             base.OnHandleCreated(e);
             ResetColors();
+            RefreshCheckboxColors();
         }
 
         private void AlignControl()
         {
-            var newLocation = new Point((BackgroundPanel.Width - CheckBox.Width) / 2, CheckBox.Location.Y);
-            CheckBox.Location = newLocation;
+            var newLocation = new Point((BackgroundPanel.Width - InnerCheckBox.Width) / 2, InnerCheckBox.Location.Y);
+            InnerCheckBox.Location = newLocation;
 
             newLocation = new Point((BackgroundPanel.Width - LegendLabel.Width) / 2, LegendLabel.Location.Y);
             LegendLabel.Location = newLocation;
+        }
+
+        private void CheckboxAsImage()
+        {
+            InnerCheckBox.FlatAppearance.BorderSize = 0;
+            InnerCheckBox.Appearance = Appearance.Button;
+            InnerCheckBox.Padding = new Padding(0, 0, 2, 2);
+            RefreshCheckboxColors();
+        }
+
+        private void CheckboxAsBox()
+        {
+            InnerCheckBox.FlatAppearance.BorderSize = 1;
+            InnerCheckBox.Appearance = Appearance.Normal;
+            InnerCheckBox.Padding = new Padding(0, 0, 0, 0);
+            RefreshCheckboxColors();
         }
 
         private void CheckBox_SizeChanged(object sender, EventArgs e)
@@ -149,14 +265,7 @@ namespace App.Core.Desktop
                 CheckedChanged(sender, e);
             }
 
-            if (CheckBox.Checked)
-            {
-                CheckBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                CheckBox.BackColor = Color.LightCoral;
-            }
+            RefreshCheckboxColors();
         }
 
         private void CheckBox_Enter(object sender, EventArgs e)
@@ -176,8 +285,21 @@ namespace App.Core.Desktop
 
         private void BackgroundPanel_Click(object sender, EventArgs e)
         {
-            CheckBox.Focus();
-            Checked = !CheckBox.Checked;
+            InnerCheckBox.Focus();
+
+            if (ThreeState)
+            {
+                CheckState = (CheckState)((((int)CheckState) + 1) % 3);
+
+                if (CheckState == CheckState.Indeterminate)
+                {
+                    RefreshCheckboxColors();
+                }
+            }
+            else
+            {
+                Checked = !InnerCheckBox.Checked;
+            }
         }
 
         private void BackgroundPanel_DoubleClick(object sender, EventArgs e)

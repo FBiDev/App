@@ -63,6 +63,9 @@
     <Compile Include="Source\Desktop\Asset\CustomControl\Base\FlatMaskedTextBoxBase.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Source\Desktop\Asset\CustomControl\FlatCheckBoxInner.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Source\Desktop\Asset\CustomControl\FlatCheckedList.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -394,6 +397,7 @@
     <Content Include="Source\Any\Asset\Image\img_drop_arrow.png" />
     <Content Include="Source\Any\Asset\Image\img_drop_arrow_focus.png" />
     <Content Include="Source\Any\Asset\Image\img_false_ico.png" />
+    <Content Include="Source\Any\Asset\Image\img_indeterminate_ico.png" />
     <Content Include="Source\Any\Asset\Image\img_notfound.png" />
     <Content Include="Source\Any\Asset\Image\img_true_ico.png" />
   </ItemGroup>

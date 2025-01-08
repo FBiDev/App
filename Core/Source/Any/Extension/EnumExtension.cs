@@ -23,6 +23,18 @@ namespace App.Core
             return s;
         }
 
+        public static bool? ToBoolNullable(this Enum e)
+        {
+            var value = Convert.ToInt32(e);
+
+            switch (value)
+            {
+                case 0: return false;
+                case 1: return true;
+                default: return null;
+            }
+        }
+
         private static byte[] FromHex(string hex)
         {
             hex = hex.Replace("-", string.Empty);

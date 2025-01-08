@@ -123,6 +123,16 @@ namespace App.Core.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap img_indeterminate_ico {
+            get {
+                object obj = ResourceManager.GetObject("img_indeterminate_ico", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap img_notfound {
             get {
                 object obj = ResourceManager.GetObject("img_notfound", resourceCulture);
