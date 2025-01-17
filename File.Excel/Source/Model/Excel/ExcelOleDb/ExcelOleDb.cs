@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using IO = System.IO;
 using App.File.Excel;
 
 namespace App.File.ExcelOleDb
@@ -16,8 +17,8 @@ namespace App.File.ExcelOleDb
 
         public enum Version
         {
-            Jet_x86,
-            ACE_x86_x64
+            x32_Jet,
+            x64_ACE
         }
 
         public static Version VersionType { get; set; }
@@ -26,11 +27,27 @@ namespace App.File.ExcelOleDb
         public static DataTable Read<T>(string file, ExcelOptions<T> options) where T : class
         {
             var recordsTable = new DataTable();
+            var tempFile = file + ".tmp";
 
-            var oconn = ConnSelectNotNull(file, options.SheetName);
+            try
+            {
+                if (IO.File.Exists(tempFile))
+                {
+                    IO.File.Delete(tempFile);
+                }
 
-            var cmdAll = ConnSelectAll(file, options.SheetName);
-            FillData(recordsTable, cmdAll);
+                IO.File.Copy(file, tempFile);
+
+                var oconn = ConnSelectNotNull(tempFile, options.SheetName);
+
+                var cmdAll = ConnSelectAll(tempFile, options.SheetName);
+
+                FillData(recordsTable, cmdAll);
+            }
+            finally
+            {
+                IO.File.Delete(tempFile);
+            }
 
             // Remove Headers
             recordsTable.Rows.RemoveAt(0);
@@ -67,12 +84,17 @@ namespace App.File.ExcelOleDb
             var command = new OleDbCommand
             {
                 Connection = conn,
-                CommandText = "SELECT 1 AS " + ExcelAny.RowNumberColumn + ", * FROM [" + excelTab + "$] WHERE " + whereClause
+                CommandText = "SELECT 1 AS " + ExcelAny.RowNumberColumn + ", * FROM [" + excelTab + "] WHERE " + whereClause
             };
 
-            SetColumnsName(command);
-
-            conn.Close();
+            try
+            {
+                SetColumnsName(command);
+            }
+            finally
+            {
+                conn.Close();
+            }
 
             return command;
         }
@@ -87,7 +109,7 @@ namespace App.File.ExcelOleDb
             var command = new OleDbCommand
             {
                 Connection = conn,
-                CommandText = "SELECT 1 AS " + ExcelAny.RowNumberColumn + ", * FROM [" + excelTab + "$] WHERE " + whereClause
+                CommandText = "SELECT 1 AS " + ExcelAny.RowNumberColumn + ", * FROM [" + excelTab + "] WHERE " + whereClause
             };
 
             conn.Close();
@@ -103,7 +125,10 @@ namespace App.File.ExcelOleDb
 
             for (int i = 0; i < data.Columns.Count; i++)
             {
-                data.Columns[i].ColumnName = columnNames[i].ColumnName.Trim();
+                if (columnNames[i].ColumnName.Trim() != string.Empty)
+                {
+                    data.Columns[i].ColumnName = columnNames[i].ColumnName.Trim();
+                }
             }
 
             GetBlankRecords(data);
@@ -131,7 +156,7 @@ namespace App.File.ExcelOleDb
 
         private static OleDbConnection OpenConnection(string filePath)
         {
-            string constr = VersionType == Version.ACE_x86_x64 ?
+            string constr = VersionType == Version.x64_ACE ?
                 "Provider=Microsoft.ACE.OLEDB.12.0;" +
                 "Data Source=" + filePath + ";" +
                 "Extended Properties='Excel 12.0 XML;HDR=No;IMEX=1';" +
@@ -155,8 +180,13 @@ namespace App.File.ExcelOleDb
             if (excelTab == null && schemaTable != null && schemaTable.Rows.Count > 0)
             {
                 excelTab = schemaTable.Rows[0]["TABLE_NAME"].ToString();
-                excelTab = excelTab.Substring(0, excelTab.Length - 1);
             }
+            else
+            {
+                excelTab = excelTab + "$";
+            }
+
+            ExcelDesktop.SheetName = excelTab;
 
             return excelTab;
         }
