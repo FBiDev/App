@@ -62,19 +62,20 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Source\Asset\Sql\Sistema\sql_SistemaListar.sql" />
-    <Content Include="Source\Asset\Sql\Sistema\sql_SistemaListarPorUsuario.sql" />
-    <Content Include="Source\Asset\Sql\Sistema\sql_SistemaListarProprio.sql" />
-    <Content Include="Source\Asset\Sql\Usuario\sql_UsuarioClonarAcessos.sql" />
-    <Content Include="Source\Asset\Sql\Usuario\sql_UsuarioListarPorMatricula.sql" />
-    <Content Include="Source\Asset\Sql\Usuario\sql_UsuarioListarPorDepartamento.sql" />
-    <Content Include="Source\Asset\Sql\Usuario\sql_UsuarioListar.sql" />
-    <Content Include="Source\Asset\Sql\Usuario\sql_UsuarioListarPorSetor.sql" />
-    <Content Include="Source\Asset\Sql\Usuario\sql_UsuarioTrocarSenha.sql" />
-    <Content Include="Source\Asset\Sql\Usuario\sql_UsuarioVerificarAcesso.sql" />
+    <Content Include="Source\Asset\SqlScript\Sistema\sql_SistemaListar.sql" />
+    <Content Include="Source\Asset\SqlScript\Sistema\sql_SistemaListarPorUsuario.sql" />
+    <Content Include="Source\Asset\SqlScript\Sistema\sql_SistemaListarProprio.sql" />
+    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioClonarAcessos.sql" />
+    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioListarPorMatricula.sql" />
+    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioListarPorDepartamento.sql" />
+    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioListar.sql" />
+    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioListarPorSetor.sql" />
+    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioTrocarSenha.sql" />
+    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioVerificarAcesso.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
