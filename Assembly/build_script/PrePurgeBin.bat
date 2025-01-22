@@ -13,7 +13,7 @@ echo    Project      ::     %ProjectName%
 echo    Event        ::     Begin %EventType% -^> %EventName%
 echo ===============================================================================
 
-robocopy "%TargetDir% " "%SolutionDir%Bin " /PURGE
+rd /s /q "%SolutionDir%Bin\"
 
 echo ===============================================================================
 echo    Project      ::     %ProjectName%

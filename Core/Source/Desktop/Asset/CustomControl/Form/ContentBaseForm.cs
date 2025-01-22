@@ -97,7 +97,7 @@ namespace App.Core.Desktop
                 CreateParams cp = base.CreateParams;
                 if (enableFormLevelDoubleBuffering && DesignMode == false)
                 {
-                    cp.ExStyle |= 0x02000000;   // WS_EX_COMPOSITED
+                    cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
                 }
                 else
                 {
@@ -112,6 +112,7 @@ namespace App.Core.Desktop
         public void OnResize(object sender, EventArgs e)
         {
             var tableLayouts = Controls.OfType<FlatTable>();
+
             foreach (var tbl in tableLayouts)
             {
                 if (tbl.FillOnFormResize == false)
@@ -132,19 +133,21 @@ namespace App.Core.Desktop
 
         public void FinalLoadOnShow()
         {
-            if (_firstLoad)
+            if (_firstLoad == false)
             {
-                _firstLoad = false;
+                return;
+            }
 
-                if (FinalLoadOnce.NotNull())
-                {
-                    FinalLoadOnce();
-                }
+            _firstLoad = false;
 
-                if (FinalLoadOnceAsync.NotNull())
-                {
-                    FinalLoadOnceAsync().TryAwait();
-                }
+            if (FinalLoadOnce.NotNull())
+            {
+                FinalLoadOnce();
+            }
+
+            if (FinalLoadOnceAsync.NotNull())
+            {
+                FinalLoadOnceAsync().TryAwait();
             }
         }
 
@@ -152,11 +155,12 @@ namespace App.Core.Desktop
         {
             SizeOriginal = Size;
 
-            var panels = Controls.OfType<FlatPanel>();
-
             int tabIndex = 0;
 
+            var panels = Controls.OfType<FlatPanel>();
+
             panels = panels.Reverse();
+
             panels.ForEach(x =>
             {
                 x.TabIndex = tabIndex;

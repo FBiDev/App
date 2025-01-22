@@ -15,8 +15,8 @@ namespace App.Core.Desktop
             InitializeComponent();
 
             IsDesignMode = true;
-            AutoResizeWindow = true;
-            AutoCenterWindow = true;
+            ////AutoResizeWindow = true;
+            ////AutoCenterWindow = true;
 
             HandleCreated += (sender, e) =>
             {
@@ -50,7 +50,7 @@ namespace App.Core.Desktop
             }
 
             ResizeRedraw = true;
-            StatusBarEnable = true;
+            StatusBarEnable = false;
             DoubleBuffered = true;
         }
 
@@ -80,13 +80,22 @@ namespace App.Core.Desktop
 
             set
             {
-                _statusBarEnable = value;
                 FootPanel.Visible = value;
+
                 HeadPanel.Padding = new Padding
                 {
                     All = HeadPanel.Padding.Left,
                     Bottom = value == false ? HeadPanel.Padding.Left : 8
                 };
+
+                if (_statusBarEnable != value)
+                {
+                    MinimumSize = value == false ?
+                        new Size(MinimumSize.Width, MinimumSize.Height - FootPanel.Height) :
+                        new Size(MinimumSize.Width, MinimumSize.Height + FootPanel.Height);
+                }
+
+                _statusBarEnable = value;
             }
         }
 
@@ -101,14 +110,37 @@ namespace App.Core.Desktop
             mainContentPage.Show();
         }
 
-        public void CenterWindow()
+        public async Task CenterWindow()
         {
             if (AutoCenterWindow == false)
             {
                 return;
             }
 
+            await Task.Delay(50);
             this.InvokeIfRequired(CenterToScreen);
+            await Task.Delay(50);
+        }
+
+        public void ResizeWindow(Size contentSize, Size additionalSize = default(Size))
+        {
+            if (AutoResizeWindow == false)
+            {
+                return;
+            }
+
+            var marginHeight = 26;
+            var marginWidth = 26;
+
+            var newW = contentSize.Width + marginWidth + additionalSize.Width;
+            var newH = contentSize.Height + marginHeight + additionalSize.Height;
+
+            if (StatusBarEnable)
+            {
+                newH += FootPanel.Height;
+            }
+
+            ClientSize = new Size(newW, newH);
         }
 
         protected override void OnHandleCreated(EventArgs e)

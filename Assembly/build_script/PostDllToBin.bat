@@ -15,9 +15,9 @@ echo    Event        ::     Begin %EventType% -^> %EventName%
 echo ===============================================================================
 
 if %ConfigurationName% == Release (
-	robocopy "%TargetDir% " "%SolutionDir%Bin " *.dll /XO
+	robocopy "%TargetDir% " "%SolutionDir%Bin " *.dll /IS
 ) else (
-	robocopy "%TargetDir% " "%SolutionDir%Bin " *.dll *.pdb *.xml /XO
+	robocopy "%TargetDir% " "%SolutionDir%Bin " *.dll *.pdb *.xml /IS
 )
 
 echo ===============================================================================

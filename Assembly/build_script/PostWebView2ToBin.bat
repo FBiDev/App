@@ -14,13 +14,13 @@ echo    Project      ::     %ProjectName%
 echo    Event        ::     Begin %EventType% -^> %EventName%
 echo ===============================================================================
 
-robocopy "%SolutionDir%Assembly\web " "%TargetDir% " WebView2Loader.dll /XO
+robocopy "%SolutionDir%Assembly\web " "%TargetDir% " WebView2Loader.dll /IS
 
 
 if %ConfigurationName% == Release (
-	robocopy "%TargetDir% " "%SolutionDir%Bin " *.dll /XO
+	robocopy "%TargetDir% " "%SolutionDir%Bin " *.dll /IS
 ) else (
-	robocopy "%TargetDir% " "%SolutionDir%Bin " *.dll *.pdb *.xml /XO
+	robocopy "%TargetDir% " "%SolutionDir%Bin " *.dll *.pdb *.xml /IS
 )
 
 echo ===============================================================================
