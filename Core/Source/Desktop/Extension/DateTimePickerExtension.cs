@@ -15,8 +15,8 @@ namespace App.Core.Desktop
         public static bool ValidDateTime(this DateTimePicker obj, DateTime? date)
         {
             return date is DateTime
-                        && date.Value > obj.MinDate
-                        && date.Value < obj.MaxDate;
+                        && date.Value >= obj.MinDate
+                        && date.Value <= obj.MaxDate;
         }
 
         public static bool TryParse(this DateTimePicker obj, DateTime? date)
