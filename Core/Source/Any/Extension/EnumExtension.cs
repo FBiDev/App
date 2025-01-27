@@ -23,6 +23,13 @@ namespace App.Core
             return s;
         }
 
+        public static bool ToBool(this Enum e)
+        {
+            var value = Convert.ToInt32(e);
+
+            return Convert.ToBoolean(value);
+        }
+
         public static bool? ToBoolNullable(this Enum e)
         {
             var value = Convert.ToInt32(e);
