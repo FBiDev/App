@@ -23,6 +23,14 @@ namespace App.Core
 
                 switch (valueType.Name)
                 {
+                    case "Byte[]":
+                        DbType = DbType.Binary;
+
+                        if (size == 0)
+                        {
+                            size = -1;
+                        }
+                        break;
                     case "String":
                         DbType = DbType.String;
 

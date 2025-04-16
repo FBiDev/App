@@ -8,6 +8,7 @@ namespace App.Core.Desktop
     public partial class FlatPanel : Panel
     {
         private PanelType _backColorType;
+        private int _borderSize;
 
         public FlatPanel()
         {
@@ -52,10 +53,25 @@ namespace App.Core.Desktop
         public Color BorderColor { get; set; }
 
         [DefaultValue(0)]
-        public int BorderSize { get; set; }
+        public int BorderSize
+        {
+            get
+            {
+                return _borderSize;
+            }
+
+            set
+            {
+                _borderSize = value;
+                Padding = new Padding(value);
+            }
+        }
 
         [DefaultValue(false)]
         public bool BorderRound { get; set; }
+
+        [DefaultValue(GraphicsExtension.BorderDrawSide.All)]
+        public GraphicsExtension.BorderDrawSide BorderSides { get; set; }
 
         [DefaultValue(typeof(Padding), "0, 0, 0, 0")]
         public new Padding Padding
@@ -88,7 +104,7 @@ namespace App.Core.Desktop
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.DrawRoundBorder(this, BorderColor, BorderSize, BorderRound);
+            e.Graphics.DrawRoundBorder(this, BorderColor, BorderSize, BorderRound, BorderSides);
         }
 
         protected override Point ScrollToControl(Control activeControl)

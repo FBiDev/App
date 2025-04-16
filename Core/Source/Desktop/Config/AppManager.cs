@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -30,6 +31,11 @@ namespace App.Core.Desktop
         public static string ExecutablePath
         {
             get { return Assembly.GetEntryAssembly().Location; }
+        }
+
+        public static FileInfo ExecutableInfo
+        {
+            get { return new FileInfo(Assembly.GetEntryAssembly().Location); }
         }
 
         public static bool Is64BitProcess

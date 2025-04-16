@@ -5,7 +5,18 @@ namespace App.Core.Desktop
 {
     public static class GraphicsExtension
     {
-        public static void DrawRoundBorder(this Graphics g, Control control, Color borderColor, int borderSize = 1, bool borderRound = true)
+        public enum BorderDrawSide
+        {
+            All,
+            TopBottom,
+            LeftRight,
+            Top,
+            Bottom,
+            Left,
+            Right
+        }
+
+        public static void DrawRoundBorder(this Graphics g, Control control, Color borderColor, int borderSize = 1, bool borderRound = true, BorderDrawSide sides = BorderDrawSide.All)
         {
             if (borderSize <= 0)
             {
@@ -20,9 +31,17 @@ namespace App.Core.Desktop
             }
 
             // ControlPaint.DrawBorder(g, recInner, borderColor, ButtonBorderStyle.Solid);
-            ControlPaint.DrawBorder(g, recInner, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid);
+            switch (sides)
+            {
+                case BorderDrawSide.All:
+                    ControlPaint.DrawBorder(g, recInner, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid);
+                    break;
+                case BorderDrawSide.TopBottom:
+                    ControlPaint.DrawBorder(g, recInner, borderColor, 0, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, 0, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid);
+                    break;
+            }
 
-            if (!borderRound)
+            if (!borderRound || sides != BorderDrawSide.All)
             {
                 return;
             }

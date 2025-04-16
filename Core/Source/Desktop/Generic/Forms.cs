@@ -28,29 +28,52 @@ namespace App.Core.Desktop
 
             if (genericForm.WindowState == FormWindowState.Minimized)
             {
-                genericForm.WindowState = FormWindowState.Normal;
+                genericForm.InvokeIfRequired(() =>
+                {
+                    genericForm.WindowState = FormWindowState.Normal;
+                });
             }
 
             if (parent != null)
             {
-                genericForm.MdiParent = parent;
+                parent.InvokeIfRequired(() =>
+                {
+                    genericForm.MdiParent = parent;
+                });
             }
 
-            genericForm.Show();
-            genericForm.Focus();
+            parent.InvokeIfRequired(() =>
+            {
+                genericForm.Show();
+                genericForm.Focus();
+            });
+
             return (T)(object)genericForm;
         }
 
-        public static T Get<T>() where T : Form
+        public static T Get<T>(bool createIfNull = false) where T : Form, new()
         {
             foreach (Form f in Application.OpenForms)
             {
                 if (f.GetType() == typeof(T))
                 {
+                    if (f.WindowState == FormWindowState.Minimized)
+                    {
+                        f.InvokeIfRequired(() =>
+                        {
+                            f.WindowState = FormWindowState.Normal;
+                        });
+                    }
+
                     return (T)f;
-                    
+
                     // return (T)(object)f;
                 }
+            }
+
+            if (createIfNull)
+            {
+                return new T();
             }
 
             return default(T);

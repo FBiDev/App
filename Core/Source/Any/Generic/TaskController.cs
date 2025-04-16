@@ -15,9 +15,10 @@ namespace App.Core
 
         public bool IsCanceled { get; set; }
 
-        public static async Task Delay(int secondsDelay)
+        public static async Task Delay(double secondsDelay)
         {
-            await Task.Delay(secondsDelay * 1000);
+            int milliseconds = (int)(secondsDelay * 1000);
+            await Task.Delay(milliseconds);
         }
 
         public void Reset()
@@ -31,11 +32,12 @@ namespace App.Core
             source.Cancel();
         }
 
-        public async Task DelayStart(int secondsDelay)
+        public async Task DelayStart(double secondsDelay)
         {
             try
             {
-                await Task.Delay(secondsDelay * 1000, source.Token);
+                int milliseconds = (int)(secondsDelay * 1000);
+                await Task.Delay(milliseconds, source.Token);
             }
             catch (Exception)
             {
