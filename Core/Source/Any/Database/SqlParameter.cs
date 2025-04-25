@@ -49,6 +49,8 @@ namespace App.Core
                         }
 
                         break;
+                    case "Int16": DbType = DbType.Int16;
+                        break;
                     case "Int32": DbType = DbType.Int32;
                         break;
                     case "Decimal":
