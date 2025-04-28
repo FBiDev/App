@@ -307,6 +307,7 @@
     </Compile>
     <Compile Include="Source\Desktop\WindowsOS\NativeCodes.cs" />
     <Compile Include="Source\Desktop\WindowsOS\NativeMethods.cs" />
+    <Compile Include="Source\Web\Config\AppManager.cs" />
     <Compile Include="Source\Web\Config\ExceptionManager.cs" />
     <Compile Include="Source\Web\Database\DatabaseDao.cs" />
     <Compile Include="Source\Web\Database\DataRowExtension.cs" />

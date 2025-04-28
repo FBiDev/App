@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace App.Core
@@ -230,7 +231,7 @@ namespace App.Core
                 if (timer.Stopped || lastcmd.Connection == null || lastcmd.Connection.State == ConnectionState.Closed)
                 {
                     cmdList.Remove(lastcmd);
-                    
+
                     if (lastcmd.Connection is IDbConnection)
                     {
                         lastcmd.Connection.Dispose();
@@ -280,6 +281,19 @@ namespace App.Core
                 sql = sql.Replace("CONVERT(datetime2,", "datetime(");
                 sql = sql.Replace("CONVERT(datetime2(0),", "datetime(");
                 sql = sql.Replace("CONVERT(datetime2(3),", "strftime('%Y-%m-%d %H:%M:%f',");
+
+                sql = sql.Replace("GETDATE()", "STRFTIME('%Y-%m-%d %H:%M:%S', 'now', 'localtime')");
+
+                var replaces = new Dictionary<string, string>
+                {
+                    {@"\bCAST\s*\(\s*@(\w+)\s+AS\s+DATE\s*\)", "DATE(@$1)"},
+                    {@"\bCAST\s*\(\s*@(\w+)\s+AS\s+DATETIME\s*\)", "DATETIME(@$1)"}
+                };
+
+                foreach (KeyValuePair<string, string> item in replaces)
+                {
+                    sql = Regex.Replace(sql, item.Key, item.Value, RegexOptions.Multiline);
+                }
             }
 
             return sql;
