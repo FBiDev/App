@@ -131,6 +131,106 @@ namespace App.Core
             return 0;
         }
 
+        public string LIMIT_OFFSET(string sql, uint limit, uint offset = 0, string row_column = "")
+        {
+            if (limit == 0)
+            {
+                limit = uint.MaxValue;
+            }
+
+            var TOP = "@TOP";
+            var LIMIT = "@LIMIT";
+
+            var empty_TOP = new[] { @"([\t ]*[\r?\n]*[\t ]*[\t ]*" + TOP + "[\t ]*,[\t ]*)", " " };
+            var value_TOP = new[] { @"([\t ]*[\r?\n]*[\t ]*[\t ]*" + TOP + "[\t ]*,[\t ]*)", " TOP " + limit + " " };
+
+            var empty_LIMIT = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + LIMIT + "[\t ]*)", " " };
+            var value_LIMIT = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + LIMIT + "[\t ]*)", " " + Environment.NewLine + "LIMIT " + limit + " " };
+
+            var ROW_COLUMN = "@ROW_COLUMN AS RowIndex";
+            var ROW_OFFSET = "AND RowIndex > @ROW_OFFSET";
+
+            var OFFSET = "@OFFSET";
+
+            var empty_ROW_COLUMN = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + ROW_COLUMN + "[\t ]*)", " " };
+            var value_ROW_COLUMN = new[] { @"(,[\t ]*" + ROW_COLUMN + "[\t ]*)", ", ROW_NUMBER() OVER (ORDER BY " + row_column + ") AS RowIndex " };
+
+            var empty_ROW_OFFSET = new[] { @"([\t ]*[\r?\n]*[\t ]*" + ROW_OFFSET + "[\t ]*)", " " };
+            var value_ROW_OFFSET = new[] { @"(" + ROW_OFFSET + "[\t ]*)", "AND RowIndex > " + offset + " " };
+
+            var empty_OFFSET = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + OFFSET + "[\t ]*)", " " };
+            var value_OFFSET = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + OFFSET + "[\t ]*)", " " + Environment.NewLine + "OFFSET " + offset + " " };
+
+            var replaces = new Dictionary<string, string> { };
+
+            if (limit == uint.MaxValue && offset == 0)
+            {
+                replaces = new Dictionary<string, string> 
+                { 
+                    {empty_TOP[0], empty_TOP[1]},
+                    {empty_LIMIT[0], empty_LIMIT[1]},
+
+                    {empty_ROW_COLUMN[0], empty_ROW_COLUMN[1]},
+                    {empty_ROW_OFFSET[0], empty_ROW_OFFSET[1]},
+                    {empty_OFFSET[0], empty_OFFSET[1]}
+                };
+
+                return RegexReplace(sql, replaces);
+            }
+
+            if (offset == 0)
+            {
+                replaces = new Dictionary<string, string> 
+                { 
+                    {empty_ROW_COLUMN[0], empty_ROW_COLUMN[1]},
+                    {empty_ROW_OFFSET[0], empty_ROW_OFFSET[1]},
+                    {empty_OFFSET[0], empty_OFFSET[1]}
+                };
+
+                sql = RegexReplace(sql, replaces);
+            }
+
+            switch (DatabaseType)
+            {
+                case DatabaseType.SQLServer:
+                    replaces = new Dictionary<string, string>
+                    {
+                        {value_TOP[0], value_TOP[1]},
+                        {empty_LIMIT[0], empty_LIMIT[1]},
+
+                        {value_ROW_COLUMN[0], value_ROW_COLUMN[1]},
+                        {value_ROW_OFFSET[0], value_ROW_OFFSET[1]},
+                        {empty_OFFSET[0], empty_OFFSET[1]}
+                    };
+                    break;
+                case DatabaseType.SQLite:
+                    replaces = new Dictionary<string, string>
+                    {
+                        {empty_TOP[0], empty_TOP[1]},
+                        {value_LIMIT[0], value_LIMIT[1]},
+
+                        {empty_ROW_COLUMN[0], empty_ROW_COLUMN[1]},
+                        {empty_ROW_OFFSET[0], empty_ROW_OFFSET[1]},
+                        {value_OFFSET[0], value_OFFSET[1]}
+                    };
+                    break;
+                default:
+                    break;
+            }
+
+            return RegexReplace(sql, replaces);
+        }
+
+        private string RegexReplace(string sql, Dictionary<string, string> replaces)
+        {
+            foreach (KeyValuePair<string, string> item in replaces)
+            {
+                sql = Regex.Replace(sql, item.Key, item.Value, RegexOptions.Multiline);
+            }
+
+            return sql;
+        }
+
         private IDbCommand NewConnection(List<SqlParameter> parameters)
         {
             var conn = (IDbConnection)Connection.Clone();

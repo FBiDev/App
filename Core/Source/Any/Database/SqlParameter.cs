@@ -168,5 +168,10 @@ namespace App.Core
 
             return query;
         }
+
+        public override string ToString()
+        {
+            return DbType.ToString() + " " + ParameterName + " " + Value;
+        }
     }
 }

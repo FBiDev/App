@@ -7,7 +7,7 @@ namespace App.Core
     {
         public SqlLog(int index, IDbCommand cmd, DatabaseAction act = DatabaseAction.Null, string method = "", string method2 = "")
         {
-            CommandIndex = index + 1;
+            Index = index + 1;
             Date = DateTime.Now;
             Method = method;
             Method2 = method2;
@@ -37,7 +37,7 @@ namespace App.Core
 
         public string Action { get; set; }
 
-        public int CommandIndex { get; set; }
+        public int Index { get; set; }
 
         public string CommandParameters { get; set; }
 
