@@ -251,11 +251,11 @@ namespace App.Core.Desktop
 
         public void LoadTypes(FlatComboBox cbo)
         {
-            var types = new ListBind<ListItem> 
+            var types = new ListBind<DropItem> 
             { 
-                new ListItem(0, "Overwrite"),
-                new ListItem(1, "Backup"),
-                new ListItem(2, "Timer")
+                new DropItem(0, "Overwrite"),
+                new DropItem(1, "Backup"),
+                new DropItem(2, "Timer")
             };
 
             cbo.DisplayMember = "Text";
@@ -268,19 +268,19 @@ namespace App.Core.Desktop
 
         public void LoadTimer(FlatComboBox cbo)
         {
-            var timerItems = new List<ListItem> 
+            var timerItems = new List<DropItem> 
             {
-                new ListItem(0,    "None"),
-                new ListItem(10,   "10 secs"),
-                new ListItem(30,   "30 secs"),
-                new ListItem(60,   "1 min"),
-                new ListItem(300,  "5 mins"),
-                new ListItem(600,  "10 mins"),
-                new ListItem(900,  "15 mins"),
-                new ListItem(1800, "30 mins"),
-                new ListItem(3600, "1 hour"),
-                new ListItem(7200, "2 hours"),
-                new ListItem(10800, "3 hours")
+                new DropItem(0,    "None"),
+                new DropItem(10,   "10 secs"),
+                new DropItem(30,   "30 secs"),
+                new DropItem(60,   "1 min"),
+                new DropItem(300,  "5 mins"),
+                new DropItem(600,  "10 mins"),
+                new DropItem(900,  "15 mins"),
+                new DropItem(1800, "30 mins"),
+                new DropItem(3600, "1 hour"),
+                new DropItem(7200, "2 hours"),
+                new DropItem(10800, "3 hours")
             };
 
             cbo.DisplayMember = "Text";
@@ -465,7 +465,7 @@ namespace App.Core.Desktop
         private void TimerComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             var cbo = sender as FlatComboBoxNew;
-            TimerValue = ((ListItem)cbo.SelectedItem).Value;
+            TimerValue = ((DropItem)cbo.SelectedItem).Value;
         }
     }
 }

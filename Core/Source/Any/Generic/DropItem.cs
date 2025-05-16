@@ -1,14 +1,14 @@
 ﻿namespace App.Core
 {
-    public class ListItem
+    public class DropItem
     {
-        public ListItem()
+        public DropItem()
         {
             Value = 0;
             Text = string.Empty;
         }
 
-        public ListItem(int value, string text)
+        public DropItem(int value, string text)
         {
             Value = value;
             Text = text;

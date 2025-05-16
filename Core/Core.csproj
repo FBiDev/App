@@ -99,7 +99,7 @@
     <Compile Include="Source\Any\Util\FieldAttribute.cs" />
     <Compile Include="Source\Any\Generic\Cast.cs" />
     <Compile Include="Source\Any\Generic\Colors.cs" />
-    <Compile Include="Source\Any\Generic\ListItem.cs" />
+    <Compile Include="Source\Any\Generic\DropItem.cs" />
     <Compile Include="Source\Any\Generic\ListSynced.cs" />
     <Compile Include="Source\Any\Generic\ObjectManager.cs" />
     <Compile Include="Source\Any\Generic\StopwatchTimer.cs" />
