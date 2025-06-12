@@ -108,13 +108,13 @@ namespace App.Core.Desktop
         private static extern bool AllocConsole();
 
         [DllImport("kernel32.dll")]
-        static extern bool FreeConsole();
+        private static extern bool FreeConsole();
 
         [DllImport("kernel32.dll")]
         private static extern IntPtr GetConsoleWindow();
 
         [DllImport("user32.dll")]
-        private static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+        private static extern bool MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, int uFlags);

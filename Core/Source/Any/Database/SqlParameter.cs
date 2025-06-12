@@ -30,6 +30,7 @@ namespace App.Core
                         {
                             size = -1;
                         }
+
                         break;
                     case "String":
                         DbType = DbType.String;
@@ -120,6 +121,18 @@ namespace App.Core
 
         public byte Scale { get; set; }
 
+        public static List<SqlParameter> CreateList(params KeyValuePair<string, object>[] values)
+        {
+            var source = new List<SqlParameter>();
+
+            foreach (var kvp in values)
+            {
+                source.Add(new SqlParameter(kvp.Key, kvp.Value));
+            }
+
+            return source;
+        }
+
         public static string Replace(List<SqlParameter> parameters, string query)
         {
             foreach (SqlParameter p in parameters)
@@ -138,6 +151,11 @@ namespace App.Core
             }
 
             return query;
+        }
+
+        public override string ToString()
+        {
+            return DbType.ToString() + " " + ParameterName + " " + Value;
         }
 
         private static string ReplaceItem(string parameterName, object value, DbType type, string query)
@@ -167,11 +185,6 @@ namespace App.Core
             query = Regex.Replace(query, parameterName + @"\b", val);
 
             return query;
-        }
-
-        public override string ToString()
-        {
-            return DbType.ToString() + " " + ParameterName + " " + Value;
         }
     }
 }

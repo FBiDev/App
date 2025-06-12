@@ -59,6 +59,7 @@
     <Compile Include="Source\Any\Config\ExceptionManager.cs" />
     <Compile Include="Source\Any\Config\ExceptionProcessed.cs" />
     <Compile Include="Source\Any\Config\StringValues.cs" />
+    <Compile Include="Source\Any\Database\DaoBase.cs" />
     <Compile Include="Source\Any\FileManager\HexFile.cs" />
     <Compile Include="Source\Any\Generic\ListSyncedChangedEventArgs.cs" />
     <Compile Include="Source\Any\Util\DisplayAttribute.cs" />

@@ -10,14 +10,14 @@ namespace App.Core.Desktop
 {
     public partial class DataGridBase : DataGridView
     {
+        // ImageColumns
+        private static readonly Bitmap Imgtrue = Resources.img_true_ico;
+        private static readonly Bitmap Imgfalse = Resources.img_false_ico;
+
         // Paint
         private readonly Pen resizePen = new Pen(Colors.RGB(86, 86, 86), 1) { DashStyle = DashStyle.Dot };
         private readonly Pen reorderPenRec = new Pen(Colors.RGB(172, 172, 172), 1) { DashStyle = DashStyle.Dot };
         private readonly Pen reorderPenDiv = new Pen(SystemColors.ControlDark, 3) { DashStyle = DashStyle.Solid };
-
-        // ImageColumns
-        private static readonly Bitmap Imgtrue = Resources.img_true_ico;
-        private static readonly Bitmap Imgfalse = Resources.img_false_ico;
 
         private readonly string boolColumnSufix = "Bol";
         private Bitmap imgtruePerformatic = Imgtrue.Clone32bpp();

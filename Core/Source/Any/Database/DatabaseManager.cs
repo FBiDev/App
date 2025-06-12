@@ -138,28 +138,28 @@ namespace App.Core
                 limit = uint.MaxValue;
             }
 
-            var TOP = "@TOP";
-            var LIMIT = "@LIMIT";
+            var var_TOP = "@TOP";
+            var var_LIMIT = "@LIMIT";
 
-            var empty_TOP = new[] { @"([\t ]*[\r?\n]*[\t ]*[\t ]*" + TOP + "[\t ]*,[\t ]*)", " " };
-            var value_TOP = new[] { @"([\t ]*[\r?\n]*[\t ]*[\t ]*" + TOP + "[\t ]*,[\t ]*)", " TOP " + limit + " " };
+            var empty_TOP = new[] { @"([\t ]*[\r?\n]*[\t ]*[\t ]*" + var_TOP + "[\t ]*,[\t ]*)", " " };
+            var value_TOP = new[] { @"([\t ]*[\r?\n]*[\t ]*[\t ]*" + var_TOP + "[\t ]*,[\t ]*)", " TOP " + limit + " " };
 
-            var empty_LIMIT = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + LIMIT + "[\t ]*)", " " };
-            var value_LIMIT = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + LIMIT + "[\t ]*)", " " + Environment.NewLine + "LIMIT " + limit + " " };
+            var empty_LIMIT = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + var_LIMIT + "[\t ]*)", " " };
+            var value_LIMIT = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + var_LIMIT + "[\t ]*)", " " + Environment.NewLine + "LIMIT " + limit + " " };
 
-            var ROW_COLUMN = "@ROW_COLUMN AS RowIndex";
-            var ROW_OFFSET = "AND RowIndex > @ROW_OFFSET";
+            var row_COLUMN = "@ROW_COLUMN AS RowIndex";
+            var row_OFFSET = "AND RowIndex > @ROW_OFFSET";
 
-            var OFFSET = "@OFFSET";
+            var var_OFFSET = "@OFFSET";
 
-            var empty_ROW_COLUMN = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + ROW_COLUMN + "[\t ]*)", " " };
-            var value_ROW_COLUMN = new[] { @"(,[\t ]*" + ROW_COLUMN + "[\t ]*)", ", ROW_NUMBER() OVER (ORDER BY " + row_column + ") AS RowIndex " };
+            var empty_ROW_COLUMN = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + row_COLUMN + "[\t ]*)", " " };
+            var value_ROW_COLUMN = new[] { @"(,[\t ]*" + row_COLUMN + "[\t ]*)", ", ROW_NUMBER() OVER (ORDER BY " + row_column + ") AS RowIndex " };
 
-            var empty_ROW_OFFSET = new[] { @"([\t ]*[\r?\n]*[\t ]*" + ROW_OFFSET + "[\t ]*)", " " };
-            var value_ROW_OFFSET = new[] { @"(" + ROW_OFFSET + "[\t ]*)", "AND RowIndex > " + offset + " " };
+            var empty_ROW_OFFSET = new[] { @"([\t ]*[\r?\n]*[\t ]*" + row_OFFSET + "[\t ]*)", " " };
+            var value_ROW_OFFSET = new[] { @"(" + row_OFFSET + "[\t ]*)", "AND RowIndex > " + offset + " " };
 
-            var empty_OFFSET = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + OFFSET + "[\t ]*)", " " };
-            var value_OFFSET = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + OFFSET + "[\t ]*)", " " + Environment.NewLine + "OFFSET " + offset + " " };
+            var empty_OFFSET = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + var_OFFSET + "[\t ]*)", " " };
+            var value_OFFSET = new[] { @"([\t ]*[\r?\n]*[\t ]*,[\t ]*" + var_OFFSET + "[\t ]*)", " " + Environment.NewLine + "OFFSET " + offset + " " };
 
             var replaces = new Dictionary<string, string> { };
 
@@ -167,12 +167,12 @@ namespace App.Core
             {
                 replaces = new Dictionary<string, string> 
                 { 
-                    {empty_TOP[0], empty_TOP[1]},
-                    {empty_LIMIT[0], empty_LIMIT[1]},
+                    { empty_TOP[0], empty_TOP[1] },
+                    { empty_LIMIT[0], empty_LIMIT[1] },
 
-                    {empty_ROW_COLUMN[0], empty_ROW_COLUMN[1]},
-                    {empty_ROW_OFFSET[0], empty_ROW_OFFSET[1]},
-                    {empty_OFFSET[0], empty_OFFSET[1]}
+                    { empty_ROW_COLUMN[0], empty_ROW_COLUMN[1] },
+                    { empty_ROW_OFFSET[0], empty_ROW_OFFSET[1] },
+                    { empty_OFFSET[0], empty_OFFSET[1] }
                 };
 
                 return RegexReplace(sql, replaces);
@@ -182,9 +182,9 @@ namespace App.Core
             {
                 replaces = new Dictionary<string, string> 
                 { 
-                    {empty_ROW_COLUMN[0], empty_ROW_COLUMN[1]},
-                    {empty_ROW_OFFSET[0], empty_ROW_OFFSET[1]},
-                    {empty_OFFSET[0], empty_OFFSET[1]}
+                    { empty_ROW_COLUMN[0], empty_ROW_COLUMN[1] },
+                    { empty_ROW_OFFSET[0], empty_ROW_OFFSET[1] },
+                    { empty_OFFSET[0], empty_OFFSET[1] }
                 };
 
                 sql = RegexReplace(sql, replaces);
@@ -195,23 +195,23 @@ namespace App.Core
                 case DatabaseType.SQLServer:
                     replaces = new Dictionary<string, string>
                     {
-                        {value_TOP[0], value_TOP[1]},
-                        {empty_LIMIT[0], empty_LIMIT[1]},
+                        { value_TOP[0], value_TOP[1] },
+                        { empty_LIMIT[0], empty_LIMIT[1] },
 
-                        {value_ROW_COLUMN[0], value_ROW_COLUMN[1]},
-                        {value_ROW_OFFSET[0], value_ROW_OFFSET[1]},
-                        {empty_OFFSET[0], empty_OFFSET[1]}
+                        { value_ROW_COLUMN[0], value_ROW_COLUMN[1] },
+                        { value_ROW_OFFSET[0], value_ROW_OFFSET[1] },
+                        { empty_OFFSET[0], empty_OFFSET[1] }
                     };
                     break;
                 case DatabaseType.SQLite:
                     replaces = new Dictionary<string, string>
                     {
-                        {empty_TOP[0], empty_TOP[1]},
-                        {value_LIMIT[0], value_LIMIT[1]},
+                        { empty_TOP[0], empty_TOP[1] },
+                        { value_LIMIT[0], value_LIMIT[1] },
 
-                        {empty_ROW_COLUMN[0], empty_ROW_COLUMN[1]},
-                        {empty_ROW_OFFSET[0], empty_ROW_OFFSET[1]},
-                        {value_OFFSET[0], value_OFFSET[1]}
+                        { empty_ROW_COLUMN[0], empty_ROW_COLUMN[1] },
+                        { empty_ROW_OFFSET[0], empty_ROW_OFFSET[1] },
+                        { value_OFFSET[0], value_OFFSET[1] }
                     };
                     break;
                 default:
@@ -386,8 +386,8 @@ namespace App.Core
 
                 var replaces = new Dictionary<string, string>
                 {
-                    {@"\bCAST\s*\(\s*@(\w+)\s+AS\s+DATE\s*\)", "DATE(@$1)"},
-                    {@"\bCAST\s*\(\s*@(\w+)\s+AS\s+DATETIME\s*\)", "DATETIME(@$1)"}
+                    { @"\bCAST\s*\(\s*@(\w+)\s+AS\s+DATE\s*\)", "DATE(@$1)" },
+                    { @"\bCAST\s*\(\s*@(\w+)\s+AS\s+DATETIME\s*\)", "DATETIME(@$1)" }
                 };
 
                 foreach (KeyValuePair<string, string> item in replaces)
