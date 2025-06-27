@@ -120,5 +120,19 @@ namespace App.Core
 
             throw new InvalidOperationException("Expression does not represent a valid property.");
         }
+
+        public static bool IsPrimitiveOrSimple(this Type type)
+        {
+            var typeInfo = Nullable.GetUnderlyingType(type) ?? type;
+
+            return typeInfo.IsPrimitive
+                || typeInfo.IsEnum
+                || typeInfo == typeof(string)
+                || typeInfo == typeof(decimal)
+                || typeInfo == typeof(DateTime)
+                || typeInfo == typeof(DateTimeOffset)
+                || typeInfo == typeof(TimeSpan)
+                || typeInfo == typeof(Guid);
+        }
     }
 }

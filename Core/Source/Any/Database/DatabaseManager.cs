@@ -68,17 +68,7 @@ namespace App.Core
         {
             var cmd = NewConnection(parameters);
 
-            var result = new SqlResult
-            {
-                AffectedRows = await ExecuteNonQuery(cmd, sql, action)
-            };
-
-            result.Success = result.AffectedRows > 0;
-
-            if (action == DatabaseAction.Insert && result.Success)
-            {
-                result.LastId = await GetLastID(cmd);
-            }
+            var result = await ExecuteNonQuery(cmd, sql, action);
 
             CloseConnection(cmd);
 
@@ -117,6 +107,7 @@ namespace App.Core
         public async Task<int> GetLastID(IDbCommand cmd)
         {
             string sql = "SELECT SCOPE_IDENTITY() AS LastID;";
+
             if (DatabaseType == DatabaseType.SQLite || DatabaseType == DatabaseType.SQLiteODBC)
             {
                 sql = "SELECT LAST_INSERT_ROWID() AS LastID;";
@@ -129,6 +120,18 @@ namespace App.Core
             }
 
             return 0;
+        }
+
+        public string GetLastIDSQL()
+        {
+            string sql = "SELECT SCOPE_IDENTITY() AS LastID;";
+
+            if (DatabaseType == DatabaseType.SQLite || DatabaseType == DatabaseType.SQLiteODBC)
+            {
+                sql = "SELECT LAST_INSERT_ROWID() AS LastID;";
+            }
+
+            return ";" + Environment.NewLine + sql;
         }
 
         public string LIMIT_OFFSET(string sql, uint limit, uint offset = 0, string row_column = "")
@@ -477,13 +480,11 @@ namespace App.Core
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "none")]
-        private async Task<int> ExecuteNonQuery(IDbCommand cmd, string sql, DatabaseAction action = DatabaseAction.Null)
+        private async Task<SqlResult> ExecuteNonQuery(IDbCommand cmd, string sql, DatabaseAction action = DatabaseAction.Null)
         {
-            int affectedRows = 0;
-
             if (cmd == null)
             {
-                return affectedRows;
+                return new SqlResult();
             }
 
             cmd.CommandText = sql;
@@ -500,14 +501,53 @@ namespace App.Core
                         cmd.Prepare();
                     }
 
-                    affectedRows = cmd.ExecuteNonQuery();
-                    return affectedRows;
+                    var result = new SqlResult();
+
+                    if (action == DatabaseAction.Insert)
+                    {
+                        result = ExecuteInsert(cmd);
+                    }
+                    else
+                    {
+                        result.AffectedRows = cmd.ExecuteNonQuery();
+                        result.Success = result.AffectedRows > 0;
+                    }
+
+                    return result;
                 }
                 catch (Exception)
                 {
                     throw;
                 }
             });
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "none")]
+        private SqlResult ExecuteInsert(IDbCommand cmd)
+        {
+            cmd.CommandText += GetLastIDSQL();
+
+            var result = new SqlResult();
+
+            try
+            {
+                using (IDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                {
+                    if (reader.Read())
+                    {
+                        result.LastId = Cast.ToInt(reader["LastID"]);
+                    }
+
+                    result.AffectedRows = reader.RecordsAffected;
+                    result.Success = result.AffectedRows > 0;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "none")]

@@ -104,5 +104,76 @@ namespace App.Core
 
             return result;
         }
+
+        public static int? GetID<T>(string idPropertyName, T entity) where T : new()
+        {
+            var obj = typeof(T);
+            object idValue = null;
+
+            if (idPropertyName != string.Empty)
+            {
+                var property = obj.GetProperty(idPropertyName);
+                
+                if (property != null)
+                {
+                    idValue = property.GetValue(entity);
+                }
+            }
+
+            return Cast.ToIntNull(idValue);
+        }
+
+        public static string GetLog<T>(string idPropertyName, DatabaseAction action, T oldObject, T newObject, string userLogin) where T : new()
+        {
+            var obj = typeof(T);
+            var props = obj.GetProperties();
+            var updatedProps = new List<string>();
+
+            if (oldObject == null)
+            {
+                oldObject = new T();
+            }
+
+            foreach (var prop in props)
+            {
+                if (prop.Name == idPropertyName || prop.CanWrite == false || prop.PropertyType.IsPrimitiveOrSimple() == false)
+                {
+                    continue;
+                }
+
+                var oldValue = prop.GetValue(oldObject) == null ? "null" : prop.GetValue(oldObject).ToString();
+                var newValue = prop.GetValue(newObject) == null ? "null" : prop.GetValue(newObject).ToString();
+
+                if (oldValue != newValue)
+                {
+                    if (action == DatabaseAction.Insert)
+                    {
+                        updatedProps.Add("\"" + prop.Name + "\": \"" + newValue + "\"");
+                    }
+                    else
+                    {
+                        updatedProps.Add("\"" + prop.Name + "\": \"" + oldValue + " -> " + newValue + "\"");
+                    }
+                }
+            }
+
+            var logText = string.Empty;
+
+            if (updatedProps.Any())
+            {
+                var idValue = obj.GetProperty(idPropertyName).GetValue(newObject);
+
+                updatedProps.Insert(0, "\"" + idPropertyName + "\": \"" + idValue + "\"");
+
+                updatedProps.Insert(0, "\"Log_Entity\": \"" + obj.Name + "\"");
+                updatedProps.Insert(0, "\"Log_Login\": \"" + userLogin + "\"");
+                updatedProps.Insert(0, "\"Log_Action\": \"" + action.ToString().ToUpper() + "\"");
+                updatedProps.Insert(0, "\"Log_Date\": \"" + DateTime.Now + "\"");
+
+                logText = "{" + string.Join(", ", updatedProps) + "}";
+            }
+
+            return logText;
+        }
     }
 }

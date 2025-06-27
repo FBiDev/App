@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Hosting;
@@ -10,7 +11,7 @@ namespace App.Core.Web
     {
         public static string Name
         {
-            get { return HttpContext.Current.Request.ApplicationPath; }
+            get { return Assembly.GetCallingAssembly().GetName().Name; }
         }
 
         public static string BaseDirectory
