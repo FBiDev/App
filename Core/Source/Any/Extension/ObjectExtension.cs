@@ -72,7 +72,7 @@ namespace App.Core
 
             foreach (PropertyInfo property in from.GetType().GetProperties())
             {
-                if (property.CanWrite && !property.Name.Equals("Cloned"))
+                if (property.CanWrite && !property.Name.Equals("Log") && !property.Name.Equals("Cloned"))
                 {
                     var value = property.GetValue(from, null);
 
