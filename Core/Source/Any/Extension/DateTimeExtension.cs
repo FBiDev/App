@@ -37,7 +37,7 @@ namespace App.Core
                 return dt.ToString("yyyy-MM-dd_HH-mm");
             }
 
-            return "NULL";
+            return StringValue.DBNull;
         }
 
         public static string ToDB(this DateTime? dt, DbType dbType = DbType.DateTime)
@@ -52,15 +52,16 @@ namespace App.Core
                 return dt.Value.ToString("yyyy-MM-dd HH:mm:ss");
             }
 
-            return "NULL";
+            return StringValue.DBNull;
         }
 
         public static string ToDBquoted(this DateTime? dt)
         {
             var result = ToDB(dt);
-            if (result != "NULL")
+
+            if (result != StringValue.DBNull)
             {
-                return "'" + result + "'";
+                return Formatter.SingleQuote(result);
             }
 
             return result;

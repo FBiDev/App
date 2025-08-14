@@ -64,7 +64,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>call "$(SolutionDir)Assembly\build_script\PostSQLiteToBin.bat" ^
-$(ProjectName), $(SolutionDir), $(TargetDir), $(ConfigurationName)</PostBuildEvent>
+$(ProjectName), $(TargetDir), $(SolutionDir), $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

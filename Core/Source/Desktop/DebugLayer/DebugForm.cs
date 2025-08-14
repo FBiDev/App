@@ -60,7 +60,7 @@ namespace App.Core.Desktop
                 CreateParams cp = base.CreateParams;
                 if (enableFormLevelDoubleBuffering && DesignMode == false)
                 {
-                    cp.ExStyle |= 0x02000000;   // WS_EX_COMPOSITED
+                    cp.ExStyle |= Native.Window.Flag.WS_EX_COMPOSITED;
                 }
                 else
                 {

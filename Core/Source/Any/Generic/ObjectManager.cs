@@ -113,7 +113,7 @@ namespace App.Core
             if (idPropertyName != string.Empty)
             {
                 var property = obj.GetProperty(idPropertyName);
-                
+
                 if (property != null)
                 {
                     idValue = property.GetValue(entity);
@@ -141,18 +141,18 @@ namespace App.Core
                     continue;
                 }
 
-                var oldValue = prop.GetValue(oldObject) == null ? "null" : prop.GetValue(oldObject).ToString();
-                var newValue = prop.GetValue(newObject) == null ? "null" : prop.GetValue(newObject).ToString();
+                var oldValue = prop.GetValue(oldObject) == null ? StringValue.Null : prop.GetValue(oldObject).ToString();
+                var newValue = prop.GetValue(newObject) == null ? StringValue.Null : prop.GetValue(newObject).ToString();
 
                 if (oldValue != newValue)
                 {
                     if (action == DatabaseAction.Insert)
                     {
-                        updatedProps.Add("\"" + prop.Name + "\": \"" + newValue + "\"");
+                        AddLog(updatedProps, prop.Name, newValue);
                     }
                     else
                     {
-                        updatedProps.Add("\"" + prop.Name + "\": \"" + oldValue + " -> " + newValue + "\"");
+                        AddLog(updatedProps, prop.Name, oldValue + " -> " + newValue);
                     }
                 }
             }
@@ -163,17 +163,26 @@ namespace App.Core
             {
                 var idValue = obj.GetProperty(idPropertyName).GetValue(newObject);
 
-                updatedProps.Insert(0, "\"" + idPropertyName + "\": \"" + idValue + "\"");
+                InsertLog(updatedProps, idPropertyName, idValue.ToString());
+                InsertLog(updatedProps, "Log_Entity", obj.Name);
+                InsertLog(updatedProps, "Log_Action", action.ToString().ToUpper());
+                InsertLog(updatedProps, "Log_Login", userLogin.ToUpper());
+                InsertLog(updatedProps, "Log_Date", DateTime.Now.ToString());
 
-                updatedProps.Insert(0, "\"Log_Entity\": \"" + obj.Name + "\"");
-                updatedProps.Insert(0, "\"Log_Login\": \"" + userLogin + "\"");
-                updatedProps.Insert(0, "\"Log_Action\": \"" + action.ToString().ToUpper() + "\"");
-                updatedProps.Insert(0, "\"Log_Date\": \"" + DateTime.Now + "\"");
-
-                logText = "{" + string.Join(", ", updatedProps) + "}";
+                logText = Formatter.Brace(string.Join(", ", updatedProps));
             }
 
             return logText;
+        }
+
+        private static void InsertLog(List<string> props, string key, string value)
+        {
+            props.Insert(0, Formatter.Quote(key) + ": " + Formatter.Quote(value));
+        }
+
+        private static void AddLog(List<string> props, string key, string value)
+        {
+            props.Add(Formatter.Quote(key) + ": " + Formatter.Quote(value));
         }
     }
 }

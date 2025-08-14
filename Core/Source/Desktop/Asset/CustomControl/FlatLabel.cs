@@ -16,7 +16,7 @@ namespace App.Core.Desktop
             UseMnemonic = false;
 
             TextAlign = ContentAlignment.MiddleLeft;
-            Font = new Font(new FontFamily("Segoe UI"), 9, FontStyle.Regular);
+            Font = new Font(FontName.SegoeUI, 9, FontStyle.Regular);
             ForeColor = Color.Black;
             BackColor = Color.Transparent;
 
@@ -69,7 +69,7 @@ namespace App.Core.Desktop
             set { base.TextAlign = value; }
         }
 
-        [DefaultValue(typeof(Font), "Segoe UI, 9pt")]
+        [DefaultValue(typeof(Font), FontName.SegoeUI9)]
         public new Font Font
         {
             get { return base.Font; }
@@ -114,7 +114,7 @@ namespace App.Core.Desktop
         {
             base.WndProc(ref m);
 
-            if (m.Msg == WM.LBUTTONDBLCLK)
+            if (m.Msg == Native.Message.WM_LBUTTONDBLCLK)
             {
                 this.InvokeIfRequired(() =>
                 {

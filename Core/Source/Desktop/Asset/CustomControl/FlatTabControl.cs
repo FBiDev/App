@@ -4,7 +4,6 @@ using System.ComponentModel.Design;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
-using FlatTabControl;
 
 namespace App.Core.Desktop
 {
@@ -20,7 +19,7 @@ namespace App.Core.Desktop
         private const int NMargin = 5;
         private readonly ImageList leftRightImages;
         private Container components;
-        private SubClass scUpDown;
+        private Native.SubNativeWindow scUpDown;
         private bool bUpDown; // true when the button UpDown is required        
         private Color mBackColor = Color.FromArgb(240, 240, 240);
         private Color mBackColor2 = Color.FromArgb(212, 208, 200);
@@ -178,10 +177,10 @@ namespace App.Core.Desktop
             if (bUpDown)
             {
                 // exclude updown control for painting
-                if (Win32.IsWindowVisible(scUpDown.Handle))
+                if (Native.Window.IsWindowVisible(scUpDown.Handle))
                 {
                     var rupdown = new Rectangle();
-                    Win32.GetWindowRect(scUpDown.Handle, ref rupdown);
+                    Native.Window.GetWindowRect(scUpDown.Handle, ref rupdown);
                     var rupdown2 = RectangleToClient(rupdown);
 
                     nWidth = rupdown2.X;
@@ -334,7 +333,7 @@ namespace App.Core.Desktop
             Rectangle tabControlArea = ClientRectangle;
 
             var r0 = new Rectangle();
-            Win32.GetClientRect(scUpDown.Handle, ref r0);
+            Native.Window.GetClientRect(scUpDown.Handle, ref r0);
 
             Brush br = new SolidBrush(SystemColors.Control);
             g.FillRectangle(br, r0);
@@ -453,7 +452,7 @@ namespace App.Core.Desktop
             bool bFound = false;
 
             // find the UpDown control
-            var pWnd = Win32.GetWindow(Handle, Win32.GW_CHILD);
+            var pWnd = Native.Window.GetWindow(this.Handle, Native.Window.Flag.GW_CHILD);
 
             while (pWnd != IntPtr.Zero)
             {
@@ -461,7 +460,7 @@ namespace App.Core.Desktop
                 // Get the window class name
                 char[] className = new char[33];
 
-                var length = Win32.GetClassName(pWnd, className, 32);
+                var length = Native.Window.GetClassName(pWnd, className, 32);
                 var s = new string(className, 0, length);
                 ////----------------------------
 
@@ -473,7 +472,7 @@ namespace App.Core.Desktop
                     {
                         ////----------------------------
                         // Subclass it
-                        scUpDown = new SubClass(pWnd, true);
+                        scUpDown = new Native.SubNativeWindow(pWnd, true);
                         scUpDown.SubClassedWndProc += ScUpDown_SubClassedWndProc;
                         ////----------------------------
 
@@ -483,7 +482,7 @@ namespace App.Core.Desktop
                     break;
                 }
 
-                pWnd = Win32.GetWindow(pWnd, Win32.GW_HWNDNEXT);
+                pWnd = Native.Window.GetWindow(pWnd, Native.Window.Flag.GW_HWNDNEXT);
             }
 
             if (!bFound && bUpDown)
@@ -496,12 +495,12 @@ namespace App.Core.Desktop
         {
             if (bUpDown)
             {
-                if (Win32.IsWindowVisible(scUpDown.Handle))
+                if (Native.Window.IsWindowVisible(scUpDown.Handle))
                 {
                     var rect = new Rectangle();
 
-                    Win32.GetClientRect(scUpDown.Handle, ref rect);
-                    Win32.InvalidateRect(scUpDown.Handle, ref rect, true);
+                    Native.Window.GetClientRect(scUpDown.Handle, ref rect);
+                    Native.Window.InvalidateRect(scUpDown.Handle, ref rect, true);
                 }
             }
         }
@@ -511,17 +510,17 @@ namespace App.Core.Desktop
         {
             switch (m.Msg)
             {
-                case Win32.WM_PAINT:
+                case Native.Message.WM_PAINT:
                     {
                         ////------------------------
                         // redraw
-                        var hDC = Win32.GetWindowDC(scUpDown.Handle);
+                        var hDC = Native.Window.GetWindowDC(scUpDown.Handle);
                         var g = Graphics.FromHdc(hDC);
 
                         DrawIcons(g);
 
                         g.Dispose();
-                        Win32.ReleaseDC(scUpDown.Handle, hDC);
+                        Native.Window.ReleaseDC(scUpDown.Handle, hDC);
                         ////------------------------
 
                         // return 0 (processed)
@@ -531,8 +530,8 @@ namespace App.Core.Desktop
                         // validate current rect
                         var rect = new Rectangle();
 
-                        Win32.GetClientRect(scUpDown.Handle, ref rect);
-                        Win32.ValidateRect(scUpDown.Handle, ref rect);
+                        Native.Window.GetClientRect(scUpDown.Handle, ref rect);
+                        Native.Window.ValidateRect(scUpDown.Handle, ref rect);
                         ////------------------------
                     }
 

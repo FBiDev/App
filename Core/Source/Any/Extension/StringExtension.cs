@@ -202,7 +202,7 @@ namespace App.Core
             {
                 int len = text.Length;
 
-                foreach (var entry in StringValues.SpecialCharacters)
+                foreach (var entry in StringValue.SpecialCharacters)
                 {
                     if (entry.Key.IndexOf(c) != -1)
                     {

@@ -297,7 +297,7 @@ namespace App.Core.Desktop
 
         public override string ToString()
         {
-            return Name + ": \"" + MainTextBox.Text + "\"";
+            return Name + ": " + Formatter.Quote(MainTextBox.Text);
         }
 
         public void ResetColors()

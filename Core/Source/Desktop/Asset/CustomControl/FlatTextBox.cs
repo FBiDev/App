@@ -190,7 +190,7 @@ namespace App.Core.Desktop
 
         public override string ToString()
         {
-            return Name + ": \"" + txtMain.Text + "\"";
+            return Name + ": " + Formatter.Quote(txtMain.Text);
         }
 
         public void ResetColors()

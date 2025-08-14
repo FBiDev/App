@@ -12,7 +12,7 @@ namespace App.Core
 
         public static string ToStringValue(this Enum e)
         {
-            return Convert.ToInt32(e).ToString();
+            return e.Value().ToString();
         }
 
         public static string ToStringHex(this Enum e)
@@ -25,14 +25,14 @@ namespace App.Core
 
         public static bool ToBool(this Enum e)
         {
-            var value = Convert.ToInt32(e);
+            var value = e.Value();
 
             return Convert.ToBoolean(value);
         }
 
         public static bool? ToBoolNullable(this Enum e)
         {
-            var value = Convert.ToInt32(e);
+            var value = e.Value();
 
             switch (value)
             {

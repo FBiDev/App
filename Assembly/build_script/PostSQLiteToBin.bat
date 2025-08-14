@@ -5,8 +5,8 @@ set "EventType=Post-build"
 set "EventName=Copy DLL ^& SQLite.Interop"
 
 set "ProjectName=%1"
-set "SolutionDir=%2"
-set "TargetDir=%3"
+set "TargetDir=%2"
+set "SolutionDir=%3"
 set "ConfigurationName=%4"
 
 echo ===============================================================================
@@ -14,8 +14,8 @@ echo    Project      ::     %ProjectName%
 echo    Event        ::     Begin %EventType% -^> %EventName%
 echo ===============================================================================
 
-robocopy "%SolutionDir%Assembly\data\x86 " "%TargetDir%x86 " SQLite.Interop.dll /IS
-robocopy "%SolutionDir%Assembly\data\x64 " "%TargetDir%x64 " SQLite.Interop.dll /IS
+:: robocopy "%SolutionDir%Assembly\data\x86 " "%TargetDir%x86 " SQLite.Interop.dll /IS
+:: robocopy "%SolutionDir%Assembly\data\x64 " "%TargetDir%x64 " SQLite.Interop.dll /IS
 
 if %ConfigurationName% == Release (
 	robocopy "%TargetDir% " "%SolutionDir%Bin " *.dll /E /IS

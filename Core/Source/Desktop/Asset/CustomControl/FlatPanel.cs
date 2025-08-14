@@ -70,8 +70,8 @@ namespace App.Core.Desktop
         [DefaultValue(false)]
         public bool BorderRound { get; set; }
 
-        [DefaultValue(GraphicsExtension.BorderDrawSide.All)]
-        public GraphicsExtension.BorderDrawSide BorderSides { get; set; }
+        [DefaultValue(GraphicsExtension.BorderSide.All)]
+        public GraphicsExtension.BorderSide BorderSides { get; set; }
 
         [DefaultValue(typeof(Padding), "0, 0, 0, 0")]
         public new Padding Padding

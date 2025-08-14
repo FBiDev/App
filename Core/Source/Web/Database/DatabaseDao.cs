@@ -10,7 +10,7 @@ namespace App.Core.Web
         #region " _Load "
         public static T Load<T>(DataTable table) where T : IList, new()
         {
-            return Core.DatabaseDao.Load<T>(table, typeof(DataRowExtension));
+            return Core.DatabaseDao.Load<T>(table, typeof(DataRowCastExtension));
         }
         #endregion
     }

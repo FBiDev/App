@@ -5,8 +5,8 @@ set "EventType=Post-build"
 set "EventName=Copy DLL"
 
 set "ProjectName=%1"
-set "SolutionDir=%2"
-set "TargetDir=%3"
+set "TargetDir=%2"
+set "SolutionDir=%3"
 set "ConfigurationName=%4"
 
 echo ===============================================================================

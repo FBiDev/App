@@ -6,8 +6,6 @@ namespace App.Core.Desktop
 {
     public class FlatComboBoxNew : ComboBox
     {
-        private const int WMPAINT = 0xF;
-
         private readonly int buttonWidth = SystemInformation.HorizontalScrollBarArrowWidth;
 
         public FlatComboBoxNew()
@@ -20,7 +18,7 @@ namespace App.Core.Desktop
             MaxDropDownItems = 10;
             ItemHeight = 18;
 
-            Font = new Font("Segoe UI", 9);
+            Font = new Font(FontName.SegoeUI, 9);
             ForeColor = Color.FromArgb(47, 47, 47);
             BackColor = Color.Red;
 
@@ -61,7 +59,8 @@ namespace App.Core.Desktop
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
-            if (m.Msg == WMPAINT && DropDownStyle != ComboBoxStyle.Simple)
+
+            if (m.Msg == Native.Message.WM_PAINT && DropDownStyle != ComboBoxStyle.Simple)
             {
                 using (var g = Graphics.FromHwnd(Handle))
                 {

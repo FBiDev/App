@@ -6,8 +6,8 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Threading;
-using System.Web;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace App.Core.Desktop
 {
@@ -66,6 +66,67 @@ namespace App.Core.Desktop
             }
         }
 
+        public static string GetCurrentWindowsUsername()
+        {
+            IntPtr accountToken = WindowsIdentity.GetCurrent().Token;
+            var windowsIdentity = new WindowsIdentity(accountToken);
+            return windowsIdentity.Name.Split('\\').Last();
+        }
+
+        public static string GetMachineName()
+        {
+            return Environment.MachineName;
+        }
+
+        public static string GetGuid()
+        {
+            var assembly = Assembly.GetEntryAssembly();
+            var attribute = (GuidAttribute)assembly.GetCustomAttributes(typeof(GuidAttribute), true)[0];
+            var id = attribute.Value;
+            return id;
+        }
+
+        #region Lock to 1 Execution only
+        public static Mutex SingleProcess(bool locked, string systemName)
+        {
+            var mutex = new Mutex(false, "Global\\" + systemName + "-" + GetGuid());
+            if (!mutex.WaitOne(0, true) && locked)
+            {
+                MessageBox.Show("O programa " + systemName + " já esta sendo executado", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Exit();
+            }
+
+            return mutex;
+        }
+        #endregion
+
+        #region Minimize RAM usage
+        public static void CollectGarbage()
+        {
+            GC.Collect();
+            Native.Process.EmptyWorkingSet(Process.GetCurrentProcess().Handle);
+        }
+        #endregion
+
+        public static void Exit()
+        {
+            if (Application.MessageLoop)
+            {
+                // WinForms app
+                Application.Exit();
+            }
+            else
+            {
+                // Console app
+                Environment.Exit(0);
+            }
+        }
+
+        public static bool IsVCRedist2012Installed()
+        {
+            return IsAPPInstalled("Microsoft Visual C++ 2012 x64", "Minimum Runtime");
+        }
+
         public static OSVersion GetOSVersion()
         {
             // var versionString = (string)Microsoft.Win32.Registry.LocalMachine.OpenSubKey("Software\\Microsoft\\Windows NT\\CurrentVersion").GetValue("productName");
@@ -96,7 +157,7 @@ namespace App.Core.Desktop
             }
             else if (os.Platform == PlatformID.Win32NT)
             {
-                var osVersionInfo = NativeMethods.GetOSVersionInfo();
+                var osVersionInfo = GetOSVersionInfo();
 
                 int productType = osVersionInfo.wProductType;
                 const int VER_NT_WORKSTATION = 1;
@@ -197,63 +258,51 @@ namespace App.Core.Desktop
             return operatingSystem;
         }
 
-        public static string GetCurrentWindowsUsername()
+        internal static Native.OSVERSIONINFOEX GetOSVersionInfo()
         {
-            IntPtr accountToken = WindowsIdentity.GetCurrent().Token;
-            var windowsIdentity = new WindowsIdentity(accountToken);
-            return windowsIdentity.Name.Split('\\').Last();
-        }
-
-        public static string GetMachineName()
-        {
-            return Environment.MachineName;
-        }
-
-        public static string GetGuid()
-        {
-            var assembly = Assembly.GetEntryAssembly();
-            var attribute = (GuidAttribute)assembly.GetCustomAttributes(typeof(GuidAttribute), true)[0];
-            var id = attribute.Value;
-            return id;
-        }
-
-        public static void Exit()
-        {
-            if (Application.MessageLoop)
+            var osVersionInfo = new Native.OSVERSIONINFOEX
             {
-                // WinForms app
-                Application.Exit();
-            }
-            else
-            {
-                // Console app
-                Environment.Exit(0);
-            }
+                dwOSVersionInfoSize = Marshal.SizeOf(typeof(Native.OSVERSIONINFOEX))
+            };
+
+            Native.GetVersionEx(ref osVersionInfo);
+            return osVersionInfo;
         }
 
-        #region Lock to 1 Execution only
-        public static Mutex SingleProcess(bool locked, string systemName)
+        private static bool IsAPPInstalled(string displayName, string additionalName = "")
         {
-            var mutex = new Mutex(false, "Global\\" + systemName + "-" + GetGuid());
-            if (!mutex.WaitOne(0, true) && locked)
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"))
             {
-                MessageBox.Show("O programa " + systemName + " já esta sendo executado", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                Exit();
+                if (key == null)
+                {
+                    return false;
+                }
+
+                foreach (string subKeyName in key.GetSubKeyNames())
+                {
+                    using (RegistryKey subKey = key.OpenSubKey(subKeyName))
+                    {
+                        var appName = subKey.GetValue("DisplayName");
+
+                        if (appName == null)
+                        {
+                            continue;
+                        }
+
+                        var appNameStr = appName.ToString();
+
+                        if (appNameStr.Contains(displayName))
+                        {
+                            if (appNameStr.Contains(additionalName))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
             }
 
-            return mutex;
+            return false;
         }
-        #endregion
-
-        #region Minimize RAM usage
-        public static void CollectGarbage()
-        {
-            GC.Collect();
-            EmptyWorkingSet(Process.GetCurrentProcess().Handle);
-        }
-
-        [DllImport("psapi.dll")]
-        private static extern int EmptyWorkingSet(IntPtr hwProc);
-        #endregion
     }
 }

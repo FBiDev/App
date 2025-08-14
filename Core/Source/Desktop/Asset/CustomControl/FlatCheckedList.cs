@@ -18,7 +18,7 @@ namespace App.Core.Desktop
             InitializeComponent();
             chkList.ItemCheck += CheckedList_ItemCheck;
             chkList.MouseEnter += CheckedList_MouseEnter;
-            Font = new Font("Segoe UI", 9);
+            Font = new Font(FontName.SegoeUI, 9);
             MinimumSize = new Size(58, 34);
         }
 
@@ -39,7 +39,7 @@ namespace App.Core.Desktop
             set { base.AutoSizeMode = value; }
         }
 
-        [DefaultValue(typeof(Font), "Segoe UI, 9")]
+        [DefaultValue(typeof(Font), FontName.SegoeUI9)]
         public new Font Font
         {
             get { return base.Font; }

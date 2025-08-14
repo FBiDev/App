@@ -23,7 +23,7 @@ namespace App.Core
 
                 switch (valueType.Name)
                 {
-                    case "Byte[]":
+                    case TypeName.ByteArray:
                         DbType = DbType.Binary;
 
                         if (size == 0)
@@ -32,7 +32,7 @@ namespace App.Core
                         }
 
                         break;
-                    case "String":
+                    case TypeName.String:
                         DbType = DbType.String;
 
                         if (string.IsNullOrWhiteSpace((string)value))
@@ -50,16 +50,16 @@ namespace App.Core
                         }
 
                         break;
-                    case "Int16": DbType = DbType.Int16;
+                    case TypeName.Int16: DbType = DbType.Int16;
                         break;
-                    case "Int32": DbType = DbType.Int32;
+                    case TypeName.Int32: DbType = DbType.Int32;
                         break;
-                    case "Decimal":
+                    case TypeName.Decimal:
                         DbType = DbType.Decimal;
                         Precision = 10;
                         Scale = 2;
                         break;
-                    case "DateTime":
+                    case TypeName.DateTime:
                         DbType = DbType.DateTime2;
 
                         if (DateTime.MinValue == ((DateTime)value))
@@ -81,7 +81,7 @@ namespace App.Core
                         }
 
                         break;
-                    case "Boolean":
+                    case TypeName.Boolean:
                         DbType = DbType.Boolean;
                         this.Value = Cast.ToIntNull(value);
                         break;
@@ -155,7 +155,7 @@ namespace App.Core
 
         public override string ToString()
         {
-            return DbType.ToString() + " " + ParameterName + " " + Value;
+            return DbType.ToString() + Formatter.SpaceAround(ParameterName) + Value;
         }
 
         private static string ReplaceItem(string parameterName, object value, DbType type, string query)
@@ -164,7 +164,7 @@ namespace App.Core
 
             if (value == null || value == DBNull.Value)
             {
-                val = "NULL";
+                val = StringValue.DBNull;
             }
             else
             {
@@ -173,11 +173,11 @@ namespace App.Core
 
                 switch (type)
                 {
-                    case DbType.String: val = "'" + val + "'";
+                    case DbType.String: val = Formatter.SingleQuote(val);
                         break;
-                    case DbType.DateTime2: val = "'" + val + "'";
+                    case DbType.DateTime2: val = Formatter.SingleQuote(val);
                         break;
-                    case DbType.DateTime: val = "'" + val + "'";
+                    case DbType.DateTime: val = Formatter.SingleQuote(val);
                         break;
                 }
             }

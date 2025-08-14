@@ -174,7 +174,7 @@ namespace App.Core.Desktop
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
-            if (m.Msg == WM.MOUSEWHEEL)
+            if (m.Msg == Native.Message.WM_MOUSEWHEEL)
             {
                 // Trap WM_VSCROLL
                 // OnScroll(new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), 0));

@@ -11,7 +11,7 @@ namespace App.Core
                 return value.ToString();
             }
 
-            return "NULL";
+            return StringValue.DBNull;
         }
 
         public static bool ToBool(this int value)

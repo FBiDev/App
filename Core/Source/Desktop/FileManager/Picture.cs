@@ -253,12 +253,12 @@ namespace App.Core.Desktop
                 case PictureFormat.Jpg:
                     exeResource = JpgCompressor;
                     exeFilePath += "jpegoptim.exe";
-                    exeCmd = exeFilePath + " -w max \"" + Path + "\"";
+                    exeCmd = exeFilePath + " -w max " + Formatter.Quote(Path);
                     break;
                 case PictureFormat.Png:
                     exeResource = PngCompressor;
                     exeFilePath += "pngcrush.exe";
-                    exeCmd = exeFilePath + " -ow -speed " + "\"" + Path + "\"";
+                    exeCmd = exeFilePath + " -ow -speed " + Formatter.Quote(Path);
                     break;
             }
 
@@ -267,9 +267,10 @@ namespace App.Core.Desktop
                 return string.Empty;
             }
 
+            Directory.CreateDirectory(TempFolder);
+
             using (FileStream exeNewFile = new FileStream(exeFilePath, FileMode.Create))
             {
-                Directory.CreateDirectory(TempFolder);
                 exeNewFile.Write(exeResource, 0, exeResource.Length);
             }
 

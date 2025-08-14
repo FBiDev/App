@@ -2,8 +2,11 @@
 
 namespace App.Core
 {
-    internal class StringValues
+    internal static class StringValue
     {
+        public const string Null = "null";
+        public const string DBNull = "NULL";
+
         #region SpecialCharacters
         public static readonly Dictionary<string, string> SpecialCharacters = new Dictionary<string, string>
         {

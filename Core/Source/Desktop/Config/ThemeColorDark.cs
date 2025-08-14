@@ -8,7 +8,7 @@ namespace App.Core.Desktop
     {
         public override void WindowForm(Form f)
         {
-            ThemeBase.SetWindowDark(f.Handle, 1);
+            ThemeBase.SetWindowDarkMode(f.Handle, 1);
         }
 
         public override void MainBaseForm(MainBaseForm f)

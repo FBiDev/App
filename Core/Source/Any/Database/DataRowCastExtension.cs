@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Data;
+using App.Core.Desktop;
 
-namespace App.Core.Desktop
+namespace App.Core
 {
-    public static class DataRowExtension
+    public static class DataRowCastExtension
     {
         public static T Value<T>(this DataRow row, string column)
         {
@@ -32,7 +33,11 @@ namespace App.Core.Desktop
 
             if (!row.Table.Columns.Contains(column))
             {
-                DebugManager.AddError(Messages.ColumnError(column));
+                if (AppType.IsDesktop)
+                {
+                    DebugManager.AddError(Messages.ColumnError(column));
+                }
+
                 return result;
             }
 

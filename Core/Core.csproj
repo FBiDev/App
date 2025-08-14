@@ -58,9 +58,12 @@
     <Compile Include="Source\Any\Config\AppType.cs" />
     <Compile Include="Source\Any\Config\ExceptionManager.cs" />
     <Compile Include="Source\Any\Config\ExceptionProcessed.cs" />
-    <Compile Include="Source\Any\Config\StringValues.cs" />
+    <Compile Include="Source\Any\Config\FontName.cs" />
+    <Compile Include="Source\Any\Config\StringValue.cs" />
+    <Compile Include="Source\Any\Config\TypeName.cs" />
     <Compile Include="Source\Any\Database\DaoBase.cs" />
     <Compile Include="Source\Any\FileManager\HexFile.cs" />
+    <Compile Include="Source\Any\Generic\Formatter.cs" />
     <Compile Include="Source\Any\Generic\ListSyncedChangedEventArgs.cs" />
     <Compile Include="Source\Any\Util\DisplayAttribute.cs" />
     <Compile Include="Source\Any\Util\StyleAttribute.cs" />
@@ -270,9 +273,8 @@
     <Compile Include="Source\Desktop\Asset\CustomControl\Test\PanelResizable.Designer.cs">
       <DependentUpon>PanelResizable.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Test\Win32.cs" />
     <Compile Include="Source\Desktop\Database\DatabaseDao.cs" />
-    <Compile Include="Source\Desktop\Database\DataRowExtension.cs" />
+    <Compile Include="Source\Any\Database\DataRowCastExtension.cs" />
     <Compile Include="Source\Desktop\DebugLayer\DebugForm.cs">
       <SubType>Form</SubType>
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
@@ -310,12 +312,11 @@
     <Compile Include="Source\Desktop\Http\WebClientExtend.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\WindowsOS\NativeCodes.cs" />
+    <Compile Include="Source\Desktop\WindowsOS\Native.cs" />
     <Compile Include="Source\Desktop\WindowsOS\NativeMethods.cs" />
     <Compile Include="Source\Web\Config\AppManager.cs" />
     <Compile Include="Source\Web\Config\ExceptionManager.cs" />
     <Compile Include="Source\Web\Database\DatabaseDao.cs" />
-    <Compile Include="Source\Web\Database\DataRowExtension.cs" />
     <Compile Include="Source\Web\Extension\EnumExtensionWeb.cs" />
     <Compile Include="Source\Web\Extension\GridViewExtension.cs" />
     <Compile Include="Source\Web\Extension\StringExtensionWeb.cs" />
@@ -327,9 +328,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Base\DataGridBase.resx">
       <DependentUpon>DataGridBase.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Base\FlatComboBoxNew.resx">
       <DependentUpon>FlatComboBoxNew.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Base\FlatTextBoxBase.resx">
       <DependentUpon>FlatTextBoxBase.cs</DependentUpon>
@@ -411,11 +414,11 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>call "$(SolutionDir)Assembly\build_script\PostDllToBin.bat" ^
-$(ProjectName), $(SolutionDir), $(TargetDir), $(ConfigurationName)</PostBuildEvent>
+$(ProjectName), $(TargetDir), $(SolutionDir), $(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>call "$(SolutionDir)Assembly\build_script\PrePurgeBin.bat" ^
-$(ProjectName), $(SolutionDir), $(TargetDir)</PreBuildEvent>
+$(ProjectName), $(SolutionDir)</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

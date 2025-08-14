@@ -23,7 +23,7 @@ namespace App.Core.Desktop
             Cursor = Cursors.Hand;
             Anchor = AnchorStyles.Top | AnchorStyles.Left;
             ImageAlign = ContentAlignment.MiddleLeft;
-            Font = new Font("Segoe UI", 9);
+            Font = new Font(FontName.SegoeUI, 9);
 
             MinimumSize = new Size(24, 24);
             Size = new Size(82, 34);
@@ -63,7 +63,7 @@ namespace App.Core.Desktop
             set { base.ForeColor = value; }
         }
 
-        [DefaultValue(typeof(Font), "Segoe UI, 9")]
+        [DefaultValue(typeof(Font), FontName.SegoeUI9)]
         public new Font Font
         {
             get { return base.Font; }

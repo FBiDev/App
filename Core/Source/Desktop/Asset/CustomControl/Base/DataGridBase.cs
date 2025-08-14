@@ -104,7 +104,7 @@ namespace App.Core.Desktop
             set { base.CellBorderStyle = value; }
         }
 
-        [DefaultValue(typeof(DataGridViewHeaderBorderStyle), "Single")]
+        [DefaultValue(typeof(DataGridViewHeaderBorderStyle), TypeName.Single)]
         public new DataGridViewHeaderBorderStyle ColumnHeadersBorderStyle
         {
             get { return base.ColumnHeadersBorderStyle; }
@@ -146,7 +146,7 @@ namespace App.Core.Desktop
             set { base.ReadOnly = value; }
         }
 
-        [DefaultValue(typeof(DataGridViewHeaderBorderStyle), "Single")]
+        [DefaultValue(typeof(DataGridViewHeaderBorderStyle), TypeName.Single)]
         public new DataGridViewHeaderBorderStyle RowHeadersBorderStyle
         {
             get { return base.RowHeadersBorderStyle; }
@@ -354,7 +354,7 @@ namespace App.Core.Desktop
             {
                 Alignment = DataGridViewContentAlignment.MiddleLeft,
                 BackColor = ColorRowHeader,
-                Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0),
+                Font = new Font(FontName.SegoeUI, 9F, FontStyle.Regular, GraphicsUnit.Point, 0),
                 ForeColor = ColorFontRowHeader,
                 SelectionBackColor = ColorRowHeaderSelection,
                 SelectionForeColor = ColorFontRowHeaderSelection,
@@ -371,7 +371,7 @@ namespace App.Core.Desktop
             {
                 Alignment = DataGridViewContentAlignment.MiddleLeft,
                 BackColor = ColorRow,
-                Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0),
+                Font = new Font(FontName.SegoeUI, 9F, FontStyle.Regular, GraphicsUnit.Point, 0),
                 ForeColor = ColorFontRow,
                 SelectionBackColor = ColorRowSelection,
                 SelectionForeColor = ColorFontRowSelection,
@@ -385,7 +385,7 @@ namespace App.Core.Desktop
             var columnHeadersStyle = new DataGridViewCellStyle
             {
                 BackColor = ColorColumnHeader,
-                Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0),
+                Font = new Font(FontName.SegoeUISemibold, 9F, FontStyle.Bold, GraphicsUnit.Point, 0),
                 ForeColor = ColorFontColumnHeader,
                 SelectionBackColor = ColorColumnSelection,
                 SelectionForeColor = ColorFontColumnSelection,
@@ -417,7 +417,7 @@ namespace App.Core.Desktop
 
             switch (_type.Name)
             {
-                case "String":
+                case TypeName.String:
                     c = new DataGridViewTextBoxColumn { CellTemplate = new DataGridViewTextBoxCell() };
                     ////c.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
                     if (width != 0)
@@ -429,7 +429,7 @@ namespace App.Core.Desktop
                     c.DefaultCellStyle.Alignment = align == 0 ? DataGridViewContentAlignment.MiddleLeft : (DataGridViewContentAlignment)align;
                     c.DefaultCellStyle.Format = string.IsNullOrEmpty(format) ? string.Empty : format;
                     break;
-                case "Int32":
+                case TypeName.Int32:
                     c = new DataGridViewTextBoxColumn { CellTemplate = new DataGridViewTextBoxCell() };
                     ////c.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
                     if (width != 0)
@@ -442,21 +442,21 @@ namespace App.Core.Desktop
                     c.DefaultCellStyle.Format = string.IsNullOrEmpty(format) ? string.Empty : format;
                     c.DefaultCellStyle.NullValue = null;
                     break;
-                case "Single":
+                case TypeName.Single:
                     c = new DataGridViewTextBoxColumn { CellTemplate = new DataGridViewTextBoxCell() };
                     c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                     c.DefaultCellStyle.Format = string.IsNullOrEmpty(format) ? "N0" : format;
                     c.DefaultCellStyle.NullValue = null;
                     break;
-                case "TimeSpan":
+                case TypeName.TimeSpan:
                     c = new DataGridViewTextBoxColumn { CellTemplate = new DataGridViewTextBoxCell() };
                     c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.Format = "hh\\:mm";
                     c.DefaultCellStyle.NullValue = null;
                     break;
-                case "Boolean":
+                case TypeName.Boolean:
                     AddBooleanColumn(name);
                     c = new DataGridViewCheckBoxColumn
                     {
@@ -467,7 +467,7 @@ namespace App.Core.Desktop
                     c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                     c.DefaultCellStyle.NullValue = false;
                     break;
-                case "DateTime":
+                case TypeName.DateTime:
                     c = new DataGridViewTextBoxColumn { CellTemplate = new DataGridViewTextBoxCell() };
                     ////c.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
                     if (width != 100)
@@ -484,7 +484,7 @@ namespace App.Core.Desktop
                     c.DefaultCellStyle.Format = "d";
                     c.DefaultCellStyle.NullValue = null;
                     break;
-                case "Bitmap":
+                case TypeName.Bitmap:
                     c = new DataGridViewImageColumn
                     {
                         CellTemplate = new DataGridViewImageCell(),

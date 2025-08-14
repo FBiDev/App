@@ -19,7 +19,7 @@ namespace App.Core.Desktop
             ContentPanel.MouseEnter += PnlBg_MouseEnter;
             SubtitleLabel.MouseEnter += LblSubtitle_MouseEnter;
 
-            Font = new Font("Segoe UI", 9);
+            Font = new Font(FontName.SegoeUI, 9);
             Margin = new Padding(2);
         }
 
@@ -31,7 +31,7 @@ namespace App.Core.Desktop
             set { base.Anchor = value; }
         }
 
-        [DefaultValue(typeof(Font), "Segoe UI, 9")]
+        [DefaultValue(typeof(Font), FontName.SegoeUI9)]
         public new Font Font
         {
             get { return base.Font; }

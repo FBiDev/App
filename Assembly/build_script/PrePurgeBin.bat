@@ -6,7 +6,6 @@ set "EventName=Clean Bin"
 
 set "ProjectName=%1"
 set "SolutionDir=%2"
-set "TargetDir=%3"
 
 echo ===============================================================================
 echo    Project      ::     %ProjectName%

@@ -100,7 +100,7 @@ namespace App.Core.Desktop
                 case ColumnFormat.DateCenter:
                     style.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-                    // style.Font = new Font("Courier New", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+                    // style.Font = new Font(FontName.CourierNew, 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
                     style.Format = "dd MMM, yyyy";
                     break;
                 case ColumnFormat.Image:

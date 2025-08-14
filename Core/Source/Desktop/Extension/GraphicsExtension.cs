@@ -5,7 +5,7 @@ namespace App.Core.Desktop
 {
     public static class GraphicsExtension
     {
-        public enum BorderDrawSide
+        public enum BorderSide
         {
             All,
             TopBottom,
@@ -16,7 +16,7 @@ namespace App.Core.Desktop
             Right
         }
 
-        public static void DrawRoundBorder(this Graphics g, Control control, Color borderColor, int borderSize = 1, bool borderRound = true, BorderDrawSide sides = BorderDrawSide.All)
+        public static void DrawRoundBorder(this Graphics g, Control control, Color borderColor, int borderSize = 1, bool borderRound = true, BorderSide sides = BorderSide.All)
         {
             if (borderSize <= 0)
             {
@@ -33,15 +33,15 @@ namespace App.Core.Desktop
             // ControlPaint.DrawBorder(g, recInner, borderColor, ButtonBorderStyle.Solid);
             switch (sides)
             {
-                case BorderDrawSide.All:
+                case BorderSide.All:
                     ControlPaint.DrawBorder(g, recInner, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid);
                     break;
-                case BorderDrawSide.TopBottom:
+                case BorderSide.TopBottom:
                     ControlPaint.DrawBorder(g, recInner, borderColor, 0, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid, borderColor, 0, ButtonBorderStyle.Solid, borderColor, borderSize, ButtonBorderStyle.Solid);
                     break;
             }
 
-            if (!borderRound || sides != BorderDrawSide.All)
+            if (!borderRound || sides != BorderSide.All)
             {
                 return;
             }
