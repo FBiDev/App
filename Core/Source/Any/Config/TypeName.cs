@@ -14,6 +14,7 @@
         public const string TimeSpan = "TimeSpan";
 
         public const string ByteArray = "Byte[]";
+        public const string FileStream = "FileStream";
         public const string Bitmap = "Bitmap";
     }
 }

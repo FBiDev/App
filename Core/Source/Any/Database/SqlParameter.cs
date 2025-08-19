@@ -24,6 +24,7 @@ namespace App.Core
                 switch (valueType.Name)
                 {
                     case TypeName.ByteArray:
+                    case TypeName.FileStream:
                         DbType = DbType.Binary;
 
                         if (size == 0)
