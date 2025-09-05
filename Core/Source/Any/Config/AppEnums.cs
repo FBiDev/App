@@ -55,6 +55,12 @@ namespace App.Core
         Todos = 5,
     }
 
+    public enum SqlDirection
+    {
+        ASC = 0,
+        DESC = 1
+    }
+
     [Flags]
     public enum ImageFormats
     {

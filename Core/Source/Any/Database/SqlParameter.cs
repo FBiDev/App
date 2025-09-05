@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace App.Core
@@ -124,14 +125,7 @@ namespace App.Core
 
         public static List<SqlParameter> CreateList(params KeyValuePair<string, object>[] values)
         {
-            var source = new List<SqlParameter>();
-
-            foreach (var kvp in values)
-            {
-                source.Add(new SqlParameter(kvp.Key, kvp.Value));
-            }
-
-            return source;
+            return values.Select(kv => new SqlParameter(kv.Key, kv.Value)).ToList();
         }
 
         public static string Replace(List<SqlParameter> parameters, string query)

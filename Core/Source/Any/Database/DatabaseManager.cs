@@ -53,70 +53,78 @@ namespace App.Core
 
         private int ConnectionTimeout { get; set; }
 
-        public async Task<DataTable> ExecuteSelect(string sql, List<SqlParameter> parameters = null, string storedProcedure = null)
+        public async Task<DataTable> ExecuteSelect(SqlQuery sql)
         {
-            var cmd = NewConnection(parameters);
+            sql.Cmd = NewConnection(sql.Parameters);
 
-            DataTable table = await ExecuteReader(cmd, sql, storedProcedure);
+            DataTable table = await ExecuteReader(sql);
 
-            CloseConnection(cmd);
+            CloseConnection(sql.Cmd);
 
             return table;
         }
 
-        public async Task<SqlResult> Execute(string sql, DatabaseAction action, List<SqlParameter> parameters)
+        public async Task<SqlResult> Execute(SqlQuery sql)
         {
-            var cmd = NewConnection(parameters);
+            sql.Cmd = NewConnection(sql.Parameters);
 
-            var result = await ExecuteNonQuery(cmd, sql, action);
+            sql.Result = await ExecuteNonQuery(sql);
 
-            CloseConnection(cmd);
+            CloseConnection(sql.Cmd);
 
-            return result;
+            return sql.Result;
         }
 
-        public async Task<string> ExecuteSelectString(string sql, List<SqlParameter> parameters = null)
+        public async Task<string> ExecuteSelectString(SqlQuery sql)
         {
-            var cmd = NewConnection(parameters);
+            sql.Cmd = NewConnection(sql.Parameters);
 
-            string select = await ExecuteScalar(cmd, sql);
+            sql.ResultSelect = await ExecuteScalar(sql);
 
-            CloseConnection(cmd);
+            CloseConnection(sql.Cmd);
 
-            return select;
+            return sql.ResultSelect;
         }
 
         public async Task<DateTime> DateTimeServer()
         {
-            string sql = "SELECT GETDATE() AS DataServ;";
+            string query = "SELECT GETDATE() AS DataServ;";
+
             if (DatabaseType == DatabaseType.SQLite || DatabaseType == DatabaseType.SQLiteODBC)
             {
-                sql = "SELECT strftime('%Y-%m-%d %H:%M:%f','now', 'localtime') AS DataServ;";
+                query = "SELECT strftime('%Y-%m-%d %H:%M:%f','now', 'localtime') AS DataServ;";
             }
 
-            List<SqlParameter> parameters = null;
-            var cmd = NewConnection(parameters);
+            var sql = new SqlQuery(query, DatabaseAction.Select)
+            {
+                Cmd = NewConnection(null),
+            };
 
-            string select = await ExecuteScalar(cmd, sql);
+            sql.ResultSelect = await ExecuteScalar(sql);
 
-            CloseConnection(cmd);
+            CloseConnection(sql.Cmd);
 
-            return Convert.ToDateTime(select);
+            return Convert.ToDateTime(sql.ResultSelect);
         }
 
         public async Task<int> GetLastID(IDbCommand cmd)
         {
-            string sql = "SELECT SCOPE_IDENTITY() AS LastID;";
+            string query = "SELECT SCOPE_IDENTITY() AS LastID;";
 
             if (DatabaseType == DatabaseType.SQLite || DatabaseType == DatabaseType.SQLiteODBC)
             {
-                sql = "SELECT LAST_INSERT_ROWID() AS LastID;";
+                query = "SELECT LAST_INSERT_ROWID() AS LastID;";
             }
 
-            if (cmd != null && cmd.Connection != null && cmd.Connection.State == ConnectionState.Open)
+            var sql = new SqlQuery(query, DatabaseAction.Select)
             {
-                string select = await ExecuteScalar(cmd, sql);
-                return Cast.ToInt(0 + select);
+                Cmd = cmd
+            };
+
+            if (sql.Cmd != null && sql.Cmd.Connection != null && sql.Cmd.Connection.State == ConnectionState.Open)
+            {
+                sql.ResultSelect = await ExecuteScalar(sql);
+                return Cast.ToInt(0 + sql.ResultSelect);
             }
 
             return 0;
@@ -248,7 +256,7 @@ namespace App.Core
 
             OpenConnection(cmd);
 
-            if (parameters == null)
+            if (parameters == null || parameters.Count == 0)
             {
                 return cmd;
             }
@@ -402,45 +410,48 @@ namespace App.Core
             return sql;
         }
 
-        private void AddLog(IDbCommand cmd, DatabaseAction action = DatabaseAction.Null)
+        private void AddLog(SqlQuery sql)
         {
-            Log.Insert(0, new SqlLog(Log.Count, cmd, action, ObjectManager.GetDaoClassAndMethod(13), ObjectManager.GetDaoClassAndMethod(16)));
+            var newLog = new SqlLog(Log.Count, sql.Cmd, sql.Action, ObjectManager.GetDaoClassAndMethod(13), ObjectManager.GetDaoClassAndMethod(16));
+
+            sql.SetQueryValues(newLog.Command);
+            Log.Insert(0, newLog);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "none")]
-        private async Task<DataTable> ExecuteReader(IDbCommand cmd, string sql, string storedProcedure)
+        private async Task<DataTable> ExecuteReader(SqlQuery sql)
         {
             var data = new DataTable();
 
-            if (cmd == null || cmd.Connection == null || cmd.Connection.State != ConnectionState.Open)
+            if (sql.Cmd == null || sql.Cmd.Connection == null || sql.Cmd.Connection.State != ConnectionState.Open)
             {
                 return data;
             }
 
-            cmd.CommandText = sql;
+            sql.Cmd.CommandText = sql.Query;
 
-            if (string.IsNullOrWhiteSpace(storedProcedure) == false)
+            if (string.IsNullOrWhiteSpace(sql.StoredProcedure) == false)
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = storedProcedure;
+                sql.Cmd.CommandType = CommandType.StoredProcedure;
+                sql.Cmd.CommandText = sql.StoredProcedure;
             }
             else
             {
-                cmd.CommandText = ReplaceSQLCommands(cmd.CommandText);
+                sql.Cmd.CommandText = ReplaceSQLCommands(sql.Cmd.CommandText);
             }
 
-            AddLog(cmd, DatabaseAction.Select);
+            AddLog(sql);
 
-            if (cmd.Parameters.Count > 0)
+            if (sql.Cmd.Parameters.Count > 0)
             {
-                cmd.Prepare();
+                sql.Cmd.Prepare();
             }
 
             return await Task.Run(() =>
             {
                 try
                 {
-                    using (IDataReader rdr = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                    using (IDataReader rdr = sql.Cmd.ExecuteReader(CommandBehavior.CloseConnection))
                     {
                         var schemaTabela = rdr.GetSchemaTable();
 
@@ -470,6 +481,12 @@ namespace App.Core
                         }
                     }
 
+                    sql.Result = new SqlResult
+                    {
+                        Success = true,
+                        ReturnedRows = data.Rows.Count
+                    };
+
                     return data;
                 }
                 catch (Exception)
@@ -480,40 +497,40 @@ namespace App.Core
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "none")]
-        private async Task<SqlResult> ExecuteNonQuery(IDbCommand cmd, string sql, DatabaseAction action = DatabaseAction.Null)
+        private async Task<SqlResult> ExecuteNonQuery(SqlQuery sql)
         {
-            if (cmd == null)
+            if (sql.Cmd == null)
             {
                 return new SqlResult();
             }
 
-            cmd.CommandText = sql;
-            cmd.CommandText = ReplaceSQLCommands(cmd.CommandText);
+            sql.Cmd.CommandText = sql.Query;
+            sql.Cmd.CommandText = ReplaceSQLCommands(sql.Cmd.CommandText);
 
-            AddLog(cmd, action);
+            AddLog(sql);
 
             return await Task.Run(() =>
             {
                 try
                 {
-                    if (cmd.Parameters.Count > 0)
+                    if (sql.Cmd.Parameters.Count > 0)
                     {
-                        cmd.Prepare();
+                        sql.Cmd.Prepare();
                     }
 
-                    var result = new SqlResult();
+                    sql.Result = new SqlResult();
 
-                    if (action == DatabaseAction.Insert)
+                    if (sql.Action == DatabaseAction.Insert)
                     {
-                        result = ExecuteInsert(cmd);
+                        sql.Result = ExecuteInsert(sql);
                     }
                     else
                     {
-                        result.AffectedRows = cmd.ExecuteNonQuery();
-                        result.Success = result.AffectedRows > 0;
+                        sql.Result.AffectedRows = sql.Cmd.ExecuteNonQuery();
+                        sql.Result.Success = sql.Result.AffectedRows > 0;
                     }
 
-                    return result;
+                    return sql.Result;
                 }
                 catch (Exception)
                 {
@@ -523,23 +540,23 @@ namespace App.Core
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "none")]
-        private SqlResult ExecuteInsert(IDbCommand cmd)
+        private SqlResult ExecuteInsert(SqlQuery sql)
         {
-            cmd.CommandText += GetLastIDSQL();
+            sql.Cmd.CommandText += GetLastIDSQL();
 
-            var result = new SqlResult();
+            sql.Result = new SqlResult();
 
             try
             {
-                using (IDataReader reader = cmd.ExecuteReader(CommandBehavior.CloseConnection))
+                using (IDataReader reader = sql.Cmd.ExecuteReader(CommandBehavior.CloseConnection))
                 {
                     if (reader.Read())
                     {
-                        result.LastId = Cast.ToInt(reader["LastID"]);
+                        sql.Result.LastId = Cast.ToInt(reader["LastID"]);
                     }
 
-                    result.AffectedRows = reader.RecordsAffected;
-                    result.Success = result.AffectedRows > 0;
+                    sql.Result.AffectedRows = reader.RecordsAffected;
+                    sql.Result.Success = sql.Result.AffectedRows > 0;
                 }
             }
             catch (Exception)
@@ -547,30 +564,30 @@ namespace App.Core
                 throw;
             }
 
-            return result;
+            return sql.Result;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "none")]
-        private async Task<string> ExecuteScalar(IDbCommand cmd, string sql)
+        private async Task<string> ExecuteScalar(SqlQuery sql)
         {
-            if (cmd == null)
+            if (sql.Cmd == null)
             {
                 return string.Empty;
             }
 
-            cmd.CommandText = sql;
-            AddLog(cmd);
+            sql.Cmd.CommandText = sql.Query;
+            AddLog(sql);
 
             return await Task.Run(() =>
             {
                 try
                 {
-                    if (cmd.Parameters.Count > 0)
+                    if (sql.Cmd.Parameters.Count > 0)
                     {
-                        cmd.Prepare();
+                        sql.Cmd.Prepare();
                     }
 
-                    var select = cmd.ExecuteScalar();
+                    var select = sql.Cmd.ExecuteScalar();
 
                     if (select != null)
                     {

@@ -14,8 +14,8 @@ echo    Project      ::     %ProjectName%
 echo    Event        ::     Begin %EventType% -^> %EventName%
 echo ===============================================================================
 
-:: robocopy "%SolutionDir%Assembly\data\x86 " "%TargetDir%x86 " SQLite.Interop.dll /IS
-:: robocopy "%SolutionDir%Assembly\data\x64 " "%TargetDir%x64 " SQLite.Interop.dll /IS
+robocopy "%SolutionDir%Assembly\data\x86 " "%TargetDir%x86 " System.Data.SQLite.dll /IS
+robocopy "%SolutionDir%Assembly\data\x64 " "%TargetDir%x64 " System.Data.SQLite.dll /IS
 
 if %ConfigurationName% == Release (
 	robocopy "%TargetDir% " "%SolutionDir%Bin " *.dll /E /IS

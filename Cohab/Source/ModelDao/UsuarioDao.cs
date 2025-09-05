@@ -1,23 +1,136 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using App.Cohab.Properties;
 using App.Core;
-using App.Core.Desktop;
 
-namespace App.Cohab
+namespace App.Cohab.Dao
 {
-    public class UsuarioDao : DatabaseDao
+    public class UsuarioDao : DaoBase
     {
-        #region " _Carregar "
-        public static T Carregar<T>(DataTable table) where T : IList, new()
+        #region " _Select "
+        public async Task<List<Usuario>> Listar()
         {
-            var list = new T();
-            foreach (DataRow row in table.Rows)
+            return await Select();
+        }
+
+        public async Task<List<Usuario>> Pesquisar(Usuario obj)
+        {
+            return await Select(obj);
+        }
+
+        public async Task<Usuario> Buscar(Usuario obj)
+        {
+            return (await Select(obj)).FirstOrNew();
+        }
+        #endregion
+
+        #region " _Select_Custom "
+        public async Task<Usuario> BuscarLogin(string login)
+        {
+            var obj = new Usuario { Login = login.Trim() };
+            return await Buscar(obj);
+        }
+
+        public async Task<List<Usuario>> PesquisarAtivos()
+        {
+            var obj = new Usuario { Ativo = true };
+            return await Select(obj);
+        }
+
+        public async Task<List<Usuario>> ListarCombo()
+        {
+            return (await PesquisarAtivos()).PrependNew();
+        }
+
+        public async Task<bool> VerificarAcesso(string login, string sistema)
+        {
+            var sql = new SqlQuery(Resources.sql_UsuarioVerificarAcesso, DatabaseAction.Select,
+                P("@Login", login),
+                P("@Sistema", sistema));
+
+            return Load(await BancoCOHAB.ExecutarSelect(sql)).Count >= 1;
+        }
+
+        public async Task<List<Usuario>> ListarPorSetor(string setor = null, bool ativos = true)
+        {
+            var sql = new SqlQuery(Resources.sql_UsuarioListarPorSetor, DatabaseAction.Select,
+                P("@setor", setor),
+                P("@ativos", ativos));
+
+            return Load(await BancoCOHAB.ExecutarSelect(sql));
+        }
+
+        public async Task<List<Usuario>> ListarPorDepartamento(string depto, bool exclusivo = false, bool ativos = false)
+        {
+            var sql = new SqlQuery(Resources.sql_UsuarioListarPorDepartamento, DatabaseAction.Select,
+                P("@depto", depto),
+                P("@exclusivo", exclusivo),
+                P("@ativos", ativos));
+
+            return Load(await BancoCOHAB.ExecutarSelect(sql));
+        }
+
+        public async Task<List<Usuario>> ListarPorMatricula(string matricula, string login = null)
+        {
+            var sql = new SqlQuery(Resources.sql_UsuarioListarPorMatricula, DatabaseAction.Select,
+                P("@matricula", matricula),
+                P("@login", login));
+
+            return Load(await BancoCOHAB.ExecutarSelect(sql));
+        }
+        #endregion
+
+        #region " _Actions_Custom "
+        public async Task<bool> ClonarAcessos(string loginOrigem, string loginDestino)
+        {
+            var senhaPadrao = Funcoes.CriptografarSenha("senhasenha");
+
+            var sql = new SqlQuery(Resources.sql_UsuarioClonarAcessos, DatabaseAction.Insert,
+                P("@loginDestino", loginDestino),
+                P("@senhaPadrao", senhaPadrao),
+                P("@loginOrigem", loginOrigem));
+
+            return (await BancoCOHAB.Executar(sql)).Success;
+        }
+
+        public async Task<bool> ResetarSenha(string login, string sistema)
+        {
+            var senhaPadrao = Funcoes.CriptografarSenha("senhasenha");
+            var validade = (await BancoCOHAB.DataServidor()).AddDays(30).ToShortDateString();
+
+            var sql = new SqlQuery(Resources.sql_UsuarioTrocarSenha, DatabaseAction.Update,
+                P("@Login", login),
+                P("@Sistema", sistema),
+                P("@Senha", senhaPadrao),
+                P("@Validade", validade));
+
+            return (await BancoCOHAB.Executar(sql)).Success;
+        }
+        #endregion
+
+        #region " _Actions "
+        private async Task<List<Usuario>> Select(Usuario obj = null)
+        {
+            obj = obj ?? new Usuario();
+
+            var sql = new SqlQuery(Resources.sql_UsuarioListar, DatabaseAction.Select,
+                P("@Ativo", obj.Ativo),
+                P("@Login", obj.Login),
+                P("@Nome", obj.Nome));
+
+            sql.SetOrderBy(new SqlOrder(SqlDirection.ASC, "Usuario_Nome"));
+
+            return Load(await BancoCOHAB.ExecutarSelect(sql));
+        }
+        #endregion
+
+        #region " _Load "
+        private List<Usuario> Load(DataTable table)
+        {
+            return table.ProcessRows<Usuario>((row, lst) =>
             {
-                list.Add(new Usuario
+                var entity = new Usuario
                 {
                     Login = row.Value<string>("Usuario_Login").Trim().ToUpper(),
                     Nome = row.Value<string>("Usuario_Nome").Trim(),
@@ -28,147 +141,10 @@ namespace App.Cohab
                     Ativo = row.Value<bool>("Usuario_Ativo"),
                     Visivel = row.Value<bool>("Usuario_Visivel"),
                     Notes = row.Value<string>("Usuario_Notes")
-                });
-            }
+                };
 
-            return list;
-        }
-        #endregion
-
-        #region " _Select "
-        public async Task<List<Usuario>> Pesquisar(Usuario obj)
-        {
-            var sql = Resources.sql_UsuarioListar;
-            var parameters = GetFilters(obj);
-
-            return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
-        }
-
-        public async Task<List<Usuario>> PesquisarAtivos()
-        {
-            var obj = new Usuario { Ativo = true };
-            return await Pesquisar(obj);
-        }
-
-        public async Task<Usuario> Buscar(Usuario obj)
-        {
-            return (await Pesquisar(obj)).FirstOrNew();
-        }
-
-        public async Task<Usuario> BuscarLogin(string login)
-        {
-            var obj = new Usuario { Login = login.Trim() };
-            return await Buscar(obj);
-        }
-
-        public async Task<List<Usuario>> ListarCombo()
-        {
-            return (await PesquisarAtivos()).PrependNew();
-        }
-        #endregion
-
-        public async Task<bool> VerificarAcesso(string login, string sistema)
-        {
-            string sql = Resources.sql_UsuarioVerificarAcesso;
-
-            var parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@Login", login),
-                new SqlParameter("@Sistema", sistema)
-            };
-
-            return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters)).Count >= 1;
-        }
-
-        public async Task<bool> ClonarAcessos(string loginOrigem, string loginDestino)
-        {
-            string sql = Resources.sql_UsuarioClonarAcessos;
-            var senhaPadrao = Funcoes.CriptografarSenha("senhasenha");
-
-            var parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@loginDestino", loginDestino),
-                new SqlParameter("@senhaPadrao", senhaPadrao),
-                new SqlParameter("@loginOrigem", loginOrigem)
-            };
-
-            return (await BancoCOHAB.Executar(sql, DatabaseAction.Insert, parameters)).Success;
-        }
-
-        public async Task<bool> ResetarSenha(string login, string sistema)
-        {
-            string sql = Resources.sql_UsuarioTrocarSenha;
-            var senhaPadrao = Funcoes.CriptografarSenha("senhasenha");
-            var validade = (await BancoCOHAB.DataServidor()).AddDays(30).ToShortDateString();
-
-            var parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@Login", login),
-                new SqlParameter("@Sistema", sistema),
-                new SqlParameter("@Senha", senhaPadrao),
-                new SqlParameter("@Validade", validade)
-            };
-
-            return (await BancoCOHAB.Executar(sql, DatabaseAction.Update, parameters)).Success;
-        }
-
-        public async Task<List<Usuario>> ListarPorSetor(string setor = null, bool ativos = true)
-        {
-            string sql = Resources.sql_UsuarioListarPorSetor;
-
-            var parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@setor", setor),
-                new SqlParameter("@ativos", ativos)
-            };
-
-            return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
-        }
-
-        public async Task<List<Usuario>> ListarPorDepartamento(string depto, bool exclusivo = false, bool ativos = false)
-        {
-            string sql = Resources.sql_UsuarioListarPorDepartamento;
-
-            var parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@depto", depto),
-                new SqlParameter("@exclusivo", exclusivo),
-                new SqlParameter("@ativos", ativos)
-            };
-
-            return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
-        }
-
-        public async Task<List<Usuario>> ListarPorMatricula(string matricula, string login = null)
-        {
-            string sql = Resources.sql_UsuarioListarPorMatricula;
-
-            var parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@matricula", matricula),
-                new SqlParameter("@login", login)
-            };
-
-            return Carregar<List<Usuario>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
-        }
-
-        #region " _Consistir "
-        private string Consistir()
-        {
-            string erro = null;
-            return erro;
-        }
-        #endregion
-
-        #region " _Parameters "
-        private List<SqlParameter> GetFilters(Usuario obj)
-        {
-            return new List<SqlParameter>
-            {
-                new SqlParameter("@Ativo", obj.Ativo),
-                new SqlParameter("@Login",  obj.Login),
-                new SqlParameter("@Nome", obj.Nome)
-            };
+                lst.Add(entity);
+            });
         }
         #endregion
     }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
@@ -36,13 +35,13 @@ namespace App.Core.Desktop
             Database.ConnectionString = string.Empty;
         }
 
-        public static async Task<DataTable> ExecuteSelect(string sql, List<SqlParameter> parameters = null, string storedProcedure = null)
+        public static async Task<DataTable> ExecuteSelect(SqlQuery sql)
         {
             if (Loaded)
             {
                 try
                 {
-                    return await Database.ExecuteSelect(sql, parameters, storedProcedure);
+                    return await Database.ExecuteSelect(sql);
                 }
                 catch (Exception ex)
                 {
@@ -53,13 +52,13 @@ namespace App.Core.Desktop
             return new DataTable();
         }
 
-        public static async Task<string> ExecuteSelectString(string sql, List<SqlParameter> parameters = null)
+        public static async Task<string> ExecuteSelectString(SqlQuery sql)
         {
             if (Loaded)
             {
                 try
                 {
-                    return await Database.ExecuteSelectString(sql, parameters);
+                    return await Database.ExecuteSelectString(sql);
                 }
                 catch (Exception ex)
                 {
@@ -70,13 +69,13 @@ namespace App.Core.Desktop
             return string.Empty;
         }
 
-        public static async Task<SqlResult> Execute(string sql, DatabaseAction action, List<SqlParameter> parameters)
+        public static async Task<SqlResult> Execute(SqlQuery sql)
         {
             if (Loaded)
             {
                 try
                 {
-                    return await Database.Execute(sql, action, parameters);
+                    return await Database.Execute(sql);
                 }
                 catch (Exception ex)
                 {

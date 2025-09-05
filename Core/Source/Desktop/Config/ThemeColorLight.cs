@@ -29,7 +29,13 @@ namespace App.Core.Desktop
         public override void FlatPanel(FlatPanel c)
         {
             c.ForeColor = Colors.RGB(0, 0, 0);
-            c.BorderColor = Colors.RGB(160, 160, 160);
+
+            switch (c.BorderColor.Name)
+            {
+                case "ff565656":
+                    c.BorderColor = C160160160;
+                    break;
+            }
 
             switch (c.BackColorType)
             {
@@ -118,7 +124,7 @@ namespace App.Core.Desktop
 
         public override void FlatStatusBar(FlatStatusBar c)
         {
-            c.BackColor = Colors.RGB(160, 160, 160);
+            c.BackColor = C160160160;
             c.BackColorContent = Colors.RGB(244, 244, 244);
         }
 
@@ -126,7 +132,7 @@ namespace App.Core.Desktop
         {
             c.MyBackColor = Colors.RGB(244, 244, 244);
             c.MyBackColor2 = Colors.RGB(212, 208, 200);
-            c.MyBorderColor = Colors.RGB(160, 160, 160);
+            c.MyBorderColor = C160160160;
 
             foreach (TabPage page in c.TabPages)
             {
@@ -144,7 +150,7 @@ namespace App.Core.Desktop
         {
             c.ForeColor = Colors.RGB(0, 0, 0);
             c.BackColor = Colors.RGB(244, 244, 244);
-            c.BorderColor = Colors.RGB(160, 160, 160);
+            c.BorderColor = C160160160;
         }
 
         public override void FlatListView(FlatListView c)

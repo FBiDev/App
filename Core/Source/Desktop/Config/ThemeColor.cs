@@ -1,9 +1,12 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace App.Core.Desktop
 {
     public abstract class ThemeColor
     {
+        public static readonly Color C160160160 = Colors.RGB(160, 160, 160);
+
         public abstract void WindowForm(Form f);
 
         public abstract void MainBaseForm(MainBaseForm f);

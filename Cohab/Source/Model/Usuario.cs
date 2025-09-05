@@ -1,19 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using App.Cohab.Dao;
 
 namespace App.Cohab
 {
     public class Usuario
     {
+        #region " _Fields "
         private static readonly UsuarioDao DAO = new UsuarioDao();
+        #endregion
 
+        #region " _Constructor "
         public Usuario()
         {
             Login = Nome = Apelido = Ramal = Matricula = string.Empty;
         }
+        #endregion
 
-        #region " _Propriedades "
+        #region " _Properties "
         public string Login { get; set; }
 
         [Style(Width = 270)]
@@ -44,29 +49,25 @@ namespace App.Cohab
         public string Notes { get; set; }
         #endregion
 
+        #region " _Static_Methods "
+        public static async Task<List<Usuario>> Listar()
+        {
+            return await DAO.Listar();
+        }
+
         public static async Task<List<Usuario>> Pesquisar(Usuario obj)
         {
-            if (obj == null)
-            {
-                obj = new Usuario { };
-            }
-
             return await DAO.Pesquisar(obj);
+        }
+
+        public static async Task<Usuario> Buscar(Usuario obj)
+        {
+            return await DAO.Buscar(obj);
         }
 
         public static async Task<bool> VerificarAcesso(string login, string sistema)
         {
             return await DAO.VerificarAcesso(login, sistema);
-        }
-
-        public static async Task<bool> ClonarAcessos(string loginOrigem, string loginDestino)
-        {
-            return await DAO.ClonarAcessos(loginOrigem, loginDestino);
-        }
-
-        public static async Task<bool> ResetarSenha(string login, string sistema)
-        {
-            return await DAO.ResetarSenha(login, sistema);
         }
 
         public static async Task<List<Usuario>> ListarPorSetor(string setor = null, bool soAtivos = true)
@@ -84,9 +85,22 @@ namespace App.Cohab
             return await DAO.ListarPorMatricula(matricula, login);
         }
 
+        public static async Task<bool> ClonarAcessos(string loginOrigem, string loginDestino)
+        {
+            return await DAO.ClonarAcessos(loginOrigem, loginDestino);
+        }
+
+        public static async Task<bool> ResetarSenha(string login, string sistema)
+        {
+            return await DAO.ResetarSenha(login, sistema);
+        }
+        #endregion
+
+        #region " _Override_Methods "
         public override string ToString()
         {
-            return Nome;
+            return Nome + " - " + Login;
         }
+        #endregion
     }
 }

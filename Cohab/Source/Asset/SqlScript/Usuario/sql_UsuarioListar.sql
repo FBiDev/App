@@ -17,6 +17,6 @@ WHERE 1 = 1
 		OR (@Login = '' OR @Login IS NULL))
 	AND (Usuario_Nome LIKE '%'+@Nome+'%' 
 		OR (@Nome = '' OR @Nome IS NULL))
-ORDER BY 
-	Usuario_Nome ASC;
+ORDER BY @OrderBy 
+	--Usuario_Nome ASC;
 --

@@ -24,9 +24,21 @@ namespace App.Core
             return Cast.ToMoney(d.ToString());
         }
 
-        public static string ToNumber(this decimal value, int decimals = 2, bool customLanguage = false)
+        public static string ToNumber(this decimal value, int decimals = 2, bool fixedDecimals = false, bool customLanguage = false)
         {
-            return string.Format(customLanguage ? LanguageManager.LanguageNumbers : CultureInfo.CurrentCulture, "{0:N" + decimals + "}", value);
+            if (fixedDecimals)
+            {
+                return string.Format(customLanguage ? LanguageManager.LanguageNumbers : CultureInfo.CurrentCulture, "{0:N" + decimals + "}", value);
+            }
+
+            int precision = value % 1 == 0 ? 0 : (value * 10) % 1 == 0 ? 1 : 2;
+
+            if (precision > decimals)
+            {
+                precision = decimals;
+            }
+
+            return string.Format(customLanguage ? LanguageManager.LanguageNumbers : CultureInfo.CurrentCulture, "{0:N" + precision + "}", value);
         }
 
         public static string ToNumber(this int? value, bool customLanguage = false)

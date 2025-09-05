@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using App.Core.Desktop;
+using App.Core;
 
 namespace App.Cohab
 {
@@ -109,7 +110,7 @@ namespace App.Cohab
         public static async Task<string> MostrarLotacao(string aLogin)
         {
             // Selecionar os dados da última lotação e carregar as propriedades
-            var lSQL = "SELECT CASE WHEN Diretoria.Diretoria_Sigla IS NOT NULL THEN " +
+            var query = "SELECT CASE WHEN Diretoria.Diretoria_Sigla IS NOT NULL THEN " +
                         "RTRIM(Diretoria.Diretoria_Sigla) ELSE '' END + " +
                         "CASE WHEN Departamento.Departamento_Sigla IS NOT NULL THEN '-' + " +
                         "RTRIM(Departamento.Departamento_Sigla) ELSE '' END + " +
@@ -120,8 +121,11 @@ namespace App.Cohab
                         "LEFT OUTER JOIN Setor ON Lotacao.Lotacao_SetorId = Setor.Setor_Id " +
                         "WHERE Lotacao.Lotacao_DataFim IS NULL AND " +
                         "Lotacao.Lotacao_UsuarioLogin = '" + aLogin + "'";
-            var result = await BancoCOHAB.ExecutarSelectString(lSQL);
-            return result;
+
+            var sql = new SqlQuery(query, DatabaseAction.Select);
+
+            sql.ResultSelect = await BancoCOHAB.ExecutarSelectString(sql);
+            return sql.ResultSelect;
         }
 
         public static void TratarFormulario(Form aFormulario, TratamentoTipo aTratamento)

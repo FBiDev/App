@@ -1,85 +1,81 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using App.Cohab.Properties;
 using App.Core;
-using App.Core.Desktop;
 
-namespace App.Cohab
+namespace App.Cohab.Dao
 {
-    public class SistemaDao
+    public class SistemaDao : DaoBase
     {
-        #region " _Carregar "
-        public static T Carregar<T>(DataTable table) where T : IList, new()
-        {
-            var list = new T();
-            foreach (DataRow row in table.Rows)
-            {
-                list.Add(new Sistema
-                {
-                    Sigla = row.Value<string>("Sistema_Sigla"),
-                    Nome = row.Value<string>("Sistema_Nome")
-                });
-            }
-
-            return list;
-        }
-        #endregion
-
         #region " _Select "
+        public async Task<List<Sistema>> Listar()
+        {
+            return await Select();
+        }
+
         public async Task<List<Sistema>> Pesquisar(Sistema obj)
         {
-            var sql = Resources.sql_SistemaListar;
-            var parameters = GetFilters(obj);
-
-            return Carregar<List<Sistema>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
+            return await Select(obj);
         }
 
         public async Task<Sistema> Buscar(Sistema obj)
         {
-            return (await Pesquisar(obj)).FirstOrNew();
+            return (await Select(obj)).FirstOrNew();
         }
+        #endregion
 
+        #region " _Select_Custom "
         public async Task<List<Sistema>> ListarCombo()
         {
             var obj = new Sistema();
-            return (await Pesquisar(obj)).PrependNew();
+            return (await Select(obj)).PrependNew();
         }
 
         public async Task<List<Sistema>> ListarProprio(bool? proprio = null)
         {
-            string sql = Resources.sql_SistemaListarProprio;
+            var sql = new SqlQuery(Resources.sql_SistemaListarProprio, DatabaseAction.Select,
+                P("@proprio", proprio));
 
-            var parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@proprio", proprio)
-            };
-
-            return Carregar<List<Sistema>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
+            return Load(await BancoCOHAB.ExecutarSelect(sql));
         }
 
         public async Task<List<Sistema>> ListarPorUsuario(Usuario obj)
         {
-            string sql = Resources.sql_SistemaListarPorUsuario;
+            obj = obj ?? new Usuario();
 
-            var parameters = new List<SqlParameter>
-            {
-                new SqlParameter("@Login", obj.Login)
-            };
+            var sql = new SqlQuery(Resources.sql_SistemaListarPorUsuario, DatabaseAction.Select,
+                P("@Login", obj.Login));
 
-            return Carregar<List<Sistema>>(await BancoCOHAB.ExecutarSelect(sql, parameters));
+            return Load(await BancoCOHAB.ExecutarSelect(sql));
         }
         #endregion
 
-        #region " _Parameters "
-        private List<SqlParameter> GetFilters(Sistema obj)
+        #region " _Actions "
+        private async Task<List<Sistema>> Select(Sistema obj = null)
         {
-            return new List<SqlParameter>
+            obj = obj ?? new Sistema();
+
+            var sql = new SqlQuery(Resources.sql_SistemaListar, DatabaseAction.Select,
+                P("@Nome", obj.Nome));
+
+            return Load(await BancoCOHAB.ExecutarSelect(sql));
+        }
+        #endregion
+
+        #region " _Load "
+        private List<Sistema> Load(DataTable table)
+        {
+            return table.ProcessRows<Sistema>((row, lst) =>
             {
-                new SqlParameter("@Nome", obj.Nome)
-            };
+                var entity = new Sistema
+                {
+                    Sigla = row.Value<string>("Sistema_Sigla"),
+                    Nome = row.Value<string>("Sistema_Nome")
+                };
+
+                lst.Add(entity);
+            });
         }
         #endregion
     }
