@@ -123,6 +123,8 @@ namespace App.Core.Desktop
 
         public bool CustomDestination { get; set; }
 
+        public int Type { get; set; }
+
         public bool IsBackupCopy { get; set; }
 
         public bool IsTimer { get; set; }
@@ -449,7 +451,9 @@ namespace App.Core.Desktop
 
             var cbo = sender as FlatComboBoxNew;
 
-            switch (cbo.SelectedIndex)
+            Type = cbo.SelectedIndex;
+
+            switch (Type)
             {
                 case 0: Overwrite = true;
                     break;

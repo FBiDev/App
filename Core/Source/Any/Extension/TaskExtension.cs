@@ -6,6 +6,14 @@ namespace App.Core
 {
     public static class TaskExtension
     {
+        public static void Cancel(this TaskController task)
+        {
+            if (task is TaskController)
+            {
+                task.TokenSource.Cancel();
+            }
+        }
+
         public static void TryAwait(this Task task)
         {
             if (AppType.IsDesktop)

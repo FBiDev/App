@@ -45,7 +45,9 @@ namespace App.Cohab.Dao
 
         public async Task<bool> VerificarAcesso(string login, string sistema)
         {
-            var sql = new SqlQuery(Resources.sql_UsuarioVerificarAcesso, DatabaseAction.Select,
+            var sql = new SqlQuery(
+                Resources.sql_UsuarioVerificarAcesso,
+                DatabaseAction.Select,
                 P("@Login", login),
                 P("@Sistema", sistema));
 
@@ -54,7 +56,9 @@ namespace App.Cohab.Dao
 
         public async Task<List<Usuario>> ListarPorSetor(string setor = null, bool ativos = true)
         {
-            var sql = new SqlQuery(Resources.sql_UsuarioListarPorSetor, DatabaseAction.Select,
+            var sql = new SqlQuery(
+                Resources.sql_UsuarioListarPorSetor,
+                DatabaseAction.Select,
                 P("@setor", setor),
                 P("@ativos", ativos));
 
@@ -63,7 +67,9 @@ namespace App.Cohab.Dao
 
         public async Task<List<Usuario>> ListarPorDepartamento(string depto, bool exclusivo = false, bool ativos = false)
         {
-            var sql = new SqlQuery(Resources.sql_UsuarioListarPorDepartamento, DatabaseAction.Select,
+            var sql = new SqlQuery(
+                Resources.sql_UsuarioListarPorDepartamento,
+                DatabaseAction.Select,
                 P("@depto", depto),
                 P("@exclusivo", exclusivo),
                 P("@ativos", ativos));
@@ -73,7 +79,9 @@ namespace App.Cohab.Dao
 
         public async Task<List<Usuario>> ListarPorMatricula(string matricula, string login = null)
         {
-            var sql = new SqlQuery(Resources.sql_UsuarioListarPorMatricula, DatabaseAction.Select,
+            var sql = new SqlQuery(
+                Resources.sql_UsuarioListarPorMatricula,
+                DatabaseAction.Select,
                 P("@matricula", matricula),
                 P("@login", login));
 
@@ -86,7 +94,9 @@ namespace App.Cohab.Dao
         {
             var senhaPadrao = Funcoes.CriptografarSenha("senhasenha");
 
-            var sql = new SqlQuery(Resources.sql_UsuarioClonarAcessos, DatabaseAction.Insert,
+            var sql = new SqlQuery(
+                Resources.sql_UsuarioClonarAcessos,
+                DatabaseAction.Insert,
                 P("@loginDestino", loginDestino),
                 P("@senhaPadrao", senhaPadrao),
                 P("@loginOrigem", loginOrigem));
@@ -99,7 +109,9 @@ namespace App.Cohab.Dao
             var senhaPadrao = Funcoes.CriptografarSenha("senhasenha");
             var validade = (await BancoCOHAB.DataServidor()).AddDays(30).ToShortDateString();
 
-            var sql = new SqlQuery(Resources.sql_UsuarioTrocarSenha, DatabaseAction.Update,
+            var sql = new SqlQuery(
+                Resources.sql_UsuarioTrocarSenha,
+                DatabaseAction.Update,
                 P("@Login", login),
                 P("@Sistema", sistema),
                 P("@Senha", senhaPadrao),
@@ -114,7 +126,9 @@ namespace App.Cohab.Dao
         {
             obj = obj ?? new Usuario();
 
-            var sql = new SqlQuery(Resources.sql_UsuarioListar, DatabaseAction.Select,
+            var sql = new SqlQuery(
+                Resources.sql_UsuarioListar,
+                DatabaseAction.Select,
                 P("@Ativo", obj.Ativo),
                 P("@Login", obj.Login),
                 P("@Nome", obj.Nome));

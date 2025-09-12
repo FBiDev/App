@@ -6,42 +6,37 @@ namespace App.Core
 {
     public class TaskController
     {
-        private CancellationTokenSource source;
-
         public TaskController()
         {
             Reset();
         }
 
+        public CancellationTokenSource TokenSource { get; private set; }
+
         public bool IsCanceled { get; set; }
 
-        public static async Task Delay(double secondsDelay)
+        public static async Task Delay(double seconds)
         {
-            int milliseconds = (int)(secondsDelay * 1000);
+            int milliseconds = (int)(seconds * 1000);
             await Task.Delay(milliseconds);
         }
 
         public void Reset()
         {
-            source = new CancellationTokenSource();
+            TokenSource = new CancellationTokenSource();
             IsCanceled = false;
         }
 
-        public void Cancel()
-        {
-            source.Cancel();
-        }
-
-        public async Task DelayStart(double secondsDelay)
+        public async Task DelayStart(double seconds)
         {
             try
             {
-                int milliseconds = (int)(secondsDelay * 1000);
-                await Task.Delay(milliseconds, source.Token);
+                int milliseconds = (int)(seconds * 1000);
+                await Task.Delay(milliseconds, TokenSource.Token);
             }
             catch (Exception)
             {
-                IsCanceled = source.IsCancellationRequested;
+                IsCanceled = TokenSource.IsCancellationRequested;
                 return;
             }
         }

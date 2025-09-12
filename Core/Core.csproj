@@ -292,6 +292,7 @@
     <Compile Include="Source\Desktop\Extension\DateTimePickerExtension.cs" />
     <Compile Include="Source\Desktop\Extension\FormExtension.cs" />
     <Compile Include="Source\Desktop\Extension\GraphicsExtension.cs" />
+    <Compile Include="Source\Desktop\Extension\LabelExtension.cs" />
     <Compile Include="Source\Desktop\Extension\PictureBoxExtension.cs" />
     <Compile Include="Source\Desktop\Extension\RichTextBoxExtension.cs" />
     <Compile Include="Source\Desktop\Extension\TaskExtension.cs" />

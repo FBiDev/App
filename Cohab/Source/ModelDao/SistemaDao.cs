@@ -34,7 +34,9 @@ namespace App.Cohab.Dao
 
         public async Task<List<Sistema>> ListarProprio(bool? proprio = null)
         {
-            var sql = new SqlQuery(Resources.sql_SistemaListarProprio, DatabaseAction.Select,
+            var sql = new SqlQuery(
+                Resources.sql_SistemaListarProprio,
+                DatabaseAction.Select,
                 P("@proprio", proprio));
 
             return Load(await BancoCOHAB.ExecutarSelect(sql));
@@ -44,7 +46,9 @@ namespace App.Cohab.Dao
         {
             obj = obj ?? new Usuario();
 
-            var sql = new SqlQuery(Resources.sql_SistemaListarPorUsuario, DatabaseAction.Select,
+            var sql = new SqlQuery(
+                Resources.sql_SistemaListarPorUsuario,
+                DatabaseAction.Select,
                 P("@Login", obj.Login));
 
             return Load(await BancoCOHAB.ExecutarSelect(sql));
@@ -56,7 +60,9 @@ namespace App.Cohab.Dao
         {
             obj = obj ?? new Sistema();
 
-            var sql = new SqlQuery(Resources.sql_SistemaListar, DatabaseAction.Select,
+            var sql = new SqlQuery(
+                Resources.sql_SistemaListar,
+                DatabaseAction.Select,
                 P("@Nome", obj.Nome));
 
             return Load(await BancoCOHAB.ExecutarSelect(sql));

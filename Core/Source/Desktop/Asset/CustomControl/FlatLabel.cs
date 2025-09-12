@@ -27,6 +27,8 @@ namespace App.Core.Desktop
             Padding = new Padding(0, 0, 0, 1);
         }
 
+        internal TaskController ClearTask { get; set; }
+
         [DefaultValue(false)]
         public new bool UseMnemonic
         {
