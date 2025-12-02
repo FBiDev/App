@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace App.Core.Desktop
@@ -721,6 +723,9 @@ namespace App.Core.Desktop
             [DllImport("user32.dll")]
             private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
+            [DllImport("user32.dll")]
+            public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
             [DllImport("user32.dll", SetLastError = true)]
             public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, int uFlags);
 
@@ -761,12 +766,21 @@ namespace App.Core.Desktop
 
         public static class Console
         {
+            private delegate bool ConsoleEventDelegate(int eventType);
+            private static ConsoleEventDelegate handler;
+            private static int totalLines = 1;
+
             public struct Flag
             {
-                public const int
+                internal const int
                 STD_INPUT_HANDLE = -10,
                 ENABLE_QUICK_EDIT_MODE = 0x0040,
-                ENABLE_EXTENDED_FLAGS = 0x0080;
+                ENABLE_EXTENDED_FLAGS = 0x0080,
+                CTRL_CLOSE_EVENT = 2;
+
+                internal const uint
+                SC_CLOSE = 0xF060,
+                MF_BYCOMMAND = 0x00000000;
             }
 
             [DllImport("kernel32.dll")]
@@ -783,6 +797,83 @@ namespace App.Core.Desktop
 
             [DllImport("kernel32.dll")]
             public static extern bool SetConsoleMode(IntPtr hConsoleHandle, int dwMode);
+
+            [DllImport("kernel32.dll")]
+            private static extern bool SetConsoleCtrlHandler(ConsoleEventDelegate callback, bool add);
+
+            [DllImport("user32.dll")]
+            private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+
+            [DllImport("user32.dll")]
+            private static extern bool DeleteMenu(IntPtr hMenu, uint uPosition, uint uFlags);
+
+            public static void DisableConsoleCloseButton()
+            {
+                IntPtr consoleWindow = GetConsoleWindow();
+                IntPtr hMenu = GetSystemMenu(consoleWindow, false);
+                DeleteMenu(hMenu, Flag.SC_CLOSE, Flag.MF_BYCOMMAND);
+            }
+
+            public static bool IsOpen()
+            {
+                IntPtr consoleHandle = GetConsoleWindow();
+                return consoleHandle != IntPtr.Zero;
+            }
+
+            public static void OpenConsole()
+            {
+                AllocConsole();
+                ReinitializeConsoleStreams();
+                handler = new ConsoleEventDelegate(ConsoleEventHandler);
+                SetConsoleCtrlHandler(handler, true);
+
+                //DisableConsoleCloseButton();
+
+                System.Console.SetWindowSize(80, 23);
+                System.Console.SetBufferSize(80, 23);
+            }
+
+            public static void CloseWindow()
+            {
+                FreeConsole();
+            }
+
+            public static void WriteLine(string value)
+            {
+                if (IsOpen())
+                {
+                    System.Console.WriteLine(value);
+                    totalLines++;
+
+                    if (totalLines >= System.Console.BufferHeight)
+                    {
+                        System.Console.BufferHeight = totalLines + 10;
+                    }
+                }
+            }
+
+            private static void ReinitializeConsoleStreams()
+            {
+                var stdout = new StreamWriter(System.Console.OpenStandardOutput()) { AutoFlush = true };
+                System.Console.SetOut(stdout);
+
+                var stderr = new StreamWriter(System.Console.OpenStandardError()) { AutoFlush = true };
+                System.Console.SetError(stderr);
+
+                var stdin = new StreamReader(System.Console.OpenStandardInput());
+                System.Console.SetIn(stdin);
+            }
+
+            private static bool ConsoleEventHandler(int eventType)
+            {
+                if (eventType == Flag.CTRL_CLOSE_EVENT)
+                {
+                    CloseWindow();
+                    return true;
+                }
+
+                return false;
+            }
         }
     }
 }

@@ -30,12 +30,12 @@ namespace App.Core.Desktop
             }
             else
             {
-                if (CMD.IsOpen() == false)
+                if (Native.Console.IsOpen() == false)
                 {
                     OpenConsole(false, false);
                 }
 
-                Console.WriteLine(message);
+                Native.Console.WriteLine(message);
             }
 
             Buffer += message + Environment.NewLine;

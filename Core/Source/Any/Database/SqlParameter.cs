@@ -64,7 +64,7 @@ namespace App.Core
                     case TypeName.DateTime:
                         DbType = DbType.DateTime2;
 
-                        if (DateTime.MinValue == ((DateTime)value))
+                        if (((DateTime)value) == DateTime.MinValue)
                         {
                             DbType = DbType.AnsiString;
                             this.Value = DBNull.Value;

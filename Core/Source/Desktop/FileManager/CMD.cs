@@ -70,7 +70,7 @@ namespace App.Core.Desktop
 
         public static void AttachWindow(bool quickEdit = true, bool topMost = false)
         {
-            Native.Console.AllocConsole();
+            Native.Console.OpenConsole();
 
             // Position and Size
             IntPtr consoleHandle = Native.Console.GetConsoleWindow();
@@ -87,17 +87,6 @@ namespace App.Core.Desktop
                 IntPtr consoleEditHandle = Native.Console.GetStdHandle(Native.Console.Flag.STD_INPUT_HANDLE);
                 Native.Console.SetConsoleMode(consoleEditHandle, Native.Console.Flag.ENABLE_EXTENDED_FLAGS);
             }
-        }
-
-        public static void CloseWindow()
-        {
-            Native.Console.FreeConsole();
-        }
-
-        public static bool IsOpen()
-        {
-            IntPtr consoleHandle = Native.Console.GetConsoleWindow();
-            return consoleHandle != IntPtr.Zero;
         }
     }
 }

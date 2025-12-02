@@ -27,11 +27,13 @@ namespace App.Image.MagicScaler
 
         private Sizes sizeSelected;
 
-        private string imageFormats = "Image Formats (*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tiff)|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tiff";
+        private string imgFormats = "All Formats (*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff)|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff|PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|BMP (*.bmp)|*.bmp|GIF (*.gif)|*.gif|TIFF (*.tiff)|*.tiff";
 
-        private string _originPath;
+        private string outFormats = "All Formats (*.png;*.jpg;*.gif;*.tiff)|*.png;*.jpg;*.gif;*.tiff";
 
-        private string _destinationPath;
+        private string _imgPath;
+
+        private string _outPath;
 
         public MagicScaler()
         {
@@ -50,22 +52,25 @@ namespace App.Image.MagicScaler
 
             SetEncoderOptions();
 
-            OriginDialog = new OpenFileDialog
+            ImgDialog = new OpenFileDialog
             {
                 ValidateNames = true,
                 CheckFileExists = true,
                 CheckPathExists = true,
                 FileName = string.Empty,
-                Filter = imageFormats
+                Filter = imgFormats
             };
 
-            DestinationDialog = new SaveFileDialog
+            OutDialog = new SaveFileDialog
             {
-                Filter = imageFormats
+                Filter = outFormats
             };
 
             CustomName = true;
-            OriginFile = string.Empty;
+            ImgFile = string.Empty;
+
+            SuccessMessage = "MagicScaler Executed!";
+            ErrorMessage = "MagicScaler Failed!";
         }
 
         public delegate void BoolAction(bool enable);
@@ -91,7 +96,7 @@ namespace App.Image.MagicScaler
         {
             Average,
             Hermite,
-            NearestNeighbor,            
+            NearestNeighbor,
             CatmullRom,
             Cubic,
             CubicSmoother,
@@ -105,6 +110,7 @@ namespace App.Image.MagicScaler
         private enum Sizes
         {
             Same,
+            _50_Percent,
             _128x112,
             _320x320,
             _360x512,
@@ -113,45 +119,49 @@ namespace App.Image.MagicScaler
             _600x600
         }
 
-        public string OriginFolder { get; set; }
+        public string ErrorMessage { get; set; }
 
-        public string OriginFile { get; set; }
+        public string SuccessMessage { get; set; }
 
-        public string DestinationFolder { get; set; }
+        public string ImgFolder { get; set; }
 
-        public string DestinationFile { get; set; }
+        public string ImgFile { get; set; }
 
-        public string OriginPath
+        public string OutFolder { get; set; }
+
+        public string OutFile { get; set; }
+
+        public string ImgPath
         {
             get
             {
-                return _originPath;
+                return _imgPath;
             }
 
             set
             {
-                _originPath = value;
-                UpdateOrigin();
+                _imgPath = value;
+                UpdateImg();
             }
         }
 
-        public string DestinationPath
+        public string OutPath
         {
             get
             {
-                return _destinationPath;
+                return _outPath;
             }
 
             set
             {
-                _destinationPath = value;
-                UpdateDestination();
+                _outPath = value;
+                UpdateOut();
             }
         }
 
-        private OpenFileDialog OriginDialog { get; set; }
+        private OpenFileDialog ImgDialog { get; set; }
 
-        private SaveFileDialog DestinationDialog { get; set; }
+        private SaveFileDialog OutDialog { get; set; }
 
         private bool CustomName { get; set; }
 
@@ -162,16 +172,22 @@ namespace App.Image.MagicScaler
                 return false;
             }
 
+            var imgBitmap = BitmapExtension.SuperFastLoad(ImgPath);
+
             if (sizeSelected == Sizes.Same)
             {
-                var imageOrigin = BitmapExtension.SuperFastLoad(OriginPath);
-                settings.Width = imageOrigin.Width;
-                settings.Height = imageOrigin.Height;
+                settings.Width = imgBitmap.Width;
+                settings.Height = imgBitmap.Height;
+            }
+            else if (sizeSelected == Sizes._50_Percent)
+            {
+                settings.Width = imgBitmap.Width / 2;
+                settings.Height = imgBitmap.Height / 2;
             }
 
             await Task.Run(() =>
             {
-                MagicImageProcessor.ProcessImage(OriginPath, DestinationPath, settings);
+                MagicImageProcessor.ProcessImage(ImgPath, OutPath, settings);
             });
 
             Resized();
@@ -191,14 +207,14 @@ namespace App.Image.MagicScaler
 
                 SetEncoderOptions();
 
-                DestinationDialog.FileName = SetExtension(string.Empty, OriginDialog.FileName);
+                OutDialog.FileName = SetExtension(string.Empty, ImgDialog.FileName);
 
-                if (string.IsNullOrWhiteSpace(DestinationPath))
+                if (string.IsNullOrWhiteSpace(OutPath))
                 {
                     return;
                 }
 
-                DestinationPath = SetExtension(DestinationFolder, DestinationPath);
+                OutPath = SetExtension(OutFolder, OutPath);
 
                 EncoderChanged();
             };
@@ -433,7 +449,7 @@ namespace App.Image.MagicScaler
                     settings.EncoderOptions = new JpegEncoderOptions(jpgQuality, jpgChromaSubsample);
                     break;
                 case EncoderOptions.Gif:
-                    settings.EncoderOptions = new GifEncoderOptions(16, null, DitherMode.Auto);
+                    settings.EncoderOptions = new GifEncoderOptions(256, null, DitherMode.Auto);
                     break;
                 case EncoderOptions.Tiff:
                     settings.EncoderOptions = new TiffEncoderOptions(TiffCompression.Deflate);
@@ -442,35 +458,35 @@ namespace App.Image.MagicScaler
         }
         #endregion
 
-        #region OriginFileAndDestination
-        public bool PickOrigin()
+        #region ImgAndOutFile
+        public bool PickImg()
         {
             bool result;
 
-            if (result = OriginDialog.ShowDialog() == DialogResult.OK)
+            if (result = ImgDialog.ShowDialog() == DialogResult.OK)
             {
-                OriginPath = OriginDialog.FileName.NormalizePath();
-                UpdateDestinationFile();
+                ImgPath = ImgDialog.FileName.NormalizePath();
+                UpdateOutFile();
             }
 
             return result;
         }
 
-        public bool PickDestination()
+        public bool PickOut()
         {
             if (CustomName)
             {
-                DestinationDialog.InitialDirectory = DestinationFolder;
-                if (DestinationDialog.InitialDirectory == null)
+                OutDialog.InitialDirectory = OutFolder;
+                if (OutDialog.InitialDirectory == null)
                 {
-                    DestinationDialog.InitialDirectory = OriginDialog.InitialDirectory;
+                    OutDialog.InitialDirectory = ImgDialog.InitialDirectory;
                 }
 
-                if (DestinationDialog.ShowDialog() == DialogResult.OK)
+                if (OutDialog.ShowDialog() == DialogResult.OK)
                 {
-                    DestinationPath = DestinationDialog.FileName.NormalizePath();
+                    OutPath = OutDialog.FileName.NormalizePath();
 
-                    DestinationPath = SetExtension(DestinationFolder, DestinationPath);
+                    OutPath = SetExtension(OutFolder, OutPath);
 
                     return true;
                 }
@@ -481,74 +497,74 @@ namespace App.Image.MagicScaler
             return false;
         }
 
-        private void UpdateOrigin()
+        private void UpdateImg()
         {
-            if (string.IsNullOrWhiteSpace(OriginPath))
+            if (string.IsNullOrWhiteSpace(ImgPath))
             {
                 return;
             }
 
-            OriginDialog.InitialDirectory = Path.GetDirectoryName(OriginPath);
-            OriginDialog.FileName = Path.GetFileName(OriginPath);
+            ImgDialog.InitialDirectory = Path.GetDirectoryName(ImgPath);
+            ImgDialog.FileName = Path.GetFileName(ImgPath);
 
-            OriginFolder = OriginDialog.InitialDirectory;
-            OriginFile = OriginDialog.FileName;
+            ImgFolder = ImgDialog.InitialDirectory;
+            ImgFile = ImgDialog.FileName;
         }
 
-        private void UpdateDestination()
+        private void UpdateOut()
         {
-            if (string.IsNullOrWhiteSpace(DestinationPath))
+            if (string.IsNullOrWhiteSpace(OutPath))
             {
                 return;
             }
 
             if (CustomName)
             {
-                DestinationDialog.InitialDirectory = Path.GetDirectoryName(DestinationPath);
-                DestinationDialog.FileName = Path.GetFileName(DestinationPath);
+                OutDialog.InitialDirectory = Path.GetDirectoryName(OutPath);
+                OutDialog.FileName = Path.GetFileName(OutPath);
 
-                DestinationFolder = Path.GetDirectoryName(DestinationPath);
-                DestinationFile = DestinationDialog.FileName;
+                OutFolder = Path.GetDirectoryName(OutPath);
+                OutFile = OutDialog.FileName;
                 return;
             }
 
-            DestinationFolder = Path.GetDirectoryName(DestinationPath);
-            DestinationFile = Path.GetFileName(DestinationPath);
+            OutFolder = Path.GetDirectoryName(OutPath);
+            OutFile = Path.GetFileName(OutPath);
         }
 
-        private void UpdateDestinationFile()
+        private void UpdateOutFile()
         {
-            if (string.IsNullOrWhiteSpace(DestinationPath) == false)
+            if (string.IsNullOrWhiteSpace(OutPath) == false)
             {
-                DestinationPath = SetExtension(Path.GetDirectoryName(DestinationPath), OriginFile);
+                OutPath = SetExtension(Path.GetDirectoryName(OutPath), ImgFile);
             }
             else if (CustomName)
             {
-                DestinationDialog.FileName = SetExtension(string.Empty, OriginDialog.FileName);
+                OutDialog.FileName = SetExtension(string.Empty, ImgDialog.FileName);
             }
         }
 
         private string SetExtension(string folderBase, string baseFile)
         {
-            var newDestination = Path.GetFileNameWithoutExtension(baseFile);
+            var newOutFilename = Path.GetFileNameWithoutExtension(baseFile);
             if (encoderSelected == EncoderOptions.PngIndexed)
             {
-                newDestination += "." + "Png".ToLower();
+                newOutFilename += "." + "Png".ToLower();
             }
             else
             {
-                newDestination += "." + encoderSelected.ToString().ToLower();
+                newOutFilename += "." + encoderSelected.ToString().ToLower();
             }
 
-            newDestination = Path.Combine(folderBase, newDestination);
+            newOutFilename = Path.Combine(folderBase, newOutFilename);
 
-            return newDestination.NormalizePath();
+            return newOutFilename.NormalizePath();
         }
 
         private bool IsInvalidInputs()
         {
-            if (string.IsNullOrWhiteSpace(OriginPath) || string.IsNullOrWhiteSpace(DestinationPath)
-            || OriginPath == DestinationPath)
+            if (string.IsNullOrWhiteSpace(ImgPath) || string.IsNullOrWhiteSpace(OutPath)
+            || ImgPath == OutPath)
             {
                 InvalidFile();
                 return true;
