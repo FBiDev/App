@@ -73,8 +73,6 @@ namespace App.Image.MagicScaler
             ErrorMessage = "MagicScaler Failed!";
         }
 
-        public delegate void BoolAction(bool enable);
-
         public event Action EncoderChanged = delegate { };
 
         public event BoolAction EnableAnchor = delegate { };

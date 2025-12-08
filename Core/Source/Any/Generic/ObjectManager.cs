@@ -12,6 +12,8 @@ namespace App.Core
 
     public delegate Task EventTaskAsync();
 
+    public delegate void BoolAction(bool enable);
+
     public static class ObjectManager
     {
         public static string GetPropertyName<T>(Expression<Func<T>> propertyLambda)
