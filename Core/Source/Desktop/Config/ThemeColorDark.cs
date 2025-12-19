@@ -87,12 +87,13 @@ namespace App.Core.Desktop
 
         public override void FlatTextBox(FlatTextBox c)
         {
-            c.BackgroundColor = Colors.RGB(30, 30, 30);
-            c.BackgroundColorFocus = Colors.RGB(50, 50, 60);
+            c.BorderColor = Colors.RGB(86, 86, 86);
+            c.BackgroundColor = c.ReadOnly ? Colors.RGB(50, 50, 50) : Colors.RGB(30, 30, 30);
+            c.BackgroundColorFocus = c.ReadOnly ? c.BackgroundColor : Colors.RGB(50, 50, 60);
+
             c.LabelTextColor = Colors.RGB(163, 178, 220);
             c.TextColor = Colors.RGB(210, 210, 210);
             c.TextColorFocus = Colors.RGB(210, 210, 210);
-            c.BorderColor = Colors.RGB(86, 86, 86);
         }
 
         public override void FlatMaskedTextBox(FlatMaskedTextBox c)
