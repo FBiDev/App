@@ -271,9 +271,12 @@ namespace App.Core.Desktop
 
                         column.DefaultCellStyle.Format = display != null && display.Format != null ? display.Format : null;
 
-                        if ((p.PropertyType == typeof(bool) || p.PropertyType == typeof(bool?)) && (display == null || (display != null && display.IsBool != IsBool.No)))
+                        if (column.Visible)
                         {
-                            booleanColumns.Add(p.Name);
+                            if ((p.PropertyType == typeof(bool) || p.PropertyType == typeof(bool?)) && (display == null || (display != null && display.IsBool != IsBool.No)))
+                            {
+                                booleanColumns.Add(p.Name);
+                            }
                         }
                     }
                 }
