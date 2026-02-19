@@ -21,9 +21,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Debug\App.Core.XML</DocumentationFile>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>

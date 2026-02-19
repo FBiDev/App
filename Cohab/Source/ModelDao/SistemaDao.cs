@@ -21,7 +21,7 @@ namespace App.Cohab.Dao
 
         public async Task<Sistema> Buscar(Sistema obj)
         {
-            return (await Select(obj)).FirstOrNew();
+            return (await Select(obj)).First();
         }
         #endregion
 
@@ -29,7 +29,7 @@ namespace App.Cohab.Dao
         public async Task<List<Sistema>> ListarCombo()
         {
             var obj = new Sistema();
-            return (await Select(obj)).PrependNew();
+            return (await Select(obj)).PrependNewItem();
         }
 
         public async Task<List<Sistema>> ListarProprio(bool? proprio = null)

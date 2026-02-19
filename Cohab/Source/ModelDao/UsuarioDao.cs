@@ -21,7 +21,7 @@ namespace App.Cohab.Dao
 
         public async Task<Usuario> Buscar(Usuario obj)
         {
-            return (await Select(obj)).FirstOrNew();
+            return (await Select(obj)).First();
         }
         #endregion
 
@@ -40,7 +40,7 @@ namespace App.Cohab.Dao
 
         public async Task<List<Usuario>> ListarCombo()
         {
-            return (await PesquisarAtivos()).PrependNew();
+            return (await PesquisarAtivos()).PrependNewItem();
         }
 
         public async Task<bool> VerificarAcesso(string login, string sistema)
