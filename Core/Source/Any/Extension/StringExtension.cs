@@ -163,6 +163,19 @@ namespace App.Core
             return true;
         }
 
+        public static byte[] HexToBytes(this string source)
+        {
+            int length = source.Length;
+            byte[] bytes = new byte[length / 2];
+
+            for (int i = 0; i < length; i += 2)
+            {
+                bytes[i / 2] = Convert.ToByte(source.Substring(i, 2), 16);
+            }
+
+            return bytes;
+        }
+
         public static string GetBetween(this string s, string start, string end, bool inclusive = false, bool firstMatch = true, bool singleLine = true)
         {
             string first = firstMatch ? "?" : string.Empty;
