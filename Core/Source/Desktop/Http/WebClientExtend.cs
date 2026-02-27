@@ -140,7 +140,7 @@ namespace App.Core.Desktop
                 }
                 else if (IsBrotliContent)
                 {
-                    response = Brotli.Decompress(response);
+                    response = BrotliWrapper.Decompress(response);
                 }
 
                 responseString = Encoding.UTF8.GetString(response);
@@ -166,7 +166,7 @@ namespace App.Core.Desktop
 
             if (IsBrotliContent)
             {
-                data = Brotli.Decompress(data);
+                data = BrotliWrapper.Decompress(data);
             }
 
             if (ResponseHeaders == null)
@@ -317,7 +317,7 @@ namespace App.Core.Desktop
             if (IsBrotliContent)
             {
                 var encfileData = File.ReadAllBytes(FileDownloaded.Path);
-                var decfileData = Brotli.Decompress(encfileData);
+                var decfileData = BrotliWrapper.Decompress(encfileData);
                 File.WriteAllBytes(FileDownloaded.Path, decfileData);
             }
             else if (IsGZipContent)

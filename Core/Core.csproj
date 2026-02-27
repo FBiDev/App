@@ -65,6 +65,8 @@
     <Compile Include="Source\Any\Database\SqlOrder.cs" />
     <Compile Include="Source\Any\Database\SqlQuery.cs" />
     <Compile Include="Source\Any\Extension\ActionExtension.cs" />
+    <Compile Include="Source\Any\Generic\ULID.cs" />
+    <Compile Include="Source\Any\Plugin\BrotliWrapper.cs" />
     <Compile Include="Source\Desktop\Extension\ActionExtension.cs" />
     <Compile Include="Source\Any\FileManager\HexFile.cs" />
     <Compile Include="Source\Any\Generic\Formatter.cs" />
@@ -115,7 +117,7 @@
     <Compile Include="Source\Any\Generic\ObjectManager.cs" />
     <Compile Include="Source\Any\Generic\StopwatchTimer.cs" />
     <Compile Include="Source\Any\Generic\TaskController.cs" />
-    <Compile Include="Source\Any\Plugin\Brotli.cs" />
+    <Compile Include="Source\Any\Plugin\BrotliOld.cs" />
     <Compile Include="Source\Any\Util\XML\ConfigXML.cs" />
     <Compile Include="Source\Any\Util\XML\Server.cs" />
     <Compile Include="Source\Any\Util\XML\Wallpaper.cs" />

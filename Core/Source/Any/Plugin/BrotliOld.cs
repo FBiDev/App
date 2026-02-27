@@ -3,9 +3,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 
-namespace App.Core
+namespace App.Core.Old
 {
-    public static class Brotli
+    internal static class BrotliOld
     {
         private static readonly string DllName = "Brotli.Core";
 
