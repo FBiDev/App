@@ -80,20 +80,7 @@ namespace App.Core
 
             Timestamp = Decode(Base32Timestamp);
             TimestampDecimal = EncodeToDecimal(Timestamp);
-
-            string binary = Convert.ToString((long)Timestamp, 2).PadLeft(48, '0');
-
-            int chuncksCount = (int)Math.Ceiling(binary.Length / 5.0);
-            TimestampBinary = new string[chuncksCount];
-
-            int index = chuncksCount - 1;
-            for (int pos = binary.Length; pos > 0; pos -= 5)
-            {
-                int start = Math.Max(0, pos - 5);
-                int length = pos - start;
-                TimestampBinary[index--] = binary.Substring(start, length);
-            }
-
+            TimestampBinary = EncodeToBinary(Timestamp);
             TimestampHex = Timestamp.ToString("X12");
 
             DateUTC = UnixDateTime.AddMilliseconds(Timestamp);
@@ -105,15 +92,31 @@ namespace App.Core
         }
 
         #region Encode
-        private int[] EncodeToDecimal(ulong value)
+        private int[] EncodeToDecimal(ulong value, int minLength = 10)
         {
-            var minLength = 10;
-
             int[] result = new int[minLength];
             for (int i = minLength - 1; i >= 0; i--)
             {
                 result[i] = (int)(value % 32);
                 value /= 32;
+            }
+
+            return result;
+        }
+
+        private string[] EncodeToBinary(ulong value, int stringLength = 48, int chunckLength = 5)
+        {
+            string binary = Convert.ToString((long)value, 2).PadLeft(stringLength, '0');
+
+            int chuncksCount = (int)Math.Ceiling(binary.Length / (double)chunckLength);
+            var result = new string[chuncksCount];
+
+            int index = chuncksCount - 1;
+            for (int pos = binary.Length; pos > 0; pos -= chunckLength)
+            {
+                int start = Math.Max(0, pos - chunckLength);
+                int length = pos - start;
+                result[index--] = binary.Substring(start, length);
             }
 
             return result;
@@ -177,7 +180,7 @@ namespace App.Core
                 uint value = (uint)CrockfordBase32.IndexOf(c);
                 if (value < 0)
                 {
-                    throw new ArgumentException("Caractere inválido: " + c);
+                    throw new ArgumentException("Invalid character: " + c);
                 }
 
                 result = (result << 5) | value;
