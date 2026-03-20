@@ -48,15 +48,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Source\ModelDao\SistemaDao.cs" />
-    <Compile Include="Source\ModelDao\UsuarioDao.cs" />
-    <Compile Include="Source\Model\Sistema.cs" />
-    <Compile Include="Source\Model\Usuario.cs" />
+    <Compile Include="scr\Core\DataAccess\SistemaDao.cs" />
+    <Compile Include="scr\Core\DataAccess\UsuarioDao.cs" />
+    <Compile Include="scr\Core\Models\SistemaModel.cs" />
+    <Compile Include="scr\Core\Models\UsuarioModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Source\Config\BancoCOHAB.cs" />
-    <Compile Include="Source\Config\Options.cs" />
-    <Compile Include="Source\Config\Session.cs" />
-    <Compile Include="Source\Util\Funcoes.cs" />
+    <Compile Include="scr\Core\Services\SistemaService.cs" />
+    <Compile Include="scr\Core\Services\UsuarioService.cs" />
+    <Compile Include="scr\Infrastructure\App\BancoCOHAB.cs" />
+    <Compile Include="scr\Infrastructure\App\Options.cs" />
+    <Compile Include="scr\Infrastructure\App\Session.cs" />
+    <Compile Include="scr\Infrastructure\Common\Funcoes.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -66,27 +68,28 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Source\Asset\SqlScript\Sistema\sql_SistemaListar.sql" />
-    <Content Include="Source\Asset\SqlScript\Sistema\sql_SistemaListarPorUsuario.sql" />
-    <Content Include="Source\Asset\SqlScript\Sistema\sql_SistemaListarProprio.sql" />
-    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioClonarAcessos.sql" />
-    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioListarPorMatricula.sql" />
-    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioListarPorDepartamento.sql" />
-    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioListar.sql" />
-    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioListarPorSetor.sql" />
-    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioTrocarSenha.sql" />
-    <Content Include="Source\Asset\SqlScript\Usuario\sql_UsuarioVerificarAcesso.sql" />
+    <Content Include="scr\Data\Scripts\Sistema\sql_SistemaListar.sql" />
+    <Content Include="scr\Data\Scripts\Sistema\sql_SistemaListarPorUsuario.sql" />
+    <Content Include="scr\Data\Scripts\Sistema\sql_SistemaListarProprio.sql" />
+    <Content Include="scr\Data\Scripts\Usuario\sql_UsuarioClonarAcessos.sql" />
+    <Content Include="scr\Data\Scripts\Usuario\sql_UsuarioListarPorMatricula.sql" />
+    <Content Include="scr\Data\Scripts\Usuario\sql_UsuarioListarPorDepartamento.sql" />
+    <Content Include="scr\Data\Scripts\Usuario\sql_UsuarioListar.sql" />
+    <Content Include="scr\Data\Scripts\Usuario\sql_UsuarioListarPorSetor.sql" />
+    <Content Include="scr\Data\Scripts\Usuario\sql_UsuarioTrocarSenha.sql" />
+    <Content Include="scr\Data\Scripts\Usuario\sql_UsuarioVerificarAcesso.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{9fea3ebe-e414-4263-aac4-452a32b2a75c}</Project>
       <Name>Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\File.Json\File.Json.csproj">
+    <ProjectReference Include="..\Serialization.Json\Serialization.Json.csproj">
       <Project>{e44598be-0969-4825-a9a1-a0b766a87547}</Project>
-      <Name>File.Json</Name>
+      <Name>Serialization.Json</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>call "$(SolutionDir)Assembly\build_script\PostDllToBin.bat" ^

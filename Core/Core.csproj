@@ -54,346 +54,346 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Source\Any\Config\AppEnums.cs" />
-    <Compile Include="Source\Any\Config\AppType.cs" />
-    <Compile Include="Source\Any\Config\ExceptionManager.cs" />
-    <Compile Include="Source\Any\Config\ExceptionProcessed.cs" />
-    <Compile Include="Source\Any\Config\FontName.cs" />
-    <Compile Include="Source\Any\Config\StringValue.cs" />
-    <Compile Include="Source\Any\Config\TypeName.cs" />
-    <Compile Include="Source\Any\Database\DaoBase.cs" />
-    <Compile Include="Source\Any\Database\SqlOrder.cs" />
-    <Compile Include="Source\Any\Database\SqlQuery.cs" />
-    <Compile Include="Source\Any\Extension\ActionExtension.cs" />
-    <Compile Include="Source\Any\Generic\ULID.cs" />
-    <Compile Include="Source\Any\Plugin\BrotliWrapper.cs" />
-    <Compile Include="Source\Desktop\Extension\ActionExtension.cs" />
-    <Compile Include="Source\Any\FileManager\HexFile.cs" />
-    <Compile Include="Source\Any\Generic\Formatter.cs" />
-    <Compile Include="Source\Any\Generic\ListSyncedChangedEventArgs.cs" />
-    <Compile Include="Source\Any\Util\DisplayAttribute.cs" />
-    <Compile Include="Source\Any\Util\StyleAttribute.cs" />
-    <Compile Include="Source\Desktop\Asset\CustomControl\Base\FlatMaskedTextBoxBase.cs">
+    <Compile Include="src\Core\App\AppEnums.cs" />
+    <Compile Include="src\Core\App\AppMode.cs" />
+    <Compile Include="src\Core\Exceptions\ExceptionManager.cs" />
+    <Compile Include="src\Core\Exceptions\ExceptionProcessed.cs" />
+    <Compile Include="src\Core\Common\Constants\FontName.cs" />
+    <Compile Include="src\Core\Common\Constants\StringValue.cs" />
+    <Compile Include="src\Core\Common\Constants\TypeName.cs" />
+    <Compile Include="src\Core\Data\DaoBase.cs" />
+    <Compile Include="src\Core\Data\SQL\SqlOrder.cs" />
+    <Compile Include="src\Core\Data\SQL\SqlQuery.cs" />
+    <Compile Include="src\Core\Extensions\ActionExtension.cs" />
+    <Compile Include="src\Core\Lib\ULID.cs" />
+    <Compile Include="src\Core\Lib\BrotliWrapper.cs" />
+    <Compile Include="src\Desktop\Extensions\ActionExtension.cs" />
+    <Compile Include="src\Core\FileManager\HexFile.cs" />
+    <Compile Include="src\Core\Common\Converters\Formatter.cs" />
+    <Compile Include="src\Core\Common\Collections\ListSyncedChangedEventArgs.cs" />
+    <Compile Include="src\Core\Common\Attributes\DisplayAttribute.cs" />
+    <Compile Include="src\Core\Common\Attributes\StyleAttribute.cs" />
+    <Compile Include="src\Desktop\UI\Controls\Base\FlatMaskedTextBoxBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatCheckBoxInner.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatCheckBoxInner.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatCheckedList.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatCheckedList.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatCheckedList.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatCheckedList.Designer.cs">
       <DependentUpon>FlatCheckedList.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Config\DB.cs" />
-    <Compile Include="Source\Any\Config\ExceptionManagerAny.cs" />
-    <Compile Include="Source\Any\Config\LanguageManager.cs" />
-    <Compile Include="Source\Any\Database\DatabaseDao.cs" />
-    <Compile Include="Source\Any\Database\DatabaseManager.cs" />
-    <Compile Include="Source\Any\Database\DataRowExtension.cs" />
-    <Compile Include="Source\Any\Database\SqlLog.cs" />
-    <Compile Include="Source\Any\Database\SqlParameter.cs" />
-    <Compile Include="Source\Any\Database\SqlResult.cs" />
-    <Compile Include="Source\Any\Extension\BitmapExtension.cs" />
-    <Compile Include="Source\Any\Extension\BoolExtension.cs" />
-    <Compile Include="Source\Any\Extension\DatabaseExtension.cs" />
-    <Compile Include="Source\Any\Extension\DateTimeExtension.cs" />
-    <Compile Include="Source\Any\Extension\EnumExtension.cs" />
-    <Compile Include="Source\Any\Extension\IntExtension.cs" />
-    <Compile Include="Source\Any\Extension\ListExtension.cs" />
-    <Compile Include="Source\Any\Extension\ObjectExtension.cs" />
-    <Compile Include="Source\Any\Extension\StopwatchExtension.cs" />
-    <Compile Include="Source\Any\Extension\StringExtension.cs" />
-    <Compile Include="Source\Any\Extension\TaskExtension.cs" />
-    <Compile Include="Source\Any\Extension\XmlExtension.cs" />
-    <Compile Include="Source\Any\FileManager\CRC32.cs" />
-    <Compile Include="Source\Any\FileManager\StringWriterUTF8.cs" />
-    <Compile Include="Source\Any\FileManager\XmlManager.cs" />
-    <Compile Include="Source\Any\Util\FieldAttribute.cs" />
-    <Compile Include="Source\Any\Generic\Cast.cs" />
-    <Compile Include="Source\Any\Generic\Colors.cs" />
-    <Compile Include="Source\Any\Generic\DropItem.cs" />
-    <Compile Include="Source\Any\Generic\ListSynced.cs" />
-    <Compile Include="Source\Any\Generic\ObjectManager.cs" />
-    <Compile Include="Source\Any\Generic\StopwatchTimer.cs" />
-    <Compile Include="Source\Any\Generic\TaskController.cs" />
-    <Compile Include="Source\Any\Plugin\BrotliOld.cs" />
-    <Compile Include="Source\Any\Util\XML\ConfigXML.cs" />
-    <Compile Include="Source\Any\Util\XML\Server.cs" />
-    <Compile Include="Source\Any\Util\XML\Wallpaper.cs" />
-    <Compile Include="Source\Desktop\Config\AppEnums.cs" />
-    <Compile Include="Source\Desktop\Config\AppManager.cs" />
-    <Compile Include="Source\Desktop\Config\ExceptionManager.cs" />
-    <Compile Include="Source\Desktop\Config\ThemeBase.cs" />
-    <Compile Include="Source\Desktop\Config\ThemeColor.cs" />
-    <Compile Include="Source\Desktop\Config\ThemeColorDark.cs" />
-    <Compile Include="Source\Desktop\Config\ThemeColorLight.cs" />
-    <Compile Include="Source\Desktop\Controller\ControllerBase.cs" />
-    <Compile Include="Source\Desktop\Controller\ControllerResult.cs" />
-    <Compile Include="Source\Desktop\Asset\CustomControl\Base\DataGridBase.cs">
+    <Compile Include="src\Desktop\App\DB.cs" />
+    <Compile Include="src\Core\Exceptions\ExceptionManagerAny.cs" />
+    <Compile Include="src\Core\App\LanguageManager.cs" />
+    <Compile Include="src\z_removed\Any\Data\DatabaseDao.cs" />
+    <Compile Include="src\Core\Data\DatabaseManager.cs" />
+    <Compile Include="src\Core\Data\DataRowExtension.cs" />
+    <Compile Include="src\Core\Data\SQL\SqlLog.cs" />
+    <Compile Include="src\Core\Data\SQL\SqlParameter.cs" />
+    <Compile Include="src\Core\Data\SQL\SqlResult.cs" />
+    <Compile Include="src\Core\Extensions\BitmapExtension.cs" />
+    <Compile Include="src\Core\Extensions\BoolExtension.cs" />
+    <Compile Include="src\Core\Data\DatabaseExtension.cs" />
+    <Compile Include="src\Core\Extensions\DateTimeExtension.cs" />
+    <Compile Include="src\Core\Extensions\EnumExtension.cs" />
+    <Compile Include="src\Core\Extensions\IntExtension.cs" />
+    <Compile Include="src\Core\Extensions\ListExtension.cs" />
+    <Compile Include="src\Core\Extensions\ObjectExtension.cs" />
+    <Compile Include="src\Core\Extensions\StopwatchExtension.cs" />
+    <Compile Include="src\Core\Extensions\StringExtension.cs" />
+    <Compile Include="src\Core\Extensions\TaskExtension.cs" />
+    <Compile Include="src\Core\Extensions\XmlExtension.cs" />
+    <Compile Include="src\Core\FileManager\CRC32.cs" />
+    <Compile Include="src\Core\FileManager\StringWriterUTF8.cs" />
+    <Compile Include="src\Core\FileManager\XmlManager.cs" />
+    <Compile Include="src\Core\Common\Attributes\FieldAttribute.cs" />
+    <Compile Include="src\Core\Common\Converters\Cast.cs" />
+    <Compile Include="src\Core\UI\Colors.cs" />
+    <Compile Include="src\Core\UI\DropItem.cs" />
+    <Compile Include="src\Core\Common\Collections\ListSynced.cs" />
+    <Compile Include="src\Core\Common\Diagnostics\ObjectManager.cs" />
+    <Compile Include="src\Core\Common\Diagnostics\StopwatchTimer.cs" />
+    <Compile Include="src\Core\Common\Services\TaskService.cs" />
+    <Compile Include="src\z_removed\Any\Lib\BrotliOld.cs" />
+    <Compile Include="src\z_removed\Any\Common\XML\ConfigXML.cs" />
+    <Compile Include="src\z_removed\Any\Common\XML\Server.cs" />
+    <Compile Include="src\z_removed\Any\Common\XML\Wallpaper.cs" />
+    <Compile Include="src\Desktop\App\AppEnums.cs" />
+    <Compile Include="src\Desktop\App\AppManager.cs" />
+    <Compile Include="src\Desktop\Exceptions\ExceptionManager.cs" />
+    <Compile Include="src\Desktop\UI\Theme\ThemeBase.cs" />
+    <Compile Include="src\Desktop\UI\Theme\ThemeColor.cs" />
+    <Compile Include="src\Desktop\UI\Theme\ThemeColorDark.cs" />
+    <Compile Include="src\Desktop\UI\Theme\ThemeColorLight.cs" />
+    <Compile Include="src\Desktop\UI\Manager\FormControllerBase.cs" />
+    <Compile Include="src\Desktop\UI\Manager\FormControllerResult.cs" />
+    <Compile Include="src\Desktop\UI\Controls\Base\DataGridBase.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Base\DataGridBase.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\Base\DataGridBase.Designer.cs">
       <DependentUpon>DataGridBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Base\FlatComboBoxNew.cs">
+    <Compile Include="src\Desktop\UI\Controls\Base\FlatComboBoxNew.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Base\FlatTextBoxBase.cs">
+    <Compile Include="src\Desktop\UI\Controls\Base\FlatTextBoxBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Base\FlatTextBoxBase.designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\Base\FlatTextBoxBase.designer.cs">
       <DependentUpon>FlatTextBoxBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\ExeButton.cs">
+    <Compile Include="src\Desktop\UI\Controls\ExeButton.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\ExeButton.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\ExeButton.Designer.cs">
       <DependentUpon>ExeButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\ExeInnerButton.cs">
+    <Compile Include="src\Desktop\UI\Controls\ExeInnerButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatButton.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatCheckBox.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatCheckBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatCheckBox.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatCheckBox.Designer.cs">
       <DependentUpon>FlatCheckBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatComboBox.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatComboBox.cs">
       <SubType>UserControl</SubType>
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatComboBox.designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatComboBox.designer.cs">
       <DependentUpon>FlatComboBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatDataGrid.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatDataGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatDataGrid.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatDataGrid.Designer.cs">
       <DependentUpon>FlatDataGrid.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatGroupBox.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatGroupBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatGroupBox.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatGroupBox.Designer.cs">
       <DependentUpon>FlatGroupBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatLabel.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatLabel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatLabel.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatLabel.Designer.cs">
       <DependentUpon>FlatLabel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatListView.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatListView.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatListView.Designer.cs">
       <DependentUpon>FlatListView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatListViewItem.cs" />
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatMaskedTextBox.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatListViewItem.cs" />
+    <Compile Include="src\Desktop\UI\Controls\FlatMaskedTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatMaskedTextBox.designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatMaskedTextBox.designer.cs">
       <DependentUpon>FlatMaskedTextBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatPanel.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatPanel.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatPanel.Designer.cs">
       <DependentUpon>FlatPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatPanelBG.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatPanelBG.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatPictureBox.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatProgressBar.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatProgressBar.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatProgressBar.Designer.cs">
       <DependentUpon>FlatProgressBar.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatStatusBar.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatStatusBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatStatusBar.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatStatusBar.Designer.cs">
       <DependentUpon>FlatStatusBar.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatTabControl.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatTable.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatTable.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatTextBox.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\FlatTextBox.designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\FlatTextBox.designer.cs">
       <DependentUpon>FlatTextBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Form\BaseForm.cs">
+    <Compile Include="src\Desktop\UI\Controls\Form\BaseForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Form\BaseForm.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\Form\BaseForm.Designer.cs">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Form\BaseForm2.cs">
+    <Compile Include="src\Desktop\UI\Controls\Form\BaseForm2.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Form\BaseForm2.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\Form\BaseForm2.Designer.cs">
       <DependentUpon>BaseForm2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Form\ContentBaseForm.cs">
+    <Compile Include="src\Desktop\UI\Controls\Form\ContentBaseForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Form\ContentBaseForm.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\Form\ContentBaseForm.Designer.cs">
       <DependentUpon>ContentBaseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Form\FormBase.cs">
+    <Compile Include="src\Desktop\UI\Controls\Form\FormBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Form\FormBase.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\Form\FormBase.Designer.cs">
       <DependentUpon>FormBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Form\MainBaseForm.cs">
+    <Compile Include="src\Desktop\UI\Controls\Form\MainBaseForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Form\MainBaseForm.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\Form\MainBaseForm.Designer.cs">
       <DependentUpon>MainBaseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Test\MenuBar.cs">
+    <Compile Include="src\Desktop\UI\Controls\Test\MenuBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Test\MenuBar.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\Test\MenuBar.Designer.cs">
       <DependentUpon>MenuBar.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Test\PanelResizable.cs">
+    <Compile Include="src\Desktop\UI\Controls\Test\PanelResizable.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\Asset\CustomControl\Test\PanelResizable.Designer.cs">
+    <Compile Include="src\Desktop\UI\Controls\Test\PanelResizable.Designer.cs">
       <DependentUpon>PanelResizable.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\Database\DatabaseDao.cs" />
-    <Compile Include="Source\Any\Database\DataRowCastExtension.cs" />
-    <Compile Include="Source\Desktop\DebugLayer\DebugForm.cs">
+    <Compile Include="src\z_removed\Desktop\Data\DatabaseDao.cs" />
+    <Compile Include="src\Core\Data\DataRowCastExtension.cs" />
+    <Compile Include="src\Desktop\Common\Diagnostics\DebugForm.cs">
       <SubType>Form</SubType>
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Source\Desktop\DebugLayer\DebugForm.designer.cs">
+    <Compile Include="src\Desktop\Common\Diagnostics\DebugForm.designer.cs">
       <DependentUpon>DebugForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Desktop\DebugLayer\DebugLog.cs" />
-    <Compile Include="Source\Desktop\DebugLayer\DebugManager.cs" />
-    <Compile Include="Source\Desktop\DebugLayer\Messages.cs" />
-    <Compile Include="Source\Desktop\Extension\BindingListExtension.cs" />
-    <Compile Include="Source\Desktop\Extension\DataGridViewExtension.cs" />
-    <Compile Include="Source\Desktop\Extension\DateTimePickerExtension.cs" />
-    <Compile Include="Source\Desktop\Extension\FormExtension.cs" />
-    <Compile Include="Source\Desktop\Extension\GraphicsExtension.cs" />
-    <Compile Include="Source\Desktop\Extension\LabelExtension.cs" />
-    <Compile Include="Source\Desktop\Extension\PictureBoxExtension.cs" />
-    <Compile Include="Source\Desktop\Extension\RichTextBoxExtension.cs" />
-    <Compile Include="Source\Desktop\Extension\TaskExtension.cs" />
-    <Compile Include="Source\Desktop\FileManager\Archive.cs" />
-    <Compile Include="Source\Desktop\FileManager\CMD.cs" />
-    <Compile Include="Source\Desktop\FileManager\FileBackup.cs" />
-    <Compile Include="Source\Desktop\FileManager\FilePick.cs" />
-    <Compile Include="Source\Desktop\FileManager\FolderPicker.cs" />
-    <Compile Include="Source\Desktop\FileManager\Picture.cs" />
-    <Compile Include="Source\Desktop\Generic\ClipboardSafe.cs" />
-    <Compile Include="Source\Desktop\Generic\FormManager.cs" />
-    <Compile Include="Source\Desktop\Generic\Forms.cs" />
-    <Compile Include="Source\Desktop\Generic\ListBind.cs" />
-    <Compile Include="Source\Desktop\Generic\ListBind_old.cs" />
-    <Compile Include="Source\Desktop\Generic\ShowBox.cs" />
-    <Compile Include="Source\Desktop\Http\Browser.cs" />
-    <Compile Include="Source\Desktop\Http\Download.cs" />
-    <Compile Include="Source\Desktop\Http\DownloadBase.cs" />
-    <Compile Include="Source\Desktop\Http\DownloadFile.cs" />
-    <Compile Include="Source\Desktop\Http\WebClientExtend.cs">
+    <Compile Include="src\Desktop\Common\Diagnostics\DebugLog.cs" />
+    <Compile Include="src\Desktop\Common\Diagnostics\DebugManager.cs" />
+    <Compile Include="src\Desktop\Common\Diagnostics\Messages.cs" />
+    <Compile Include="src\Desktop\Extensions\BindingListExtension.cs" />
+    <Compile Include="src\Desktop\Extensions\DataGridViewExtension.cs" />
+    <Compile Include="src\Desktop\Extensions\DateTimePickerExtension.cs" />
+    <Compile Include="src\Desktop\Extensions\FormExtension.cs" />
+    <Compile Include="src\Desktop\Extensions\GraphicsExtension.cs" />
+    <Compile Include="src\Desktop\Extensions\LabelExtension.cs" />
+    <Compile Include="src\Desktop\Extensions\PictureBoxExtension.cs" />
+    <Compile Include="src\Desktop\Extensions\RichTextBoxExtension.cs" />
+    <Compile Include="src\Desktop\Extensions\TaskExtension.cs" />
+    <Compile Include="src\Desktop\FileManager\Archive.cs" />
+    <Compile Include="src\Desktop\WindowsOS\Terminal.cs" />
+    <Compile Include="src\Desktop\FileManager\FileBackup.cs" />
+    <Compile Include="src\Desktop\FileManager\FilePick.cs" />
+    <Compile Include="src\Desktop\FileManager\FolderPicker.cs" />
+    <Compile Include="src\Desktop\FileManager\Picture.cs" />
+    <Compile Include="src\Desktop\WindowsOS\ClipboardSafe.cs" />
+    <Compile Include="src\Desktop\UI\Manager\FormManager.cs" />
+    <Compile Include="src\Desktop\UI\Manager\Forms.cs" />
+    <Compile Include="src\Desktop\Common\Collections\DataList.cs" />
+    <Compile Include="src\z_removed\Desktop\Common\ListBind_old.cs" />
+    <Compile Include="src\Desktop\UI\Manager\ShowBox.cs" />
+    <Compile Include="src\Desktop\Http\Browser.cs" />
+    <Compile Include="src\Desktop\Http\Download.cs" />
+    <Compile Include="src\Desktop\Http\DownloadBase.cs" />
+    <Compile Include="src\Desktop\Http\DownloadFile.cs" />
+    <Compile Include="src\Desktop\Http\WebClientExtend.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\Desktop\WindowsOS\Native.cs" />
-    <Compile Include="Source\Desktop\WindowsOS\NativeMethods.cs" />
-    <Compile Include="Source\Web\Config\AppManager.cs" />
-    <Compile Include="Source\Web\Config\ExceptionManager.cs" />
-    <Compile Include="Source\Web\Database\DatabaseDao.cs" />
-    <Compile Include="Source\Web\Extension\EnumExtensionWeb.cs" />
-    <Compile Include="Source\Web\Extension\GridViewExtension.cs" />
-    <Compile Include="Source\Web\Extension\StringExtensionWeb.cs" />
-    <Compile Include="Source\Web\Extension\TaskExtension.cs" />
+    <Compile Include="src\Desktop\WindowsOS\Native.cs" />
+    <Compile Include="src\Desktop\WindowsOS\NativeMethods.cs" />
+    <Compile Include="src\Web\App\AppManager.cs" />
+    <Compile Include="src\Web\Exceptions\ExceptionManager.cs" />
+    <Compile Include="src\z_removed\Web\Data\DatabaseDao.cs" />
+    <Compile Include="src\Web\Extensions\EnumExtensionWeb.cs" />
+    <Compile Include="src\Web\Extensions\GridViewExtension.cs" />
+    <Compile Include="src\Web\Extensions\StringExtensionWeb.cs" />
+    <Compile Include="src\Web\Extensions\TaskExtension.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Base\DataGridBase.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\Base\DataGridBase.resx">
       <DependentUpon>DataGridBase.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Base\FlatComboBoxNew.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\Base\FlatComboBoxNew.resx">
       <DependentUpon>FlatComboBoxNew.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Base\FlatTextBoxBase.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\Base\FlatTextBoxBase.resx">
       <DependentUpon>FlatTextBoxBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\ExeButton.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\ExeButton.resx">
       <DependentUpon>ExeButton.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\FlatCheckBox.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\FlatCheckBox.resx">
       <DependentUpon>FlatCheckBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\FlatCheckedList.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\FlatCheckedList.resx">
       <DependentUpon>FlatCheckedList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\FlatComboBox.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\FlatComboBox.resx">
       <DependentUpon>FlatComboBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\FlatDataGrid.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\FlatDataGrid.resx">
       <DependentUpon>FlatDataGrid.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\FlatMaskedTextBox.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\FlatMaskedTextBox.resx">
       <DependentUpon>FlatMaskedTextBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\FlatPanel.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\FlatPanel.resx">
       <DependentUpon>FlatPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\FlatStatusBar.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\FlatStatusBar.resx">
       <DependentUpon>FlatStatusBar.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\FlatTextBox.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\FlatTextBox.resx">
       <DependentUpon>FlatTextBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Form\BaseForm.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\Form\BaseForm.resx">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Form\BaseForm2.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\Form\BaseForm2.resx">
       <DependentUpon>BaseForm2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Form\ContentBaseForm.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\Form\ContentBaseForm.resx">
       <DependentUpon>ContentBaseForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Form\FormBase.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\Form\FormBase.resx">
       <DependentUpon>FormBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Form\MainBaseForm.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\Form\MainBaseForm.resx">
       <DependentUpon>MainBaseForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Test\MenuBar.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\Test\MenuBar.resx">
       <DependentUpon>MenuBar.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\Asset\CustomControl\Test\PanelResizable.resx">
+    <EmbeddedResource Include="src\Desktop\UI\Controls\Test\PanelResizable.resx">
       <DependentUpon>PanelResizable.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Source\Desktop\DebugLayer\DebugForm.resx">
+    <EmbeddedResource Include="src\Desktop\Common\Diagnostics\DebugForm.resx">
       <DependentUpon>DebugForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
@@ -407,15 +407,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Source\Any\Asset\Icon\ico_debug.ico" />
-    <Content Include="Source\Any\Asset\Image\img_calendar_dark.png" />
-    <Content Include="Source\Any\Asset\Image\img_calendar_white.png" />
-    <Content Include="Source\Any\Asset\Image\img_drop_arrow.png" />
-    <Content Include="Source\Any\Asset\Image\img_drop_arrow_focus.png" />
-    <Content Include="Source\Any\Asset\Image\img_false_ico.png" />
-    <Content Include="Source\Any\Asset\Image\img_indeterminate_ico.png" />
-    <Content Include="Source\Any\Asset\Image\img_notfound.png" />
-    <Content Include="Source\Any\Asset\Image\img_true_ico.png" />
+    <Content Include="src\Assets\Icons\ico_debug.ico" />
+    <Content Include="src\Assets\Images\img_calendar_dark.png" />
+    <Content Include="src\Assets\Images\img_calendar_white.png" />
+    <Content Include="src\Assets\Images\img_drop_arrow.png" />
+    <Content Include="src\Assets\Images\img_drop_arrow_focus.png" />
+    <Content Include="src\Assets\Images\img_false_ico.png" />
+    <Content Include="src\Assets\Images\img_indeterminate_ico.png" />
+    <Content Include="src\Assets\Images\img_notfound.png" />
+    <Content Include="src\Assets\Images\img_true_ico.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

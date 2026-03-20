@@ -163,8 +163,8 @@ namespace App.Cohab.Properties {
         ///		OR (@Login = &apos;&apos; OR @Login IS NULL))
         ///	AND (Usuario_Nome LIKE &apos;%&apos;+@Nome+&apos;%&apos; 
         ///		OR (@Nome = &apos;&apos; OR @Nome IS NULL))
-        ///ORDER BY 
-        ///	Usuario_Nome ASC;
+        ///ORDER BY @OrderBy 
+        ///	--Usuario_Nome ASC;
         ///--.
         /// </summary>
         internal static string sql_UsuarioListar {
