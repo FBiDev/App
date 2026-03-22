@@ -869,7 +869,7 @@ namespace App.Core.Desktop
             string clickedColumn = Columns[e.ColumnIndex].Name;
             string sortColumn = string.Empty;
 
-            if (clickedColumn.Length > 2)
+            if (clickedColumn.Length > 2 && clickedColumn.EndsWith(boolColumnSufix))
             {
                 sortColumn = clickedColumn.Substring(0, clickedColumn.Length - 3);
             }

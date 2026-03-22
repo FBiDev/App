@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 
 namespace App.Core
@@ -28,6 +29,11 @@ namespace App.Core
         public static string RemoveWhiteSpaces(this string s)
         {
             return string.Join(" ", s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+        }
+
+        public static string HtmlDecode(this string s)
+        {
+            return WebUtility.HtmlDecode(s);
         }
 
         public static string HtmlRemoveTags(this string s)
