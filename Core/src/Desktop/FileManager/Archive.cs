@@ -73,10 +73,15 @@ namespace App.Core.Desktop
         public static string CalculateSize(double _bytes)
         {
             string unitSimbol = _bytes < 1024 ? "bytes" :
-                _bytes < 1048576 ? "KB" : "MB";
+                _bytes < 1048576 ? "KB" :
+                _bytes < 1073741824 ? "MB" :
+                _bytes < 1099511627776 ? "GB" : "TB";
 
             double unitSize = _bytes < 1024 ? _bytes :
-                _bytes < 1048576 ? _bytes / 1024 : _bytes / 1024 / 1024;
+                _bytes < 1048576 ? _bytes / 1024 :
+                _bytes < 1073741824 ? _bytes / 1024 / 1024 :
+                _bytes < 1099511627776 ? _bytes / 1024 / 1024 / 1024 :
+                _bytes / 1024 / 1024 / 1024 / 1024;
 
             if (unitSize < 10)
             {
