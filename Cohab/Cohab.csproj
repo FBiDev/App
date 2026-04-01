@@ -55,10 +55,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="scr\Core\Services\SistemaService.cs" />
     <Compile Include="scr\Core\Services\UsuarioService.cs" />
-    <Compile Include="scr\Infrastructure\App\BancoCOHAB.cs" />
-    <Compile Include="scr\Infrastructure\App\Options.cs" />
-    <Compile Include="scr\Infrastructure\App\Session.cs" />
-    <Compile Include="scr\Infrastructure\Common\Funcoes.cs" />
+    <Compile Include="scr\Config\BancoCOHAB.cs" />
+    <Compile Include="scr\Config\Options.cs" />
+    <Compile Include="scr\Config\Session.cs" />
+    <Compile Include="scr\Common\Funcoes.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

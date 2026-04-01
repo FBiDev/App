@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\Infrastructure\App\AppMode.cs" />
+    <Compile Include="src\App\AppMode.cs" />
     <Compile Include="src\Core\Excel.cs" />
     <Compile Include="src\Core\ExcelAny.cs" />
     <Compile Include="src\Core\ExcelMap.cs" />
@@ -59,7 +59,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Core\ExcelDesktop.cs" />
     <Compile Include="src\Core\ExcelWeb.cs" />
-    <Compile Include="src\Infrastructure\Extensions\ObjectExtension.cs" />
+    <Compile Include="src\Extensions\ObjectExtension.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
