@@ -10,12 +10,44 @@ namespace App.Core
     {
         public static bool IsEmpty<T>(this IEnumerable<T> source)
         {
-            return source == null || source.Count() == 0;
+            if (source == null) { return true; }
+
+            using (var enumerator = source.GetEnumerator())
+            {
+                return !enumerator.MoveNext();
+            }
         }
 
-        public static bool HasValue<T>(this IEnumerable<T> source)
+        public static bool HasItem<T>(this IEnumerable<T> source)
         {
-            return source.IsEmpty() == false;
+            if (source == null) return false;
+
+            using (var enumerator = source.GetEnumerator())
+            {
+                return enumerator.MoveNext();
+            }
+        }
+
+        public static bool HasSingleItem<T>(this IEnumerable<T> source)
+        {
+            if (source == null) { return false; }
+
+            using (var enumerator = source.GetEnumerator())
+            {
+                if (!enumerator.MoveNext()) { return false; }
+
+                return !enumerator.MoveNext();
+            }
+        }
+
+        public static bool HasManyItems<T>(this IEnumerable<T> source)
+        {
+            if (source == null) { return false; }
+
+            using (var enumerator = source.GetEnumerator())
+            {
+                return enumerator.MoveNext() && enumerator.MoveNext();
+            }
         }
 
         /// <summary>
@@ -23,12 +55,7 @@ namespace App.Core
         /// </summary>
         public static T First<T>(this List<T> source) where T : class, new()
         {
-            if (source.Count() == 0)
-            {
-                return new T();
-            }
-
-            return source.ElementAt(0);
+            return source.IsEmpty() ? new T() : source.ElementAt(0);
         }
 
         /// <summary>
@@ -36,17 +63,12 @@ namespace App.Core
         /// </summary>
         public static T FirstOrDefault<T>(this List<T> source) where T : class, new()
         {
-            if (source.Count == 0)
-            {
-                return null;
-            }
-
-            return source.ElementAt(0);
+            return source.IsEmpty() ? null : source.ElementAt(0);
         }
 
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
-            foreach (T element in source)
+            foreach (var element in source)
             {
                 action(element);
             }
@@ -63,27 +85,26 @@ namespace App.Core
         {
             var oldIndex = source.IndexOf(item);
 
-            if (oldIndex > -1)
+            if (oldIndex <= -1) { return; }
+
+            source.RemoveAt(oldIndex);
+
+            if (index > oldIndex)
             {
-                source.RemoveAt(oldIndex);
-
-                if (index > oldIndex)
-                {
-                    index--;
-                }
-
-                if (index > source.Count)
-                {
-                    index = source.Count;
-                }
-
-                if (index < 0)
-                {
-                    index = 0;
-                }
-
-                source.Insert(index, item);
+                index--;
             }
+
+            if (index > source.Count)
+            {
+                index = source.Count;
+            }
+
+            if (index < 0)
+            {
+                index = 0;
+            }
+
+            source.Insert(index, item);
         }
 
         public static void MoveToStart<T>(this List<T> source, T item)
@@ -127,7 +148,7 @@ namespace App.Core
         {
             var regex = new Regex(@"\d+", RegexOptions.Compiled);
 
-            int maxDigits = source
+            var maxDigits = source
                 .SelectMany(i => regex.Matches(selector(i)).Cast<Match>()
                     .Select(digitChunk => (int?)digitChunk.Value.Length)).Max() ?? 0;
 
