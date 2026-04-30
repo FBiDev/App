@@ -18,7 +18,7 @@ namespace App.Core
             }
         }
 
-        public static bool NotEmpty<T>(this IEnumerable<T> source)
+        public static bool IsNotEmpty<T>(this IEnumerable<T> source)
         {
             if (source == null) return false;
 

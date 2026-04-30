@@ -8,6 +8,29 @@ namespace App.Core
 {
     public static class Cast
     {
+        public static T ToObject<T>(object obj) where T : new()
+        {
+            return obj == null ? new T() : (T)obj;
+        }
+
+        public static bool ToBoolean(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) { return false; }
+
+            value = value.Trim().ToLower();
+
+            return value.IsIn("1", "true", "y", "yes", "s", "sim");
+        }
+
+        public static byte ToByte(string value, int fromBase)
+        {
+            if (string.IsNullOrWhiteSpace(value)) { return 0x0; }
+
+            byte result;
+            byte.TryParse(value, NumberStyles.HexNumber, null, out result);
+            return result;
+        }
+
         public static int ToInt(string value)
         {
             int result;
@@ -17,32 +40,17 @@ namespace App.Core
 
         public static int ToInt(object obj)
         {
-            if (obj == null)
-            {
-                return 0;
-            }
-
-            return ToInt(obj.ToString());
+            return obj == null ? 0 : ToInt(obj.ToString());
         }
 
         public static int? ToIntNull(string value)
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                return null;
-            }
+            if (string.IsNullOrEmpty(value)) { return null; }
 
             value = value.Trim().ToLower();
 
-            if (value == "true")
-            {
-                return 1;
-            }
-
-            if (value == "false")
-            {
-                return 0;
-            }
+            if (value == "true") { return 1; }
+            if (value == "false") { return 0; }
 
             int result;
             if (!int.TryParse(value, out result))
@@ -55,12 +63,7 @@ namespace App.Core
 
         public static int? ToIntNull(object obj)
         {
-            if (obj == null)
-            {
-                return null;
-            }
-
-            return ToIntNull(obj.ToString());
+            return obj == null ? null : ToIntNull(obj.ToString());
         }
 
         public static short ToShort(string value)
@@ -79,6 +82,17 @@ namespace App.Core
             }
 
             return result;
+        }
+
+        private static string ToNumber(string value)
+        {
+            if (string.IsNullOrEmpty(value)) { return value; }
+
+            var cs = LanguageManager.CurrencySymbol;
+            var gs = LanguageManager.CurrencyGroupSeparator;
+            value = value.Replace(cs, string.Empty).Replace(gs, string.Empty).Replace("'", string.Empty).Trim();
+
+            return value;
         }
 
         public static float ToFloat(string value)
@@ -150,25 +164,6 @@ namespace App.Core
             return value;
         }
 
-        public static bool ToBoolean(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return false;
-            }
-
-            value = value.Trim().ToLower();
-
-            if (value == "1" || value == "true" ||
-                value == "y" || value == "yes" ||
-                value == "s" || value == "sim")
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         public static DateTime ToDateTime(string value)
         {
             DateTime result;
@@ -218,17 +213,6 @@ namespace App.Core
             return time;
         }
 
-        public static T ToObject<T>(object obj) where T : new()
-        {
-            if (obj != null)
-            {
-                return (T)obj;
-            }
-
-            // return default(T);
-            return new T();
-        }
-
         public static Icon ToIco(Image img, Size size)
         {
             Icon icon;
@@ -259,18 +243,6 @@ namespace App.Core
             }
 
             return icon;
-        }
-
-        private static string ToNumber(string value)
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                string cs = LanguageManager.CurrencySymbol;
-                string gs = LanguageManager.CurrencyGroupSeparator;
-                value = value.Replace(cs, string.Empty).Replace(gs, string.Empty).Replace("'", string.Empty).Trim();
-            }
-
-            return value;
         }
     }
 }

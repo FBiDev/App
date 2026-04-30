@@ -29,7 +29,7 @@ namespace App.Core.Desktop
         /// </summary>
         private void InitializeComponent()
         {
-            this.MainTextBox = new FlatMaskedTextBoxBase();
+            this.MainTextBox = new App.Core.Desktop.FlatMaskedTextBoxBase();
             this.PlaceholderLabel = new System.Windows.Forms.Label();
             this.pnlText = new System.Windows.Forms.Panel();
             this.ActionButton = new App.Core.Desktop.FlatButton();
@@ -37,7 +37,7 @@ namespace App.Core.Desktop
             this.pnlText.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlContent
+            // ContentPanel
             // 
             this.ContentPanel.Controls.Add(this.pnlText);
             this.ContentPanel.Controls.Add(this.ActionButton);
@@ -46,7 +46,7 @@ namespace App.Core.Desktop
             this.ContentPanel.Controls.SetChildIndex(this.SubtitleLabel, 0);
             this.ContentPanel.Controls.SetChildIndex(this.pnlText, 0);
             // 
-            // txtMain
+            // MainTextBox
             // 
             this.MainTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
@@ -54,13 +54,15 @@ namespace App.Core.Desktop
             this.MainTextBox.BackColor = System.Drawing.Color.White;
             this.MainTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.MainTextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(47)))), ((int)(((byte)(47)))), ((int)(((byte)(47)))));
+            this.MainTextBox.LastText = null;
             this.MainTextBox.Location = new System.Drawing.Point(8, 0);
             this.MainTextBox.Margin = new System.Windows.Forms.Padding(0);
-            this.MainTextBox.Name = "txtMain";
+            this.MainTextBox.Name = "MainTextBox";
             this.MainTextBox.Size = new System.Drawing.Size(186, 16);
             this.MainTextBox.TabIndex = 0;
+            this.MainTextBox.TxtChanged = false;
             // 
-            // lblPlaceholder
+            // PlaceholderLabel
             // 
             this.PlaceholderLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
@@ -70,7 +72,7 @@ namespace App.Core.Desktop
             this.PlaceholderLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(178)))), ((int)(((byte)(178)))), ((int)(((byte)(178)))));
             this.PlaceholderLabel.Location = new System.Drawing.Point(5, -1);
             this.PlaceholderLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.PlaceholderLabel.Name = "lblPlaceholder";
+            this.PlaceholderLabel.Name = "PlaceholderLabel";
             this.PlaceholderLabel.Size = new System.Drawing.Size(189, 15);
             this.PlaceholderLabel.TabIndex = 0;
             // 
@@ -86,17 +88,18 @@ namespace App.Core.Desktop
             this.pnlText.Size = new System.Drawing.Size(177, 15);
             this.pnlText.TabIndex = 0;
             // 
-            // btnAction
+            // ActionButton
             // 
             this.ActionButton.BackgroundImage = global::App.Core.Properties.Resources.img_calendar_dark;
             this.ActionButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.ActionButton.BorderColorDefault = System.Drawing.Color.FromArgb(((int)(((byte)(213)))), ((int)(((byte)(223)))), ((int)(((byte)(229)))));
             this.ActionButton.Dock = System.Windows.Forms.DockStyle.Right;
             this.ActionButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(213)))), ((int)(((byte)(223)))), ((int)(((byte)(229)))));
             this.ActionButton.FlatAppearance.BorderSize = 0;
             this.ActionButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(213)))), ((int)(((byte)(213)))), ((int)(((byte)(213)))));
             this.ActionButton.Location = new System.Drawing.Point(178, 2);
             this.ActionButton.MaximumSize = new System.Drawing.Size(24, 0);
-            this.ActionButton.Name = "btnAction";
+            this.ActionButton.Name = "ActionButton";
             this.ActionButton.Size = new System.Drawing.Size(24, 28);
             this.ActionButton.TabIndex = 1;
             this.ActionButton.TabStop = false;
@@ -104,7 +107,6 @@ namespace App.Core.Desktop
             // 
             // FlatMaskedTextBox
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Name = "FlatMaskedTextBox";
             this.ContentPanel.ResumeLayout(false);
             this.ContentPanel.PerformLayout();

@@ -21,9 +21,18 @@ namespace App.Core.Desktop
 
             Font = new Font(FontName.SegoeUI, 9);
             Margin = new Padding(2);
+
+            AutoScaleMode = AutoScaleMode.None;
         }
 
         #region Defaults
+        [DefaultValue(typeof(AutoScaleMode), "None")]
+        public new AutoScaleMode AutoScaleMode
+        {
+            get { return base.AutoScaleMode; }
+            set { base.AutoScaleMode = value; }
+        }
+
         [DefaultValue(typeof(AnchorStyles), "Top, Left")]
         public new AnchorStyles Anchor
         {

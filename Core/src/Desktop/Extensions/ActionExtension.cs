@@ -4,11 +4,11 @@ namespace App.Core.Desktop
 {
     public static class ActionExtension
     {
-        public static void Run(this Action<string, LabelType> action, string message, LabelType type)
+        public static void Run(this Action<LabelType, string> action, LabelType type, string message)
         {
             if (action != null)
             {
-                action(message, type);
+                action(type, message);
             }
         }
     }

@@ -10,25 +10,29 @@ namespace App.Core
 {
     public static class StringExtension
     {
-        public static string NormalizePath(this string s)
+        public static bool IsEmpty(this string source)
         {
-            return s.Replace('\\', '/');
+            return string.IsNullOrWhiteSpace(source);
         }
 
-        public static string PathAddDateTime(this string s)
+        public static bool IsNotEmpty(this string source)
         {
-            var folder = Path.GetDirectoryName(s);
-            var name = Path.GetFileNameWithoutExtension(s);
-            var ext = Path.GetExtension(s);
+            return !string.IsNullOrWhiteSpace(source);
+        }
 
-            var nowString = DateTime.Now.ToFileName();
-            var fullName = name + "(" + nowString + ")" + ext;
-            return Path.Combine(folder, fullName).NormalizePath();
+        public static string Value(this string[] s)
+        {
+            return string.Join(string.Empty, s);
+        }
+
+        public static bool IsIn(this string source, params string[] values)
+        {
+            return values.Any(x => x.Equals(source, StringComparison.OrdinalIgnoreCase));
         }
 
         public static string RemoveWhiteSpaces(this string s)
         {
-            return string.Join(" ", s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
+            return string.Join(" ", s.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
         }
 
         public static string HtmlDecode(this string s)
@@ -36,44 +40,14 @@ namespace App.Core
             return WebUtility.HtmlDecode(s);
         }
 
-        public static string HtmlRemoveTags(this string s)
+        public static string HtmlEncode(this string s)
+        {
+            return WebUtility.HtmlEncode(s);
+        }
+
+        public static string RemoveHtmlTags(this string s)
         {
             return Regex.Replace(s, @"<[^>]+>|", string.Empty).Trim();
-        }
-
-        public static short? ToShortNull(this string s)
-        {
-            return Cast.ToShortNull(s);
-        }
-
-        public static float ToFloat(this string s)
-        {
-            return Cast.ToFloat(s);
-        }
-
-        public static TimeSpan? ToTimeSpanNull(this string s)
-        {
-            return Cast.ToTimeSpanNull(s);
-        }
-
-        public static DateTime ToDateTime(this string s)
-        {
-            return Cast.ToDateTime(s);
-        }
-
-        public static DateTime? ToDateTimeNull(this string s)
-        {
-            return Cast.ToDateTimeNull(s);
-        }
-
-        public static decimal ToDecimal(this string s)
-        {
-            return Cast.ToDecimal(s);
-        }
-
-        public static string ToMoney(this string s)
-        {
-            return Cast.ToMoney(s);
         }
 
         public static bool ToBoolean(this string s)
@@ -86,60 +60,95 @@ namespace App.Core
             return Cast.ToInt(s);
         }
 
-        public static bool IsEmpty(this string source)
+        public static short? ToShortNull(this string s)
         {
-            return source == null || string.IsNullOrWhiteSpace(source);
+            return Cast.ToShortNull(s);
         }
 
-        public static bool HasValue(this string source)
+        public static float ToFloat(this string s)
         {
-            return source.IsEmpty() == false;
+            return Cast.ToFloat(s);
         }
 
-        public static bool Contains(this string[] source, string toCheck, StringComparison comp)
+        public static decimal ToDecimal(this string s)
         {
-            if (source == null)
+            return Cast.ToDecimal(s);
+        }
+
+        public static string ToMoney(this string s)
+        {
+            return Cast.ToMoney(s);
+        }
+
+        public static DateTime ToDateTime(this string s)
+        {
+            return Cast.ToDateTime(s);
+        }
+
+        public static DateTime? ToDateTimeNull(this string s)
+        {
+            return Cast.ToDateTimeNull(s);
+        }
+
+        public static TimeSpan? ToTimeSpanNull(this string s)
+        {
+            return Cast.ToTimeSpanNull(s);
+        }
+
+        public static byte[] ToBytesFromHex(this string source)
+        {
+            var length = source.Length;
+            var bytes = new byte[length / 2];
+
+            for (var i = 0; i < length; i += 2)
             {
-                return false;
+                if (i < 0 || i + 2 > source.Length) { continue; }
+
+                bytes[i / 2] = Cast.ToByte(source.Substring(i, 2), 16);
             }
 
-            foreach (var item in source)
-            {
-                if (item.IndexOf(toCheck, comp) >= 0)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool IsIn(this string source, params string[] values)
-        {
-            return values.Any(x => x.Equals(source, StringComparison.OrdinalIgnoreCase));
+            return bytes;
         }
 
         public static string[] ToArray(this string s, int chunkSize, bool distinct = false, bool removeEmpty = false)
         {
-            string input = s;
+            var input = s;
             chunkSize = chunkSize <= 0 ? 1 : chunkSize;
 
-            string[] result = Enumerable.Range(0, input.Length / chunkSize).Select(i => input.Substring(i * chunkSize, chunkSize)).ToArray();
+            var result = Enumerable.Range(0, input.Length / chunkSize).Select(i => input.Substring(i * chunkSize, chunkSize)).ToArray();
             result = distinct ? result.Distinct().ToArray() : result;
             result = result.Where(x => x.Trim() != string.Empty).ToArray();
 
             return result;
         }
 
-        public static string Value(this string[] s)
+        public static string NormalizePath(this string s)
         {
-            return string.Join(string.Empty, s);
+            return s.Replace('\\', '/');
+        }
+
+        public static string PathAddDateTime(this string s)
+        {
+            var folder = Path.GetDirectoryName(s);
+            if (folder == null) { return null; }
+
+            var name = Path.GetFileNameWithoutExtension(s);
+            var ext = Path.GetExtension(s);
+
+            var nowString = DateTime.Now.ToFileName();
+            var fullName = name + "(" + nowString + ")" + ext;
+            return Path.Combine(folder, fullName).NormalizePath();
+        }
+
+        public static bool Contains(this string[] source, string toCheck, StringComparison comp)
+        {
+            return source != null && source.Any(item => item.IndexOf(toCheck, comp) >= 0);
         }
 
         public static bool ContainsExtend(this string source, string value)
         {
             string[] ignoreSymbols = { ", The:", ",", ":", "'", "-", ".", "+", "/", " " };
-            foreach (string symbol in ignoreSymbols)
+            foreach (var symbol in ignoreSymbols)
             {
                 source = source.Replace(symbol, string.Empty);
                 value = value.Replace(symbol, string.Empty);
@@ -158,54 +167,28 @@ namespace App.Core
 
         public static bool NotContains(this string source, string[] valueArray)
         {
-            foreach (var value in valueArray)
-            {
-                if (source.ContainsExtend(value))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public static byte[] HexToBytes(this string source)
-        {
-            int length = source.Length;
-            byte[] bytes = new byte[length / 2];
-
-            for (int i = 0; i < length; i += 2)
-            {
-                bytes[i / 2] = Convert.ToByte(source.Substring(i, 2), 16);
-            }
-
-            return bytes;
+            return valueArray.All(value => !source.ContainsExtend(value));
         }
 
         public static string GetBetween(this string s, string start, string end, bool inclusive = false, bool firstMatch = true, bool singleLine = true)
         {
-            string first = firstMatch ? "?" : string.Empty;
+            var first = firstMatch ? "?" : string.Empty;
 
-            string pattern = Regex.Escape(start) + "(.*" + first + ")" + Regex.Escape(end);
-            RegexOptions opt = singleLine ? RegexOptions.Singleline : 0;
+            var pattern = Regex.Escape(start) + "(.*" + first + ")" + Regex.Escape(end);
+            var opt = singleLine ? RegexOptions.Singleline : 0;
 
             var rgx = new Regex(pattern, opt | RegexOptions.IgnoreCase);
             var match = rgx.Match(s);
 
-            if (match.Success)
-            {
-                return match.Groups[inclusive ? 0 : 1].Value;
-            }
-
-            return string.Empty;
+            return match.Success ? match.Groups[inclusive ? 0 : 1].Value : string.Empty;
         }
 
         public static List<string> GetBetweenList(this string s, string start, string end, bool inclusive = false, bool firstMatch = true, bool singleLine = true)
         {
-            string first = firstMatch ? "?" : string.Empty;
+            var first = firstMatch ? "?" : string.Empty;
 
-            string pattern = Regex.Escape(start) + "(.*" + first + ")" + Regex.Escape(end);
-            RegexOptions opt = singleLine ? RegexOptions.Singleline : 0;
+            var pattern = Regex.Escape(start) + "(.*" + first + ")" + Regex.Escape(end);
+            var opt = singleLine ? RegexOptions.Singleline : 0;
             var rgx = new Regex(pattern, opt | RegexOptions.IgnoreCase);
 
             var matchList = rgx.Matches(s);
@@ -215,19 +198,18 @@ namespace App.Core
 
         public static string ReplaceSpecialCharacters(this string s)
         {
-            string text = string.Empty;
+            var text = string.Empty;
 
-            foreach (char c in s)
+            foreach (var c in s)
             {
-                int len = text.Length;
+                var len = text.Length;
 
                 foreach (var entry in StringValue.SpecialCharacters)
                 {
-                    if (entry.Key.IndexOf(c) != -1)
-                    {
-                        text += entry.Value;
-                        break;
-                    }
+                    if (entry.Key.IndexOf(c) == -1) { continue; }
+
+                    text += entry.Value;
+                    break;
                 }
 
                 if (len == text.Length)

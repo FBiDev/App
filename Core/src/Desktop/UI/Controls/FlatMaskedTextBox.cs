@@ -128,6 +128,8 @@ namespace App.Core.Desktop
             set { _placeholderColor = value; }
         }
 
+        public CharacterCasing CharacterCasing { get; set; }
+
         [DefaultValue(false)]
         public bool ReadOnly
         {
@@ -450,6 +452,13 @@ namespace App.Core.Desktop
 
         private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
+            switch (CharacterCasing)
+            {
+                case CharacterCasing.Lower: e.KeyChar = char.ToLower(e.KeyChar); break;
+                case CharacterCasing.Upper: e.KeyChar = char.ToUpper(e.KeyChar); break;
+                case CharacterCasing.Normal: break;
+            }
+
             OnKeyPress(e);
         }
 

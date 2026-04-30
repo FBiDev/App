@@ -12,19 +12,19 @@ namespace App.Core
             }
         }
 
-        public static void Run(this Action<bool, string> action, bool isTrue, string message)
+        public static void Run(this Action<bool, string> action, bool arg1, string arg2)
         {
             if (action != null)
             {
-                action(isTrue, message);
+                action(arg1, arg2);
             }
         }
 
-        public static void Run(this BoolAction action, bool isCrop)
+        public static void Run(this BoolAction action, bool arg)
         {
             if (action != null)
             {
-                action(isCrop);
+                action(arg);
             }
         }
     }

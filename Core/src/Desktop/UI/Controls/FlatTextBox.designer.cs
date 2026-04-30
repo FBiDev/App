@@ -36,7 +36,7 @@ namespace App.Core.Desktop
             this.pnlText.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlContent
+            // ContentPanel
             // 
             this.ContentPanel.Controls.Add(this.pnlText);
             this.ContentPanel.Controls.SetChildIndex(this.SubtitleLabel, 0);
@@ -84,7 +84,6 @@ namespace App.Core.Desktop
             // 
             // FlatTextBox
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Name = "FlatTextBox";
             this.ContentPanel.ResumeLayout(false);
             this.ContentPanel.PerformLayout();

@@ -34,7 +34,7 @@ namespace App.Core.Desktop
             this.ContentPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlContent
+            // ContentPanel
             // 
             this.ContentPanel.BackColor = System.Drawing.Color.White;
             this.ContentPanel.Controls.Add(this.SubtitleLabel);
@@ -42,12 +42,12 @@ namespace App.Core.Desktop
             this.ContentPanel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ContentPanel.Location = new System.Drawing.Point(1, 1);
             this.ContentPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.ContentPanel.Name = "pnlContent";
+            this.ContentPanel.Name = "ContentPanel";
             this.ContentPanel.Padding = new System.Windows.Forms.Padding(1, 2, 1, 1);
             this.ContentPanel.Size = new System.Drawing.Size(204, 32);
             this.ContentPanel.TabIndex = 0;
             // 
-            // lblSubtitle
+            // SubtitleLabel
             // 
             this.SubtitleLabel.AutoSize = true;
             this.SubtitleLabel.BackColor = System.Drawing.Color.White;
@@ -55,7 +55,7 @@ namespace App.Core.Desktop
             this.SubtitleLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SubtitleLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(132)))), ((int)(((byte)(199)))));
             this.SubtitleLabel.Location = new System.Drawing.Point(1, 2);
-            this.SubtitleLabel.Name = "lblSubtitle";
+            this.SubtitleLabel.Name = "SubtitleLabel";
             this.SubtitleLabel.Size = new System.Drawing.Size(34, 13);
             this.SubtitleLabel.TabIndex = 0;
             this.SubtitleLabel.Text = "Label";
