@@ -7,7 +7,7 @@ namespace App.Core
 {
     public static class BrotliWrapper
     {
-        private static readonly string DllName = "App.Data.Compression.Brotli";
+        private static readonly string DllName = "App.Compression.Brotli";
         private static readonly string DllFile = DllName + ".dll";
         private static readonly byte[] CompressEmpty = new byte[1] { 59 };
         private static readonly byte[] DecompressEmpty = new byte[0];
@@ -93,7 +93,7 @@ namespace App.Core
                     var dllPath = Path.Combine(assemblyFolder, DllFile);
 
                     assembly = Assembly.LoadFrom(dllPath);
-                    brotliClass = assembly.GetType("App.Data.Compression.Brotli");
+                    brotliClass = assembly.GetType("App.Compression.Brotli");
                 }
                 catch (Exception)
                 {
