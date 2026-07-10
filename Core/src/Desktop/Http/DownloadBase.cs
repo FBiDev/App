@@ -248,9 +248,9 @@ namespace App.Core.Desktop
 
         private string DownloadedProgress(double bytesIn, double bytesTotal)
         {
-            var bytesProgress = Archive.CalculateSize(bytesIn);
+            var bytesProgress = Archive.FormatSize(bytesIn);
             double bytesCalc = bytesTotal <= 0 ? bytesIn : bytesTotal;
-            bytesProgress += " of " + Archive.CalculateSize(bytesCalc);
+            bytesProgress += " of " + Archive.FormatSize(bytesCalc);
 
             return bytesProgress;
         }
